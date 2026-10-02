@@ -41,13 +41,13 @@ class ScenarioRunResult:
 
     def to_view(self) -> dict:
         return {
-            "scenario_name": self.scenario_name,
-            "n_intervals": self.n_intervals,
+            "scenarioName": self.scenario_name,
+            "nIntervals": self.n_intervals,
             "solution": self.solution_kpis,
-            "shadow_baseline": self.shadow_kpis,
+            "shadowBaseline": self.shadow_kpis,
             "diff": {
-                "relief_kw_avoided": round(self.relief_kw_avoided, 3),
-                "hardship_hours_avoided": round(self.hardship_hours_avoided, 3),
+                "reliefKwAvoided": round(self.relief_kw_avoided, 3),
+                "hardshipHoursAvoided": round(self.hardship_hours_avoided, 3),
             },
         }
 
@@ -74,14 +74,14 @@ def run_scenario(scenario_name: str, n_intervals: int = 24, seed: int = 0) -> Sc
         scenario_name=scenario_name,
         n_intervals=n_intervals,
         solution_kpis={
-            "total_served_kw": sum(sol_served),
-            "total_unserved_kw": sum(sol_unserved),
-            "hours_of_hardship": sol_hardship,
+            "totalServedKw": sum(sol_served),
+            "totalUnservedKw": sum(sol_unserved),
+            "hoursOfHardship": sol_hardship,
         },
         shadow_kpis={
-            "total_served_kw": sum(shadow_served),
-            "total_unserved_kw": sum(shadow_unserved),
-            "hours_of_hardship": shadow_hardship,
+            "totalServedKw": sum(shadow_served),
+            "totalUnservedKw": sum(shadow_unserved),
+            "hoursOfHardship": shadow_hardship,
         },
         relief_kw_avoided=relief_kw_avoided,
         hardship_hours_avoided=shadow_hardship - sol_hardship,

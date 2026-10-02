@@ -15,10 +15,12 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import numpy as np
+
 from app.grid.constants import DR_REBATE_RS_PER_KWH, INTERVAL_MIN, P2P_CHARGE_RS_PER_KWH
 from app.grid.models import FlexPlan, LeverKey, PlanStatus
-from app.grid.network import NetworkData, SyntheticNetwork
-from app.grid.risk import DtRisk
+from app.grid.network import NetworkData, SyntheticNetwork, bounded_voronoi
+from app.grid.risk import DtRisk, compute_dt_risk
 
 AnyNetwork = NetworkData | SyntheticNetwork
 
@@ -73,30 +75,129 @@ def feeders_view(network: AnyNetwork, subdivision_id: str | None = None) -> list
     return rows
 
 
+class DtTelemetry:
+    """Bundle of the live per-DT dicts ``GridService`` caches from the most
+    recent interval (``latest_dt_loading_pu``/``latest_dt_hotspot_c``/
+    ``latest_dt_voltage_pu``/``latest_dt_served_kw``/``latest_dt_demand_kw``)
+    plus the world's cumulative loss-of-life hours -- bundled into one object
+    so `transformers_view`/`transformer_detail_view` don't need five separate
+    optional-dict parameters. All empty/``None`` before the first interval
+    (fresh boot), consistent with the documented "world restarts from
+    scenario start" limitation.
+    """
+
+    def __init__(
+        self,
+        loading_pu: dict[str, float] | None = None,
+        hotspot_c: dict[str, float] | None = None,
+        voltage_pu: dict[str, float] | None = None,
+        served_kw: dict[str, float] | None = None,
+        demand_kw: dict[str, float] | None = None,
+        loss_of_life_hours: dict[str, float] | None = None,
+    ) -> None:
+        self.loading_pu = loading_pu or {}
+        self.hotspot_c = hotspot_c or {}
+        self.voltage_pu = voltage_pu or {}
+        self.served_kw = served_kw or {}
+        self.demand_kw = demand_kw or {}
+        self.loss_of_life_hours = loss_of_life_hours or {}
+
+
+# Rated transformer life used to turn cumulative loss-of-life *hours*
+# (IEEE C57.91 ageing-factor-weighted, see `grid/thermal.py`) into a
+# percentage -- a standard 20-year (175,200 h) rating, documented since
+# there's no separate "rated life" constant elsewhere in this prototype.
+_RATED_LIFE_HOURS = 20 * 365.25 * 24
+
+
+def _dt_risk_row(
+    dt_id: str, network: AnyNetwork, telemetry: DtTelemetry
+) -> dict[str, Any]:
+    hotspot_c = telemetry.hotspot_c.get(dt_id, 30.0)
+    rating_kva = network.dt_rating_kva[dt_id]
+    ageing = telemetry.loss_of_life_hours.get(dt_id, 0.0) / _RATED_LIFE_HOURS * 100.0 + 1.0
+    # forecast_gap_kw isn't available at this read-model layer; see
+    # services/service.py#risk_summary, which makes the same simplification.
+    risk = compute_dt_risk(
+        dt_id=dt_id,
+        hot_spot_c=hotspot_c,
+        forecast_gap_kw=0.0,
+        dt_limit_kw=rating_kva,
+        ageing_factor=ageing,
+    )
+    return {"level": risk.level.value, "index": round(risk.score, 4)}
+
+
+def _dt_voronoi_polygons(network: AnyNetwork) -> dict[str, list[dict[str, float]]]:
+    """Real Voronoi service-area polygons for every DT (`network.bounded_voronoi`,
+    A3), keyed by dt id. Computed once over the whole network per call.
+    """
+    dt_ids = list(network.dt_ids)
+    if not dt_ids:
+        return {}
+    lats = [network.dt_lat[d] for d in dt_ids]
+    lons = [network.dt_lon[d] for d in dt_ids]
+    pad_lat = max((max(lats) - min(lats)) * 0.1, 0.01)
+    pad_lon = max((max(lons) - min(lons)) * 0.1, 0.01)
+    bbox = (min(lons) - pad_lon, max(lons) + pad_lon, min(lats) - pad_lat, max(lats) + pad_lat)
+    points = [(network.dt_lon[d], network.dt_lat[d]) for d in dt_ids]
+    polygons = bounded_voronoi(np.asarray(points), bbox)
+    return {
+        dt_id: [{"lat": round(float(v[1]), 6), "lng": round(float(v[0]), 6)} for v in poly]
+        for dt_id, poly in zip(dt_ids, polygons, strict=True)
+    }
+
+
 def transformers_view(
     network: AnyNetwork,
     subdivision_id: str | None = None,
     live_loading_pu: dict[str, float] | None = None,
     live_hotspot_c: dict[str, float] | None = None,
+    telemetry: DtTelemetry | None = None,
+    with_polygons: bool = False,
 ) -> list[dict[str, Any]]:
-    live_loading_pu = live_loading_pu or {}
-    live_hotspot_c = live_hotspot_c or {}
+    telemetry = telemetry or DtTelemetry(live_loading_pu, live_hotspot_c)
+    consumers_by_dt = _consumer_counts_by_dt(network)
+    polygons = _dt_voronoi_polygons(network) if with_polygons else {}
     rows = [
-        {
-            "id": dt_id,
-            "feederId": network.dt_feeder[dt_id],
-            "subdivisionId": network.dt_subdivision[dt_id],
-            "ratingKva": network.dt_rating_kva[dt_id],
-            "lat": network.dt_lat[dt_id],
-            "lon": network.dt_lon[dt_id],
-            "loadingPu": live_loading_pu.get(dt_id),
-            "hotspotC": live_hotspot_c.get(dt_id),
-        }
-        for dt_id in network.dt_ids
+        _dt_row(dt_id, network, telemetry, consumers_by_dt, polygons) for dt_id in network.dt_ids
     ]
     if subdivision_id is not None:
         rows = [r for r in rows if r["subdivisionId"] == subdivision_id]
     return rows
+
+
+def _dt_row(
+    dt_id: str,
+    network: AnyNetwork,
+    telemetry: DtTelemetry,
+    consumers_by_dt: dict[str, int],
+    polygons: dict[str, list[dict[str, float]]],
+) -> dict[str, Any]:
+    served = telemetry.served_kw.get(dt_id)
+    demand = telemetry.demand_kw.get(dt_id)
+    served_fraction = (served / demand) if served is not None and demand else None
+    risk = _dt_risk_row(dt_id, network, telemetry)
+    loss_of_life_pct = round(
+        min(telemetry.loss_of_life_hours.get(dt_id, 0.0) / _RATED_LIFE_HOURS * 100.0, 100.0), 4
+    )
+    return {
+        "id": dt_id,
+        "feederId": network.dt_feeder[dt_id],
+        "subdivisionId": network.dt_subdivision[dt_id],
+        "name": f"Transformer {dt_id}",
+        "ratingKva": network.dt_rating_kva[dt_id],
+        "loadingPu": telemetry.loading_pu.get(dt_id),
+        "hotspotC": telemetry.hotspot_c.get(dt_id),
+        "lossOfLifePct": loss_of_life_pct,
+        "riskLevel": risk["level"],
+        "riskIndex": risk["index"],
+        "consumerCount": consumers_by_dt.get(dt_id, 0),
+        "servedFraction": round(served_fraction, 4) if served_fraction is not None else None,
+        "voltagePu": telemetry.voltage_pu.get(dt_id),
+        "location": {"lat": network.dt_lat[dt_id], "lng": network.dt_lon[dt_id]},
+        "serviceAreaPolygon": polygons.get(dt_id, []),
+    }
 
 
 def transformer_detail_view(
@@ -104,19 +205,18 @@ def transformer_detail_view(
     dt_id: str,
     live_loading_pu: float | None = None,
     live_hotspot_c: float | None = None,
+    telemetry: DtTelemetry | None = None,
 ) -> dict[str, Any] | None:
     if dt_id not in network.dt_ids:
         return None
-    return {
-        "id": dt_id,
-        "feederId": network.dt_feeder[dt_id],
-        "subdivisionId": network.dt_subdivision[dt_id],
-        "ratingKva": network.dt_rating_kva[dt_id],
-        "lat": network.dt_lat[dt_id],
-        "lon": network.dt_lon[dt_id],
-        "loadingPu": live_loading_pu,
-        "hotspotC": live_hotspot_c,
-    }
+    if telemetry is None:
+        telemetry = DtTelemetry(
+            {dt_id: live_loading_pu} if live_loading_pu is not None else {},
+            {dt_id: live_hotspot_c} if live_hotspot_c is not None else {},
+        )
+    consumers_by_dt = _consumer_counts_by_dt(network)
+    polygons = _dt_voronoi_polygons(network)
+    return _dt_row(dt_id, network, telemetry, consumers_by_dt, polygons)
 
 
 def geo_view(network: AnyNetwork) -> dict[str, Any]:

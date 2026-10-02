@@ -171,7 +171,7 @@ def test_scenario_list_and_run(client: TestClient) -> None:
     assert "heatwave_evening" in names
     run = client.post("/api/v1/scenario/heatwave_evening/run?n_intervals=4")
     assert run.status_code == 200
-    assert run.json()["n_intervals"] == 4
+    assert run.json()["nIntervals"] == 4
 
 
 def test_scenario_unknown_name_404s(client: TestClient) -> None:
