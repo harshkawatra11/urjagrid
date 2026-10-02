@@ -35,12 +35,22 @@ async def list_feeders(
 async def list_transformers(
     subdivision_id: str | None = None, service: GridService = Depends(get_grid_service)
 ) -> list[dict]:
-    return transformers_view(service.scenario.network, subdivision_id=subdivision_id)
+    return transformers_view(
+        service.scenario.network,
+        subdivision_id=subdivision_id,
+        live_loading_pu=service.latest_dt_loading_pu,
+        live_hotspot_c=service.latest_dt_hotspot_c,
+    )
 
 
 @router.get("/transformers/{dt_id}")
 async def get_transformer(dt_id: str, service: GridService = Depends(get_grid_service)) -> dict:
-    detail = transformer_detail_view(service.scenario.network, dt_id)
+    detail = transformer_detail_view(
+        service.scenario.network,
+        dt_id,
+        live_loading_pu=service.latest_dt_loading_pu.get(dt_id),
+        live_hotspot_c=service.latest_dt_hotspot_c.get(dt_id),
+    )
     if detail is None:
         raise NotFoundError("Transformer", dt_id)
     return detail

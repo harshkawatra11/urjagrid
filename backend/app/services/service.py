@@ -160,6 +160,11 @@ class GridService:
         self.solution_logs: list[LogRow] = []
         self.shadow_logs: list[LogRow] = []
         self.events: list[str] = []
+        # Latest per-DT telemetry from the most recent interval's solution
+        # track -- read by the `/transformers` views for "live" loading/
+        # hot-spot numbers; empty until the first `advance_one_interval()`.
+        self.latest_dt_loading_pu: dict[str, float] = {}
+        self.latest_dt_hotspot_c: dict[str, float] = {}
 
     # -- lifecycle --------------------------------------------------------
 
@@ -192,6 +197,8 @@ class GridService:
         sol_result, shadow_result = self.world.advance_interval(slot, actions)
         self.events.extend(sol_result.events)
         self.events.extend(shadow_result.events)
+        self.latest_dt_loading_pu = dict(sol_result.dt_loading_pu)
+        self.latest_dt_hotspot_c = dict(sol_result.dt_hotspot_c)
 
         sol_row = self._to_log_row(slot, sol_result, is_shadow=False)
         shadow_row = self._to_log_row(slot, shadow_result, is_shadow=True)

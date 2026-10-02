@@ -326,6 +326,19 @@ class FlexPlanService:
         plan.updated_at = _now()
         return plan
 
+    def refresh_plan(self, plan_id: str) -> FlexPlan:
+        """Re-solve an existing DRAFT plan's stored ``PlanInputs`` in place
+        (same id, same deficit window) -- the decision desk's "refresh"
+        action, distinct from ``refresh_from_series`` which builds brand new
+        draft plans from a fresh set of deficit windows.
+        """
+        plan = self.get(plan_id)
+        if plan.status != PlanStatus.DRAFT:
+            raise InvalidTransitionError("FlexPlan", plan.status.value, "refresh")
+        plan.solution = solve_plan(plan.inputs)
+        plan.updated_at = _now()
+        return plan
+
     # -- what-if --------------------------------------------------------------
 
     def simulate(self, plan_id: str, overrides: PlanOverrides) -> PlanSolution:

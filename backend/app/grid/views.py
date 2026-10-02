@@ -12,13 +12,20 @@ a cross-lane breaking change.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from app.grid.models import FlexPlan
+from app.grid.constants import DR_REBATE_RS_PER_KWH, INTERVAL_MIN, P2P_CHARGE_RS_PER_KWH
+from app.grid.models import FlexPlan, LeverKey, PlanStatus
 from app.grid.network import NetworkData, SyntheticNetwork
 from app.grid.risk import DtRisk
 
 AnyNetwork = NetworkData | SyntheticNetwork
+
+# Wire-level field names below are written directly in camelCase (rather than
+# relying on a blanket snake_case->camelCase response transform) because several
+# of these dicts are *also* keyed by domain ids (dt_id, consumer_id, ...) that
+# must never be re-cased -- see docs note in the frontend integration pass.
 
 
 def _dt_subdivision_map(network: AnyNetwork) -> dict[str, str]:
@@ -41,9 +48,9 @@ def subdivisions_view(network: AnyNetwork) -> list[dict[str, Any]]:
     return [
         {
             "id": sub_id,
-            "discom_id": discom_by_sub.get(sub_id, ""),
-            "feeder_count": feeder_counts.get(sub_id, 0),
-            "transformer_count": dt_counts.get(sub_id, 0),
+            "discomId": discom_by_sub.get(sub_id, ""),
+            "feederCount": feeder_counts.get(sub_id, 0),
+            "transformerCount": dt_counts.get(sub_id, 0),
         }
         for sub_id in network.subdivision_ids
     ]
@@ -56,13 +63,13 @@ def feeders_view(network: AnyNetwork, subdivision_id: str | None = None) -> list
     rows = [
         {
             "id": fdr_id,
-            "subdivision_id": network.feeder_subdivision[fdr_id],
-            "transformer_count": dt_counts.get(fdr_id, 0),
+            "subdivisionId": network.feeder_subdivision[fdr_id],
+            "transformerCount": dt_counts.get(fdr_id, 0),
         }
         for fdr_id in network.feeder_ids
     ]
     if subdivision_id is not None:
-        rows = [r for r in rows if r["subdivision_id"] == subdivision_id]
+        rows = [r for r in rows if r["subdivisionId"] == subdivision_id]
     return rows
 
 
@@ -77,31 +84,38 @@ def transformers_view(
     rows = [
         {
             "id": dt_id,
-            "feeder_id": network.dt_feeder[dt_id],
-            "subdivision_id": network.dt_subdivision[dt_id],
-            "rating_kva": network.dt_rating_kva[dt_id],
+            "feederId": network.dt_feeder[dt_id],
+            "subdivisionId": network.dt_subdivision[dt_id],
+            "ratingKva": network.dt_rating_kva[dt_id],
             "lat": network.dt_lat[dt_id],
             "lon": network.dt_lon[dt_id],
-            "loading_pu": live_loading_pu.get(dt_id),
-            "hotspot_c": live_hotspot_c.get(dt_id),
+            "loadingPu": live_loading_pu.get(dt_id),
+            "hotspotC": live_hotspot_c.get(dt_id),
         }
         for dt_id in network.dt_ids
     ]
     if subdivision_id is not None:
-        rows = [r for r in rows if r["subdivision_id"] == subdivision_id]
+        rows = [r for r in rows if r["subdivisionId"] == subdivision_id]
     return rows
 
 
-def transformer_detail_view(network: AnyNetwork, dt_id: str) -> dict[str, Any] | None:
+def transformer_detail_view(
+    network: AnyNetwork,
+    dt_id: str,
+    live_loading_pu: float | None = None,
+    live_hotspot_c: float | None = None,
+) -> dict[str, Any] | None:
     if dt_id not in network.dt_ids:
         return None
     return {
         "id": dt_id,
-        "feeder_id": network.dt_feeder[dt_id],
-        "subdivision_id": network.dt_subdivision[dt_id],
-        "rating_kva": network.dt_rating_kva[dt_id],
+        "feederId": network.dt_feeder[dt_id],
+        "subdivisionId": network.dt_subdivision[dt_id],
+        "ratingKva": network.dt_rating_kva[dt_id],
         "lat": network.dt_lat[dt_id],
         "lon": network.dt_lon[dt_id],
+        "loadingPu": live_loading_pu,
+        "hotspotC": live_hotspot_c,
     }
 
 
@@ -114,7 +128,7 @@ def geo_view(network: AnyNetwork) -> dict[str, Any]:
         "transformers": [
             {
                 "id": dt_id,
-                "subdivision_id": network.dt_subdivision[dt_id],
+                "subdivisionId": network.dt_subdivision[dt_id],
                 "lat": network.dt_lat[dt_id],
                 "lon": network.dt_lon[dt_id],
             }
@@ -126,23 +140,206 @@ def geo_view(network: AnyNetwork) -> dict[str, Any]:
 def risk_view(risks: list[DtRisk]) -> list[dict[str, Any]]:
     return [
         {
-            "dt_id": r.dt_id,
+            "dtId": r.dt_id,
             "score": round(r.score, 4),
             "level": r.level.value,
-            "thermal_component": round(r.thermal_component, 4),
-            "gap_component": round(r.gap_component, 4),
-            "ageing_component": round(r.ageing_component, 4),
+            "thermalComponent": round(r.thermal_component, 4),
+            "gapComponent": round(r.gap_component, 4),
+            "ageingComponent": round(r.ageing_component, 4),
         }
         for r in risks
     ]
 
 
-def plan_view(plan: FlexPlan) -> dict[str, Any]:
-    return plan.model_dump(mode="json")
+# ---------------------------------------------------------------------------
+# Flex Plan view -- translates the internal MILP-optimiser-shaped ``FlexPlan``
+# (per-DT dicts, slot indices) into the flattened, frontend-vocabulary
+# contract `frontend/src/lib/api/types.ts#FlexPlan` expects (one summary
+# number per plan, a `levers: LeverAllocation[]` array, ISO timestamps).
+# ---------------------------------------------------------------------------
+
+# Maps the engine's internal ``LeverKey``/``PlanStatus`` enum values (shared
+# with the optimiser, dispatcher and B7 safety-invariant tests -- not safe to
+# rename) to the wire vocabulary `frontend/src/lib/domain.ts` defines. Both
+# sides agree on the *order* (L1 behavioural DR .. L6 rotational shedding);
+# only the string spelling differs.
+_LEVER_WIRE: dict[LeverKey, str] = {
+    LeverKey.DR: "behavioral_dr",
+    LeverKey.HUB: "managed_charging",
+    LeverKey.SHIFT: "shiftable_loads",
+    LeverKey.STORAGE: "storage_discharge",
+    LeverKey.CAP: "lifeline_cap",
+    LeverKey.SHED: "rotational_shedding",
+}
+
+_PLAN_STATUS_WIRE: dict[PlanStatus, str] = {
+    PlanStatus.DRAFT: "draft",
+    PlanStatus.APPROVED: "approved",
+    PlanStatus.REJECTED: "rejected",
+    PlanStatus.CANCELLED: "cancelled",
+    PlanStatus.DISPATCHED: "dispatched",
+    PlanStatus.COMPLETED: "verified",  # M&V-confirmed, closest frontend vocabulary match
+    PlanStatus.EXPIRED: "expired",
+}
+
+# Mirrors ``actions_from_plan_solution`` in services/service.py: the fraction
+# of a DT's rated capacity a cap level actually relieves.
+_CAP_RELIEF_FRACTION = {1: 0.25, 2: 0.55, 3: 0.85}
+
+# Synthetic epoch for turning a plan's slot indices into ISO timestamps.
+# ``FlexPlan``/``PlanInputs`` only carry slot *indices* (ints), not an
+# absolute scenario start date, so this is a display convenience, not a
+# wall-clock fact -- consistent with the rest of the prototype's documented
+# "world restarts from scenario start" limitation.
+_SLOT_EPOCH = datetime(2025, 1, 1, tzinfo=UTC)
 
 
-def plans_view(plans: list[FlexPlan]) -> list[dict[str, Any]]:
-    return [plan_view(p) for p in plans]
+def _slot_iso(slot: int) -> str:
+    return (_SLOT_EPOCH + timedelta(minutes=INTERVAL_MIN * slot)).isoformat()
+
+
+def _consumer_counts_by_dt(network: AnyNetwork | None) -> dict[str, int]:
+    if network is None:
+        return {}
+    consumers = getattr(network, "consumers", None)
+    if consumers is None:
+        return {}
+    counts: dict[str, int] = {}
+    for dt_id in consumers.dt_ids:
+        key = str(dt_id)
+        counts[key] = counts.get(key, 0) + 1
+    return counts
+
+
+def _lever_allocations(plan: FlexPlan, consumers_by_dt: dict[str, int]) -> list[dict[str, Any]]:
+    inputs, solution = plan.inputs, plan.solution
+    n_slots = max((len(s) for s in inputs.gap_kw.values()), default=0)
+    hours = n_slots * INTERVAL_MIN / 60.0
+    rows: list[dict[str, Any]] = []
+
+    dr_dts = [d for d in inputs.dt_ids if solution.dr_on_by_dt.get(d)]
+    if dr_dts:
+        relief = sum(inputs.dr_potential_kw.get(d, 0.0) for d in dr_dts)
+        rows.append(
+            {
+                "lever": _LEVER_WIRE[LeverKey.DR],
+                "reliefKw": round(relief, 2),
+                "costRs": round(relief * hours * DR_REBATE_RS_PER_KWH, 2),
+                "consumerCount": sum(consumers_by_dt.get(d, 0) for d in dr_dts),
+            }
+        )
+
+    hub_dts = [d for d in inputs.dt_ids if solution.hub_frac_by_dt.get(d, 1.0) < 1.0]
+    if hub_dts:
+        relief = sum(
+            inputs.hub_potential_kw.get(d, 0.0) * (1.0 - solution.hub_frac_by_dt.get(d, 1.0))
+            for d in hub_dts
+        )
+        rows.append(
+            {
+                "lever": _LEVER_WIRE[LeverKey.HUB],
+                "reliefKw": round(relief, 2),
+                "costRs": 0.0,
+                "consumerCount": sum(consumers_by_dt.get(d, 0) for d in hub_dts),
+            }
+        )
+
+    shift_dts = [d for d in inputs.dt_ids if solution.shift_on_by_dt.get(d, True) is False]
+    if shift_dts:
+        relief = sum(inputs.shift_potential_kw.get(d, 0.0) for d in shift_dts)
+        rows.append(
+            {
+                "lever": _LEVER_WIRE[LeverKey.SHIFT],
+                "reliefKw": round(relief, 2),
+                "costRs": 0.0,
+                "consumerCount": sum(consumers_by_dt.get(d, 0) for d in shift_dts),
+            }
+        )
+
+    storage_dts = [d for d, kw in solution.storage_kw_by_dt.items() if kw > 0]
+    if storage_dts:
+        relief = sum(solution.storage_kw_by_dt[d] for d in storage_dts)
+        rows.append(
+            {
+                "lever": _LEVER_WIRE[LeverKey.STORAGE],
+                "reliefKw": round(relief, 2),
+                "costRs": round(relief * hours * P2P_CHARGE_RS_PER_KWH, 2),
+                "consumerCount": sum(consumers_by_dt.get(d, 0) for d in storage_dts),
+            }
+        )
+
+    cap_dts = [d for d, lvl in solution.cap_level_by_dt.items() if lvl > 0]
+    if cap_dts:
+        relief = sum(
+            inputs.dt_limit_kw.get(d, 0.0)
+            * _CAP_RELIEF_FRACTION.get(solution.cap_level_by_dt[d], 0.0)
+            for d in cap_dts
+        )
+        rows.append(
+            {
+                "lever": _LEVER_WIRE[LeverKey.CAP],
+                "reliefKw": round(relief, 2),
+                "costRs": 0.0,
+                "consumerCount": sum(consumers_by_dt.get(d, 0) for d in cap_dts),
+            }
+        )
+
+    shed_dts = [d for d, kw in solution.unserved_kw_by_dt.items() if kw > 0]
+    if shed_dts:
+        relief = sum(solution.unserved_kw_by_dt[d] for d in shed_dts)
+        rows.append(
+            {
+                "lever": _LEVER_WIRE[LeverKey.SHED],
+                "reliefKw": round(relief, 2),
+                "costRs": 0.0,
+                "consumerCount": sum(consumers_by_dt.get(d, 0) for d in shed_dts),
+            }
+        )
+
+    return rows
+
+
+def plan_view(plan: FlexPlan, network: AnyNetwork | None = None) -> dict[str, Any]:
+    inputs, solution = plan.inputs, plan.solution
+    slots = inputs.slots
+    window_start = min(slots) if slots else 0
+    window_end = (max(slots) + 1) if slots else 0
+
+    n = max((len(s) for s in inputs.gap_kw.values()), default=0)
+    total_gap = [
+        sum(series[i] for series in inputs.gap_kw.values() if i < len(series)) for i in range(n)
+    ]
+    gap_kw = max(total_gap) if total_gap else 0.0
+    unserved_total = sum(solution.unserved_kw_by_dt.values())
+    covered_kw = max(gap_kw - unserved_total, 0.0)
+
+    approved_iso = (
+        plan.updated_at.isoformat()
+        if plan.status in (PlanStatus.APPROVED, PlanStatus.DISPATCHED, PlanStatus.COMPLETED)
+        else None
+    )
+    notes = plan.overrides.notes or plan.rejected_reason or None
+
+    return {
+        "id": plan.id,
+        "subdivisionId": plan.subdivision_id,
+        "dtIds": list(inputs.dt_ids),
+        "status": _PLAN_STATUS_WIRE[plan.status],
+        "deficitWindowId": plan.window_id,
+        "createdIso": plan.created_at.isoformat(),
+        "windowStartIso": _slot_iso(window_start),
+        "windowEndIso": _slot_iso(window_end),
+        "gapKw": round(gap_kw, 3),
+        "coveredKw": round(covered_kw, 3),
+        "levers": _lever_allocations(plan, _consumer_counts_by_dt(network)),
+        "approverName": plan.approved_by,
+        "approvedIso": approved_iso,
+        "notes": notes,
+    }
+
+
+def plans_view(plans: list[FlexPlan], network: AnyNetwork | None = None) -> list[dict[str, Any]]:
+    return [plan_view(p, network) for p in plans]
 
 
 def protocol_ledger_view(entries: list[Any]) -> list[dict[str, Any]]:
@@ -161,8 +358,8 @@ def consumers_sample_view(
         rows.append(
             {
                 "id": str(consumers.consumer_ids[i]),
-                "dt_id": str(consumers.dt_ids[i]),
-                "subdivision_id": sub_id,
+                "dtId": str(consumers.dt_ids[i]),
+                "subdivisionId": sub_id,
                 "tier": str(consumers.tier[i]),
                 "archetype": str(consumers.archetype[i]),
                 "lat": float(consumers.lat[i]),
