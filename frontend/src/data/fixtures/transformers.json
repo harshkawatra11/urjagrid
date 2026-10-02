@@ -1,0 +1,70 @@
+{
+  "transformers": [
+    {
+      "id": "dt_sn_01",
+      "feederId": "fdr_sn_a",
+      "subdivisionId": "sd_subhashnagar",
+      "name": "Subhash Nagar DT 01",
+      "ratingKva": 250,
+      "loadingPu": 1.18,
+      "hotspotC": 104.5,
+      "lossOfLifePct": 2.3,
+      "riskLevel": "high",
+      "riskIndex": 0.74,
+      "consumerCount": 210,
+      "servedFraction": 0.9,
+      "voltagePu": 0.96,
+      "location": { "lat": 28.3791, "lng": 79.4552 },
+      "serviceAreaPolygon": [
+        { "lat": 28.3781, "lng": 79.4532 },
+        { "lat": 28.3801, "lng": 79.4532 },
+        { "lat": 28.3801, "lng": 79.4572 },
+        { "lat": 28.3781, "lng": 79.4572 }
+      ]
+    },
+    {
+      "id": "dt_sn_02",
+      "feederId": "fdr_sn_a",
+      "subdivisionId": "sd_subhashnagar",
+      "name": "Subhash Nagar DT 02",
+      "ratingKva": 200,
+      "loadingPu": 0.86,
+      "hotspotC": 91.2,
+      "lossOfLifePct": 1.1,
+      "riskLevel": "moderate",
+      "riskIndex": 0.42,
+      "consumerCount": 165,
+      "servedFraction": 0.97,
+      "voltagePu": 0.98,
+      "location": { "lat": 28.3802, "lng": 79.4561 },
+      "serviceAreaPolygon": [
+        { "lat": 28.3792, "lng": 79.4541 },
+        { "lat": 28.3812, "lng": 79.4541 },
+        { "lat": 28.3812, "lng": 79.4581 },
+        { "lat": 28.3792, "lng": 79.4581 }
+      ]
+    },
+    {
+      "id": "dt_kn_01",
+      "feederId": "fdr_kn_a",
+      "subdivisionId": "sd_krishnanagar",
+      "name": "Krishna Nagar DT 01",
+      "ratingKva": 315,
+      "loadingPu": 1.34,
+      "hotspotC": 121.8,
+      "lossOfLifePct": 6.8,
+      "riskLevel": "critical",
+      "riskIndex": 0.95,
+      "consumerCount": 268,
+      "servedFraction": 0.79,
+      "voltagePu": 0.93,
+      "location": { "lat": 27.4927, "lng": 77.6741 },
+      "serviceAreaPolygon": [
+        { "lat": 27.4917, "lng": 77.6721 },
+        { "lat": 27.4937, "lng": 77.6721 },
+        { "lat": 27.4937, "lng": 77.6761 },
+        { "lat": 27.4917, "lng": 77.6761 }
+      ]
+    }
+  ]
+}
