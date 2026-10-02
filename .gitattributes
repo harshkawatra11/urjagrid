@@ -1,0 +1,2 @@
+backend/data/models/*.txt -text
+backend/data/models/*.json -text
