@@ -1,0 +1,22 @@
+{
+  "dtId": "dt_sn_01",
+  "subdivisionId": "sd_subhashnagar",
+  "horizonSlots": 12,
+  "points": [
+    { "slotIso": "2026-10-02T15:00:00+05:30", "p10Kw": 140, "p50Kw": 175, "p90Kw": 210, "availableKw": 230, "limitKw": 250, "actualKw": 178 },
+    { "slotIso": "2026-10-02T15:15:00+05:30", "p10Kw": 142, "p50Kw": 178, "p90Kw": 214, "availableKw": 228, "limitKw": 250, "actualKw": 181 },
+    { "slotIso": "2026-10-02T15:30:00+05:30", "p10Kw": 148, "p50Kw": 184, "p90Kw": 220, "availableKw": 225, "limitKw": 250, "actualKw": 186 },
+    { "slotIso": "2026-10-02T15:45:00+05:30", "p10Kw": 155, "p50Kw": 192, "p90Kw": 229, "availableKw": 222, "limitKw": 250, "actualKw": 190 },
+    { "slotIso": "2026-10-02T16:00:00+05:30", "p10Kw": 165, "p50Kw": 202, "p90Kw": 240, "availableKw": 218, "limitKw": 250, "actualKw": 199 },
+    { "slotIso": "2026-10-02T16:15:00+05:30", "p10Kw": 178, "p50Kw": 215, "p90Kw": 253, "availableKw": 214, "limitKw": 250, "actualKw": 211 },
+    { "slotIso": "2026-10-02T16:30:00+05:30", "p10Kw": 190, "p50Kw": 228, "p90Kw": 266, "availableKw": 210, "limitKw": 250, "actualKw": null },
+    { "slotIso": "2026-10-02T16:45:00+05:30", "p10Kw": 200, "p50Kw": 238, "p90Kw": 278, "availableKw": 208, "limitKw": 250, "actualKw": null },
+    { "slotIso": "2026-10-02T17:00:00+05:30", "p10Kw": 208, "p50Kw": 246, "p90Kw": 288, "availableKw": 206, "limitKw": 250, "actualKw": null },
+    { "slotIso": "2026-10-02T17:15:00+05:30", "p10Kw": 212, "p50Kw": 250, "p90Kw": 294, "availableKw": 205, "limitKw": 250, "actualKw": null },
+    { "slotIso": "2026-10-02T17:30:00+05:30", "p10Kw": 214, "p50Kw": 252, "p90Kw": 296, "availableKw": 204, "limitKw": 250, "actualKw": null },
+    { "slotIso": "2026-10-02T17:45:00+05:30", "p10Kw": 210, "p50Kw": 248, "p90Kw": 290, "availableKw": 205, "limitKw": 250, "actualKw": null }
+  ],
+  "deficitWindows": [
+    { "id": "dw_sn01_1", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "startIso": "2026-10-02T17:00:00+05:30", "endIso": "2026-10-02T17:45:00+05:30", "gapKw": 46, "thermalRisk": false }
+  ]
+}

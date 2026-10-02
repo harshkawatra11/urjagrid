@@ -17,9 +17,11 @@ import type {
   EventLogEntry,
   Feeder,
   FairnessMetrics,
+  FeatureImportance,
   FederationNode,
   FieldRegistration,
   FlexPlan,
+  ForecastBacktest,
   ForecastBundle,
   OutageReport,
   P2pTrade,
@@ -139,6 +141,16 @@ export function useForecast(dtId: string | null | undefined) {
 }
 
 /* ---------- flex plans ---------- */
+
+export function useForecastBacktest() {
+  return useApi<ForecastBacktest | null>(`${P}/forecast/backtest`, null, { refreshInterval: REFRESH.analytics });
+}
+
+export function useForecastImportance() {
+  return useApi<{ features: FeatureImportance[] }>(`${P}/forecast/importance`, { features: [] }, {
+    refreshInterval: REFRESH.none,
+  });
+}
 
 export function usePlans(scope: ScopeArg = "all") {
   return useApi<{ plans: FlexPlan[] }>(`${P}/plans${scopeQuery(scope)}`, { plans: [] }, {

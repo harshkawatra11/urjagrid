@@ -361,6 +361,20 @@ export interface FederationNode {
   fairnessIndex: number;
 }
 
+/* ---------- D16 forecast studio ---------- */
+
+export interface ForecastBacktest {
+  wapePct: number;
+  skillScore: number;
+  coveragePct: number;
+  targetCoveragePct: number;
+}
+
+export interface FeatureImportance {
+  name: string;
+  importance: number;
+}
+
 /* ---------- D27 consumer phone app ---------- */
 
 export interface ConsumerStatus {
