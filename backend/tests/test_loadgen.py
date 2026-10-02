@@ -7,7 +7,7 @@ from app.grid.weather import synthetic_series
 
 
 def test_archetype_shapes_cover_all_archetypes_and_are_positive() -> None:
-    for name, shape in ARCHETYPE_SHAPES.items():
+    for _name, shape in ARCHETYPE_SHAPES.items():
         assert len(shape) == SLOTS_PER_DAY
         assert np.all(shape > 0)
 

@@ -81,7 +81,9 @@ def synthetic_series(
     solar_cf = np.clip(solar_cf, 0.0, 1.0)
     wind_cf = np.clip(wind_base + rng.normal(0, 0.12, SLOTS_PER_DAY), 0.0, 1.0)
     humidity_pct = np.clip(humidity_base + rng.normal(0, 8.0, SLOTS_PER_DAY), 10.0, 100.0)
-    return WeatherSeries(temp_c=temp_c, solar_cf=solar_cf, wind_cf=wind_cf, humidity_pct=humidity_pct)
+    return WeatherSeries(
+        temp_c=temp_c, solar_cf=solar_cf, wind_cf=wind_cf, humidity_pct=humidity_pct
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -110,7 +112,9 @@ class Scenario(BaseModel):
         )
 
     @classmethod
-    def from_series(cls, name: str, label: str, town: str, source: str, series: WeatherSeries) -> Scenario:
+    def from_series(
+        cls, name: str, label: str, town: str, source: str, series: WeatherSeries
+    ) -> Scenario:
         return cls(
             name=name,
             label=label,
@@ -197,4 +201,6 @@ class WeatherProvider:
         humidity_pct = np.clip(
             actual.humidity_pct + self._rng.normal(0, temp_sd * 2, SLOTS_PER_DAY), 10.0, 100.0
         )
-        return WeatherSeries(temp_c=temp_c, solar_cf=solar_cf, wind_cf=wind_cf, humidity_pct=humidity_pct)
+        return WeatherSeries(
+        temp_c=temp_c, solar_cf=solar_cf, wind_cf=wind_cf, humidity_pct=humidity_pct
+    )

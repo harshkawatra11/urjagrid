@@ -2,13 +2,12 @@ from pathlib import Path
 
 import numpy as np
 
-from app.grid.daydata import FEATURE_NAMES, DayBuilder
+from app.grid.daydata import DayBuilder
 from app.grid.forecaster import (
     QuantileForecaster,
     empirical_coverage,
     split_conformal_offset,
 )
-from app.grid.loadgen import ARCHETYPE_SHAPES, LoadModel
 from app.grid.weather import synthetic_series
 
 

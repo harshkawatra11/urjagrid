@@ -19,7 +19,10 @@ def test_all_subdivisions_calibrated() -> None:
 
 
 def test_firm_share_rank_order_urban_gt_semi_gt_rural() -> None:
-    assert FIRM_SHARE_BY_KIND["urban"] > FIRM_SHARE_BY_KIND["semi_urban"] > FIRM_SHARE_BY_KIND["rural"]
+    urban = FIRM_SHARE_BY_KIND["urban"]
+    semi_urban = FIRM_SHARE_BY_KIND["semi_urban"]
+    rural = FIRM_SHARE_BY_KIND["rural"]
+    assert urban > semi_urban > rural
 
 
 def test_evening_indicator_window() -> None:
@@ -38,7 +41,8 @@ def test_supply_fraction_formula_matches_spec() -> None:
     evening = np.array([0.0, 1.0, 0.0])
 
     result = supply_fraction(firm, re_share, solar_cf, wind_cf, grid_storage, evening)
-    expected = np.minimum(1.0, firm + re_share * (0.6 * solar_cf + 0.4 * wind_cf) / 0.45 + grid_storage * evening)
+    re_term = re_share * (0.6 * solar_cf + 0.4 * wind_cf) / 0.45
+    expected = np.minimum(1.0, firm + re_term + grid_storage * evening)
     assert np.allclose(result, expected)
 
 

@@ -22,7 +22,7 @@ import numpy as np
 from numpy.random import Generator, default_rng
 from scipy.spatial import Voronoi
 
-from app.grid.constants import SUBDIVISION_DISCOM, SUBDIVISION_IDS
+from app.grid.constants import SUBDIVISION_IDS
 
 DEFAULT_SEED_NETWORK_PATH = (
     Path(__file__).resolve().parents[2] / "data" / "network" / "seed_network.json"

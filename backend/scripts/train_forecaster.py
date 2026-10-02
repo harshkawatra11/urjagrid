@@ -33,7 +33,9 @@ N_CAL_DAYS = 30
 ARCHETYPES = list(ARCHETYPE_SHAPES.keys())
 
 
-def build_dt_demand(dt_id: str, n_consumers: int, weather, load_model: LoadModel, rng: np.random.Generator) -> np.ndarray:
+def build_dt_demand(
+    dt_id: str, n_consumers: int, weather, load_model: LoadModel, rng: np.random.Generator
+) -> np.ndarray:
     n_sample = min(n_consumers, 150)
     mix = rng.choice(ARCHETYPES, size=max(n_sample, 1))
     total = np.zeros(96)
@@ -119,7 +121,9 @@ def main() -> None:
         booster.save_model(str(MODELS_DIR / f"{name}.txt"))
         raw_cal_preds[name] = booster.predict(x_cal)
 
-    offset = split_conformal_offset(y_cal, raw_cal_preds["p10"], raw_cal_preds["p90"], target_coverage=0.80)
+    offset = split_conformal_offset(
+        y_cal, raw_cal_preds["p10"], raw_cal_preds["p90"], target_coverage=0.80
+    )
     (MODELS_DIR / "conformal.json").write_text(json.dumps({"offset_pu": offset}))
     print(f"Split-conformal offset: {offset:.4f} pu")
 

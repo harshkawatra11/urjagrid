@@ -72,7 +72,9 @@ class QuantileForecaster:
     def predict(self, features: np.ndarray) -> QuantilePrediction:
         """``features`` shape (n, 13), columns per ``app.grid.daydata.FEATURE_NAMES``."""
         if features.shape[1] != len(FEATURE_NAMES):
-            raise ValueError(f"expected {len(FEATURE_NAMES)} feature columns, got {features.shape[1]}")
+            raise ValueError(
+                f"expected {len(FEATURE_NAMES)} feature columns, got {features.shape[1]}"
+            )
 
         if self.mode == "lightgbm" and self._boosters is not None:
             p10 = np.asarray(self._boosters["p10"].predict(features)) - self._conformal_offset
@@ -101,14 +103,19 @@ class QuantileForecaster:
         return QuantilePrediction(p10=p10, p50=p50, p90=p90, mode="seasonal_naive")
 
 
-def _enforce_monotone(p10: np.ndarray, p50: np.ndarray, p90: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _enforce_monotone(
+    p10: np.ndarray, p50: np.ndarray, p90: np.ndarray
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     p50 = np.maximum(p50, p10)
     p90 = np.maximum(p90, p50)
     return p10, p50, p90
 
 
 def split_conformal_offset(
-    y_true: np.ndarray, p10_raw: np.ndarray, p90_raw: np.ndarray, target_coverage: float = TARGET_COVERAGE
+    y_true: np.ndarray,
+    p10_raw: np.ndarray,
+    p90_raw: np.ndarray,
+    target_coverage: float = TARGET_COVERAGE,
 ) -> float:
     """Split-conformal offset: the symmetric widening applied to [p10,p90] so
     that the interval covers ``target_coverage`` of a held-out calibration set.

@@ -12,7 +12,7 @@ framework/runtime agnostic.
 """
 
 from datetime import UTC, datetime
-from enum import Enum, IntEnum
+from enum import IntEnum, StrEnum
 
 from pydantic import BaseModel, Field
 
@@ -41,7 +41,7 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
-class RiskLevel(str, Enum):
+class RiskLevel(StrEnum):
     """DT/feeder/sub-division risk tier, driven by thermal + forecast headroom."""
 
     LOW = "low"
@@ -50,7 +50,7 @@ class RiskLevel(str, Enum):
     CRITICAL = "critical"
 
 
-class PlanStatus(str, Enum):
+class PlanStatus(StrEnum):
     """``FlexPlanService`` state-machine states."""
 
     DRAFT = "draft"
@@ -62,7 +62,7 @@ class PlanStatus(str, Enum):
     EXPIRED = "expired"
 
 
-class MeterState(str, Enum):
+class MeterState(StrEnum):
     """Per-consumer meter state as seen by HES/the dashboard."""
 
     NORMAL = "normal"
@@ -72,7 +72,7 @@ class MeterState(str, Enum):
     CRITICAL_BACKUP = "critical_backup"
 
 
-class LeverKey(str, Enum):
+class LeverKey(StrEnum):
     """Canonical lever identifiers -- must match ``LEVER_ORDER`` exactly."""
 
     DR = "dr"
@@ -202,7 +202,9 @@ class PlanSolution(BaseModel):
     """MILP (or greedy-fallback) optimiser output for one ``PlanInputs``."""
 
     window_id: str
-    status: str = Field(..., description="'optimal' | 'feasible' | 'greedy_fallback' | 'infeasible'")
+    status: str = Field(
+        ..., description="'optimal' | 'feasible' | 'greedy_fallback' | 'infeasible'"
+    )
     objective_value: float = 0.0
     cap_level_by_dt: dict[str, int] = Field(default_factory=dict)
     hub_frac_by_dt: dict[str, float] = Field(default_factory=dict)

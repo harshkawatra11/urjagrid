@@ -11,7 +11,9 @@ from __future__ import annotations
 from app.grid.constants import CAP_LEVEL_WATTS
 
 
-def cap_reduction_kw(tier_counts: dict[str, int], baseline_avg_kw: dict[str, float], cap_level: int) -> float:
+def cap_reduction_kw(
+    tier_counts: dict[str, int], baseline_avg_kw: dict[str, float], cap_level: int
+) -> float:
     """Total kW freed by applying ``cap_level`` to every T1/T2 consumer on a DT.
 
     ``tier_counts``/``baseline_avg_kw`` are keyed by tier ("t1","t2"); T0 is

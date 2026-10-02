@@ -89,10 +89,12 @@ def solve_power_flow(
     iterations = 0
     branch_current: dict[tuple[str, str], complex] = {}
 
-    for iterations in range(1, max_iter + 1):
+    for iterations in range(1, max_iter + 1):  # noqa: B007 -- value used after loop exits
         # Backward sweep: branch current = sum of injected currents in its subtree.
         injected = {
-            b: _injected_current(b, voltage[b], network.load_kw.get(b, 0.0), network.load_kvar.get(b, 0.0))
+            b: _injected_current(
+                b, voltage[b], network.load_kw.get(b, 0.0), network.load_kvar.get(b, 0.0)
+            )
             for b in bus_ids
         }
         branch_current = {}

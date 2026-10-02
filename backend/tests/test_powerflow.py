@@ -5,7 +5,9 @@ import pytest
 from app.grid.powerflow import Branch, LVNetwork, solve_power_flow
 
 
-def closed_form_two_bus_voltage(vs: float, r_ohm: float, x_ohm: float, p_w: float, q_var: float) -> float:
+def closed_form_two_bus_voltage(
+    vs: float, r_ohm: float, x_ohm: float, p_w: float, q_var: float
+) -> float:
     """Closed-form receiving-end voltage magnitude for a single line + load.
 
     Standard quadratic-in-V^2 solution of the two-bus power-flow equations:

@@ -38,7 +38,10 @@ def test_weather_series_rejects_wrong_length() -> None:
 
     with pytest.raises(ValueError, match="96 slots"):
         WeatherSeries(
-            temp_c=np.zeros(10), solar_cf=np.zeros(10), wind_cf=np.zeros(10), humidity_pct=np.zeros(10)
+            temp_c=np.zeros(10),
+            solar_cf=np.zeros(10),
+            wind_cf=np.zeros(10),
+            humidity_pct=np.zeros(10),
         )
 
 
@@ -62,7 +65,9 @@ def test_heatwave_scenario_is_hot() -> None:
 def test_scenario_round_trip_to_series() -> None:
     scenario = BUILTIN_SCENARIOS["solar_noon"]
     series = scenario.to_series()
-    rebuilt = Scenario.from_series("solar_noon", scenario.label, scenario.town, scenario.source, series)
+    rebuilt = Scenario.from_series(
+        "solar_noon", scenario.label, scenario.town, scenario.source, series
+    )
     assert np.allclose(rebuilt.temp_c, scenario.temp_c)
 
 

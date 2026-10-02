@@ -49,7 +49,9 @@ def merge_windows(windows: list[tuple[int, int]], max_gap: int = 1) -> list[tupl
     return merged
 
 
-def split_windows(windows: list[tuple[int, int]], max_len: int = MAX_WINDOW_SLOTS) -> list[tuple[int, int]]:
+def split_windows(
+    windows: list[tuple[int, int]], max_len: int = MAX_WINDOW_SLOTS
+) -> list[tuple[int, int]]:
     """Split any window longer than ``max_len`` slots into consecutive chunks."""
     result: list[tuple[int, int]] = []
     for start, end in windows:
@@ -93,9 +95,13 @@ class DeficitWindow:
         return self.end_slot - self.start_slot
 
 
-def build_deficit_windows(dt_id: str, gap_kw: np.ndarray, **kwargs: object) -> list[DeficitWindow]:
+def build_deficit_windows(
+    dt_id: str, gap_kw: np.ndarray, **kwargs: object
+) -> list[DeficitWindow]:
     windows = find_deficit_windows(gap_kw, **kwargs)  # type: ignore[arg-type]
-    return [DeficitWindow(dt_id=dt_id, start_slot=s, end_slot=e, gap_kw=gap_kw[s:e]) for s, e in windows]
+    return [
+        DeficitWindow(dt_id=dt_id, start_slot=s, end_slot=e, gap_kw=gap_kw[s:e]) for s, e in windows
+    ]
 
 
 def dt_thermal_limit_kw(

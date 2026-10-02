@@ -33,7 +33,9 @@ def test_day_builder_output_shape() -> None:
 def test_day_builder_target_is_per_unit_of_rating() -> None:
     builder = DayBuilder()
     arrays = _day_arrays()
-    result = builder.build(**arrays, dt_rating_kva=100.0, day_of_week=0, month_of_year=1, power_factor=0.9)
+    result = builder.build(
+        **arrays, dt_rating_kva=100.0, day_of_week=0, month_of_year=1, power_factor=0.9
+    )
     expected = arrays["demand_kw"] / (100.0 * 0.9)
     assert np.allclose(result.target_pu, expected)
 
