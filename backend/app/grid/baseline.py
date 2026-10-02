@@ -1,7 +1,7 @@
 """Shadow (status-quo) baseline: rotational feeder/DT shedding.
 
 The shadow baseline never runs a Flex Plan -- when supply falls short it
-sheds whole feeders/DTs in rotation, which is what LifelineGrid's Flex Plans
+sheds whole feeders/DTs in rotation, which is what UrjaGrid's Flex Plans
 are designed to make unnecessary. ``ShedLedger`` tracks cumulative shed
 hours per entity so rotation can prefer the least-burdened entity (fairer
 than pure round-robin once entities have uneven prior burden).

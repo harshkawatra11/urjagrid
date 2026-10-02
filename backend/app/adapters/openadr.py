@@ -30,7 +30,7 @@ class OpenAdrEvent:
         return {
             "id": self.event_id,
             "programID": self.program_id,
-            "eventName": "lifelinegrid-shed-event",
+            "eventName": "urjagrid-shed-event",
             "intervalPeriod": {
                 "start": self.start.isoformat(),
                 "durationMinutes": self.duration_minutes,
@@ -45,7 +45,7 @@ class OpenAdrEvent:
 @dataclass
 class OpenAdrProgram:
     program_id: str
-    program_name: str = "lifelinegrid-shiftable-loads"
+    program_name: str = "urjagrid-shiftable-loads"
     events: list[OpenAdrEvent] = field(default_factory=list)
 
 

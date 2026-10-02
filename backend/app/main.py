@@ -1,4 +1,4 @@
-"""FastAPI app factory for the LifelineGrid backend.
+"""FastAPI app factory for the UrjaGrid backend.
 
 Lane A owns this file only to the extent of bootstrapping (A1); the actual
 `/api/v1` route surface belongs to Lane B (B9), which mounts its routers at
@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import get_settings
-from app.core.exceptions import ApiError, InvalidTransitionError, LifelineGridError, NotFoundError
+from app.core.exceptions import ApiError, InvalidTransitionError, NotFoundError, UrjaGridError
 
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -25,7 +25,7 @@ SECURITY_HEADERS = {
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title="LifelineGrid API", version="0.1.0")
+    app = FastAPI(title="UrjaGrid API", version="0.1.0")
 
     app.add_middleware(
         CORSMiddleware,
@@ -58,8 +58,8 @@ def create_app() -> FastAPI:
     async def api_error_handler(_request: Request, exc: ApiError) -> JSONResponse:
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
-    @app.exception_handler(LifelineGridError)
-    async def lifelinegrid_error_handler(_request: Request, exc: LifelineGridError) -> JSONResponse:
+    @app.exception_handler(UrjaGridError)
+    async def urjagrid_error_handler(_request: Request, exc: UrjaGridError) -> JSONResponse:
         return JSONResponse(status_code=500, content={"detail": str(exc)})
 
     @app.get("/health")

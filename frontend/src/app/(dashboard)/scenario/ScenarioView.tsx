@@ -56,7 +56,7 @@ export function ScenarioView() {
       <PageHeader
         eyebrow="Flex Plans"
         title="Scenario Lab"
-        description="Run a built-in weather/supply scenario end-to-end and diff the LifelineGrid solution against the shadow (status-quo) baseline."
+        description="Run a built-in weather/supply scenario end-to-end and diff the UrjaGrid solution against the shadow (status-quo) baseline."
         actions={<StatusTag status="LIVE" title="Runs the real GridService + optimiser for n_intervals, not a canned replay" />}
       />
 

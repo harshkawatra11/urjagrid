@@ -1,6 +1,6 @@
-# LifelineGrid — Design Artifacts
+# UrjaGrid — Design Artifacts
 
-The hackathon brief asks for "supporting design artifacts" (deliverable 3) as something separate from the software prototype (deliverable 4). For LifelineGrid, we are not fabricating wireframe images or mockups that don't exist just to tick that box. **The working application is the design artifact** — every screen, data model, and API contract below was actually built, not sketched. This document points to exactly where each one lives.
+The hackathon brief asks for "supporting design artifacts" (deliverable 3) as something separate from the software prototype (deliverable 4). For UrjaGrid, we are not fabricating wireframe images or mockups that don't exist just to tick that box. **The working application is the design artifact** — every screen, data model, and API contract below was actually built, not sketched. This document points to exactly where each one lives.
 
 ## 1. The UX design artifact: 28 real dashboard/standalone pages
 

@@ -1,6 +1,6 @@
-/** Brand constants for LifelineGrid. Single source of truth for product copy. */
+/** Brand constants for UrjaGrid. Single source of truth for product copy. */
 export const BRAND = {
-  name: "LifelineGrid",
+  name: "UrjaGrid",
   tagline: "Brownout, never blackout.",
   persona: "Urja",
   green: "#b7e34a",

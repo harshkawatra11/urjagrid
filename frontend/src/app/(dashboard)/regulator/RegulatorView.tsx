@@ -95,7 +95,7 @@ export function RegulatorView() {
       <Card title="Federation diagram" eyebrow="WIRED" className="col-span-12">
         <svg width="100%" height={160} viewBox="0 0 560 160" role="img" aria-label="Federation diagram">
           <circle cx={280} cy={30} r={22} fill="var(--brand)" />
-          <text x={280} y={34} textAnchor="middle" fontSize={10} fill="#000">LifelineGrid</text>
+          <text x={280} y={34} textAnchor="middle" fontSize={10} fill="#000">UrjaGrid</text>
           {nodes.map((n, i) => {
             const x = 140 + i * 280;
             return (

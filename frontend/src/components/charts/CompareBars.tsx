@@ -6,7 +6,7 @@ import { AXIS_TICK, CHART_MARGIN, CURSOR_BAND, ChartFrame, ChartLegend, GRID_PRO
 
 export type CompareBarRow = { label: string; solution: number; baseline: number };
 
-/** Grouped bars comparing the LifelineGrid solution against the shadow (status-quo) baseline, per category. */
+/** Grouped bars comparing the UrjaGrid solution against the shadow (status-quo) baseline, per category. */
 export function CompareBars({
   rows,
   unit = "",
@@ -22,7 +22,7 @@ export function CompareBars({
     <ChartFrame label={label}>
       <ChartLegend
         items={[
-          { label: "LifelineGrid", color: "var(--brand)" },
+          { label: "UrjaGrid", color: "var(--brand)" },
           { label: "Baseline (shedding)", color: "var(--text-faint)" },
         ]}
       />
@@ -33,7 +33,7 @@ export function CompareBars({
             <XAxis dataKey="label" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "var(--border)" }} />
             <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={40} />
             <Tooltip cursor={CURSOR_BAND} content={<ChartTooltip unit={unit} />} />
-            <Bar dataKey="solution" name="LifelineGrid" fill="var(--brand)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
+            <Bar dataKey="solution" name="UrjaGrid" fill="var(--brand)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
             <Bar dataKey="baseline" name="Baseline (shedding)" fill="var(--text-faint)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>

@@ -1,7 +1,7 @@
 [project]
-name = "lifelinegrid-backend"
+name = "urjagrid-backend"
 version = "0.1.0"
-description = "LifelineGrid backend -- Schneider Electric Yuva Yodha Energy Tech Hackathon (PS3 Grid Reliability)"
+description = "UrjaGrid backend -- Schneider Electric Yuva Yodha Energy Tech Hackathon (PS3 Grid Reliability)"
 requires-python = ">=3.12"
 
 [tool.ruff]

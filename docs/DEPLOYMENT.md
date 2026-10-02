@@ -1,8 +1,8 @@
-# LifelineGrid — Deployment & Scale-Up Plan
+# UrjaGrid — Deployment & Scale-Up Plan
 
 ## 1. The hard constraint: software-only
 
-LifelineGrid is built under a **software-only deployment constraint** (`docs/SPEC.md` section 9): no new hardware, no new box on a pole, no new meter. Every control action rides on rails that already exist — the RDSS smart-meter/HES load-limit command, existing OCPP charger hubs, existing OpenADR-capable public loads, existing storage. This is a deliberate choice, not a limitation to apologise for: it is what makes a six-week pilot plausible at all, and it is what a DISCOM's procurement process can actually approve without a capex cycle.
+UrjaGrid is built under a **software-only deployment constraint** (`docs/SPEC.md` section 9): no new hardware, no new box on a pole, no new meter. Every control action rides on rails that already exist — the RDSS smart-meter/HES load-limit command, existing OCPP charger hubs, existing OpenADR-capable public loads, existing storage. This is a deliberate choice, not a limitation to apologise for: it is what makes a six-week pilot plausible at all, and it is what a DISCOM's procurement process can actually approve without a capex cycle.
 
 ## 2. Target deployment architecture
 
@@ -16,15 +16,15 @@ LifelineGrid is built under a **software-only deployment constraint** (`docs/SPE
 
 ```powershell
 # 1. Build the image
-docker build -t lifelinegrid-backend .
+docker build -t urjagrid-backend .
 
 # 2. Push to Artifact Registry (or your registry of choice)
-docker tag lifelinegrid-backend <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/lifelinegrid-backend
-docker push <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/lifelinegrid-backend
+docker tag urjagrid-backend <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/urjagrid-backend
+docker push <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/urjagrid-backend
 
 # 3. Deploy
-gcloud run deploy lifelinegrid-backend `
-  --image <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/lifelinegrid-backend `
+gcloud run deploy urjagrid-backend `
+  --image <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/urjagrid-backend `
   --platform managed `
   --region <REGION> `
   --port 8080 `
@@ -62,7 +62,7 @@ None of this requires new hardware to close — it requires commercial/API integ
 This is the concrete path from "working prototype" to "a DISCOM trusts it with real meters," matching `docs/SPEC.md` section 9's deployment constraints:
 
 **Weeks 1–2 — Shadow mode, read-only.**
-Connect LifelineGrid's adapters to a single real sub-division's HES/MDM in **read-only** mode. The forecaster, thermal model, and optimiser run against real meter reads and produce real Flex Plans — but nothing dispatches. A JE reviews every shadow-mode plan against what actually happened on the feeder that day, purely to build trust and catch model blind spots before any command touches a real meter.
+Connect UrjaGrid's adapters to a single real sub-division's HES/MDM in **read-only** mode. The forecaster, thermal model, and optimiser run against real meter reads and produce real Flex Plans — but nothing dispatches. A JE reviews every shadow-mode plan against what actually happened on the feeder that day, purely to build trust and catch model blind spots before any command touches a real meter.
 
 **Weeks 3–4 — Live, single sub-division, L1–L3 only.**
 Turn on dispatch for the softest levers only: behavioural DR (WhatsApp/IVR ask + rebate), managed charging, and shiftable public loads. No lifeline caps yet. This is the lowest-risk way to validate the notify → signal → verify timeline end-to-end against a real channel provider and real meter interval reads, with a human JE approving every plan exactly as in the prototype.
@@ -83,4 +83,4 @@ From `docs/IMPACT.md` and `backend/app/services/economics.py`:
 - **Consumers pay nothing** for the service; DR participants are paid a rebate, not charged.
 - **Field workers are paid per verified critical-facility/life-support registration** — a small, direct incentive to keep the T0 registry current, which is itself a reliability control, not just a cost line.
 - **DISCOM's return** comes from energy that would otherwise have been shed (now served or fairly rationed), fewer DT failures, deferred capital upgrades, and improved regulatory reliability indices — see `docs/IMPACT.md` Section 5 for the actual modelled pilot-scale numbers (Rs 15–28 lakh/month net benefit on a 7,000-meter pilot, at illustrative 50–90% recovery rates) and why the naive national extrapolation of that figure is explicitly flagged as implausible rather than presented as a real projection.
-- **Ownership**: the DISCOM owns the deployment, the data, and the approval authority at every step — LifelineGrid is infrastructure software sitting inside the DISCOM's own operational boundary, not a third party controlling consumer supply. This mirrors the India Energy Stack's own federated design intent (Ministry of Power task force, cited in `docs/WRITEUP.md`).
+- **Ownership**: the DISCOM owns the deployment, the data, and the approval authority at every step — UrjaGrid is infrastructure software sitting inside the DISCOM's own operational boundary, not a third party controlling consumer supply. This mirrors the India Energy Stack's own federated design intent (Ministry of Power task force, cited in `docs/WRITEUP.md`).

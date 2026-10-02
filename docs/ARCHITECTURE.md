@@ -1,4 +1,4 @@
-# LifelineGrid — System Architecture
+# UrjaGrid — System Architecture
 
 Source of truth: `docs/SPEC.md` section 2 ("System Architecture"). This document renders that section as four Mermaid diagrams: one component diagram, and one each for the data, energy, and money flows.
 
@@ -171,7 +171,7 @@ In a deficit, the active Flex Plan reduces kW draw at chargers, shiftable public
 
 ```mermaid
 flowchart LR
-    DISCOM["DISCOM"] -->|monthly software fee\nper meter| LIFELINEGRID["LifelineGrid"]
+    DISCOM["DISCOM"] -->|monthly software fee\nper meter| LIFELINEGRID["UrjaGrid"]
     DISCOM -->|Rs 2/kWh DR rebate| CONSUMERS["Consumers who shift load"]
     DISCOM -->|per verified registration| FIELDWORKERS["Field workers"]
 

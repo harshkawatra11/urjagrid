@@ -5,7 +5,7 @@ export type VoiceLanguage = "auto" | "en-IN" | "hi-IN";
 export type VoiceMode = "handsfree" | "ptt";
 
 /**
- * The 12 LifelineGrid fact-card types "Urja" (the voice persona) can ground an answer in. Every
+ * The 12 UrjaGrid fact-card types "Urja" (the voice persona) can ground an answer in. Every
  * card cites a tool call (SPEC section 10: "grounds every fact in a tool call, never fabricates"),
  * so cards are the UI surface for that honesty rule, not just a formatting convenience.
  */

@@ -13,7 +13,7 @@
     "annualSavingsRs": 2081400,
     "nMeters": 6580,
     "moneyFlow": [
-      { "from": "DISCOM", "to": "LifelineGrid software fee", "amountRs": 55930 },
+      { "from": "DISCOM", "to": "UrjaGrid software fee", "amountRs": 55930 },
       { "from": "DISCOM", "to": "DR rebates to consumers", "amountRs": 29400 },
       { "from": "Avoided DT failures", "to": "DISCOM savings", "amountRs": 92500 },
       { "from": "Deferred upgrades", "to": "DISCOM savings", "amountRs": 70000 },

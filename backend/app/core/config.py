@@ -1,6 +1,6 @@
 """Application configuration.
 
-LifelineGrid's backend settings, loaded from environment variables / .env via
+UrjaGrid's backend settings, loaded from environment variables / .env via
 pydantic-settings. Lane A engines never read ``Settings`` directly (they are
 pure and take explicit arguments); this module exists for Lane B's app
 factory (``app/main.py``) and for anything in Lane A that needs a path to

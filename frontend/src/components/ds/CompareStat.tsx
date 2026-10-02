@@ -2,7 +2,7 @@ import { cn } from "@/lib/cn";
 import { Delta, type DeltaDirection } from "./Delta";
 
 /**
- * The "solution vs baseline" comparison stat used across the dashboard: the LifelineGrid
+ * The "solution vs baseline" comparison stat used across the dashboard: the UrjaGrid
  * solution's number, the shadow (status-quo / rotational-shedding) baseline's number, and the
  * delta between them. This is the recurring "moneyshot" pattern -- what did the optimiser buy us.
  */

@@ -34,7 +34,7 @@ export function ConsumerAppView() {
   if (isLoading && !status) {
     return (
       <div>
-        <h1 className="mb-3 text-[18px] font-semibold text-text">LifelineGrid</h1>
+        <h1 className="mb-3 text-[18px] font-semibold text-text">UrjaGrid</h1>
         <PanelSkeleton />
       </div>
     );
@@ -50,7 +50,7 @@ export function ConsumerAppView() {
     <div className="flex flex-col gap-3">
       {offline && <OfflineBanner />}
       <header>
-        <p className="text-[11px] uppercase tracking-[0.1em] text-faint">LifelineGrid</p>
+        <p className="text-[11px] uppercase tracking-[0.1em] text-faint">UrjaGrid</p>
         <h1 className="text-[18px] font-semibold text-text">नमस्ते, {status?.name ?? "उपभोक्ता"}</h1>
       </header>
 

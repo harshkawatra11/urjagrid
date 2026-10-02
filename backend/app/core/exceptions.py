@@ -1,16 +1,16 @@
-"""Domain exceptions shared across every LifelineGrid backend module.
+"""Domain exceptions shared across every UrjaGrid backend module.
 
-``LifelineGridError`` is the root of the hierarchy so Lane B's FastAPI
+``UrjaGridError`` is the root of the hierarchy so Lane B's FastAPI
 exception handlers can catch one base type and still report the correct
 HTTP status via ``ApiError.status_code``.
 """
 
 
-class LifelineGridError(Exception):
-    """Base class for all LifelineGrid domain errors."""
+class UrjaGridError(Exception):
+    """Base class for all UrjaGrid domain errors."""
 
 
-class NotFoundError(LifelineGridError):
+class NotFoundError(UrjaGridError):
     """Raised when a referenced entity (DT, feeder, plan, consumer, ...) does not exist."""
 
     def __init__(self, entity: str, entity_id: str) -> None:
@@ -19,7 +19,7 @@ class NotFoundError(LifelineGridError):
         super().__init__(f"{entity} '{entity_id}' not found")
 
 
-class InvalidTransitionError(LifelineGridError):
+class InvalidTransitionError(UrjaGridError):
     """Raised on an illegal state-machine transition (e.g. approving a dispatched plan)."""
 
     def __init__(self, entity: str, from_state: str, to_state: str) -> None:
@@ -29,7 +29,7 @@ class InvalidTransitionError(LifelineGridError):
         super().__init__(f"cannot transition {entity} from '{from_state}' to '{to_state}'")
 
 
-class ApiError(LifelineGridError):
+class ApiError(UrjaGridError):
     """Raised by application code that wants a specific HTTP status surfaced by the API.
 
     Lane A's pure engines should not raise this (they have no notion of HTTP); it exists

@@ -1,4 +1,4 @@
-"""``ProtocolLedger``: a single append-only log of every message LifelineGrid
+"""``ProtocolLedger``: a single append-only log of every message UrjaGrid
 sends/receives through its 7 protocol adapters, all tagged WIRED (spec-shaped
 code against an in-process simulator, not real hardware/production
 messaging). The dashboard's ``/protocols`` page (D25) and the fixtures export

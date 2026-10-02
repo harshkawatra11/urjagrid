@@ -255,7 +255,7 @@ def test_channel_gateway_send_one_renders_and_logs() -> None:
     assert ok is True
     entries = ledger.by_protocol("whatsapp")
     assert len(entries) == 1
-    assert "LifelineGrid" in entries[0].payload["text"]
+    assert "UrjaGrid" in entries[0].payload["text"]
 
 
 def test_channel_gateway_rejects_unknown_channel() -> None:

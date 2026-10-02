@@ -95,7 +95,7 @@ async def get_message_audio(message_id: str) -> Response:
     configured this returns a valid (silent) WAV so the endpoint contract and
     plumbing are exercised end-to-end regardless of live-key availability.
     """
-    text = _MESSAGE_TEXTS.get(message_id, "LifelineGrid notice.")
+    text = _MESSAGE_TEXTS.get(message_id, "UrjaGrid notice.")
     client = tts_client_from_env()
     wav_bytes = client.synthesize(text, language="hi")
     return Response(content=wav_bytes, media_type="audio/wav")

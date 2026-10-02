@@ -8,7 +8,7 @@ from app.voice.tts import MockTtsClient, SarvamTtsClient, tts_client_from_env
 
 def test_mock_tts_produces_valid_wav_bytes() -> None:
     client = MockTtsClient()
-    wav_bytes = client.synthesize("LifelineGrid: bijli mausam update")
+    wav_bytes = client.synthesize("UrjaGrid: bijli mausam update")
     with wave.open(io.BytesIO(wav_bytes), "rb") as wav_file:
         assert wav_file.getnchannels() == 1
         assert wav_file.getframerate() == 8000

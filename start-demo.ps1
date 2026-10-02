@@ -1,4 +1,4 @@
-# start-demo.ps1 -- starts the LifelineGrid backend for a local demo (Lane B, B13).
+# start-demo.ps1 -- starts the UrjaGrid backend for a local demo (Lane B, B13).
 #
 # Windows dev environment (per docs/SPEC.md). Run from the repo root:
 #     .\start-demo.ps1
@@ -36,7 +36,7 @@ if (-not $SkipTests) {
     Write-Host "Tests passed." -ForegroundColor Green
 }
 
-Write-Host "Starting LifelineGrid backend on http://127.0.0.1:$Port ..." -ForegroundColor Cyan
+Write-Host "Starting UrjaGrid backend on http://127.0.0.1:$Port ..." -ForegroundColor Cyan
 Push-Location $BackendDir
 & $VenvPython -m uvicorn app.main:app --host 127.0.0.1 --port $Port --reload
 Pop-Location

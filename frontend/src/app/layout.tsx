@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LifelineGrid: Grid Reliability Decision Layer",
+  title: "UrjaGrid: Grid Reliability Decision Layer",
   description:
-    "LifelineGrid forecasts per-transformer demand/supply, builds Flex Plans a Junior Engineer approves, then dispatches and verifies them. Brownout, never blackout.",
+    "UrjaGrid forecasts per-transformer demand/supply, builds Flex Plans a Junior Engineer approves, then dispatches and verifies them. Brownout, never blackout.",
   keywords: ["grid reliability", "DISCOM", "flex plan", "demand response", "Schneider Electric"],
   openGraph: {
-    title: "LifelineGrid",
+    title: "UrjaGrid",
     description: "Brownout, never blackout.",
-    url: "https://lifelinegrid.vercel.app",
-    siteName: "LifelineGrid",
+    url: "https://urjagrid.vercel.app",
+    siteName: "UrjaGrid",
     locale: "en_IN",
     type: "website",
   },

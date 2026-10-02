@@ -4,7 +4,7 @@ storage-discharge trade confirmation (Flex Plan lever 4, storage settlement).
 Beckn is a decentralised discovery/order protocol (search -> on_search ->
 select -> init -> confirm -> on_confirm). This module builds the
 ``confirm``/``on_confirm`` message shapes a real Beckn/UEI energy-trading
-network would exchange when LifelineGrid settles a P2P storage-discharge
+network would exchange when UrjaGrid settles a P2P storage-discharge
 transaction, at ``P2P_CHARGE_RS_PER_KWH``.
 """
 

@@ -96,7 +96,7 @@ export function FeedersView() {
               <p className="mb-1 text-[11px] font-medium text-text">
                 {f.name} <span style={{ color: cssVar(RISK_LEVEL_COLOR_VAR[f.riskLevel]) }}>· {f.riskLevel}</span>
               </p>
-              <OnOffStrip track={hourlyTrack(solutionOffHours(f))} label="LifelineGrid" />
+              <OnOffStrip track={hourlyTrack(solutionOffHours(f))} label="UrjaGrid" />
               <OnOffStrip track={hourlyTrack(baselineOffHours(f))} label="Baseline" />
             </div>
           ))}

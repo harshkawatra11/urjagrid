@@ -1,4 +1,4 @@
-# LifelineGrid — Solution Write-Up
+# UrjaGrid — Solution Write-Up
 
 Schneider Electric Yuva Yodha Energy Tech Hackathon — Problem Statement 3: Grid Reliability
 
@@ -27,7 +27,7 @@ Two failures compound each other. First, **underutilisation**: a remotely-settab
 
 ### 2.1 The closed loop
 
-LifelineGrid runs a seven-step loop, with a human in the loop at step 4 — never automated past it:
+UrjaGrid runs a seven-step loop, with a human in the loop at step 4 — never automated past it:
 
 **Sense → Forecast → Propose → Approve (human, JE/AE) → Dispatch → Confirm → Learn**
 
@@ -67,14 +67,14 @@ This is the single design decision the rest of the product protects:
 
 1. **Safety.** The optimiser is making a recommendation about real households' electricity, including ones with medical equipment that the registry may not yet have flagged. A human with local knowledge of the sub-division is the last line of defence against a model's blind spot.
 2. **Accountability.** Every mutation in the system writes an audit row tied to a named person's login. If a lifeline cap goes out, there must be a specific engineer who signed off on it — not an algorithm with no one to answer to.
-3. **Legal and regulatory reality.** Load-limiting a customer's connection is already a regulated DISCOM action; it is performed under human authority today for billing enforcement, and this product does not get to lower that bar for a reliability use case. India's electricity regulatory framework assumes a utility officer is responsible for supply decisions — LifelineGrid is built to fit inside that framework, not route around it.
+3. **Legal and regulatory reality.** Load-limiting a customer's connection is already a regulated DISCOM action; it is performed under human authority today for billing enforcement, and this product does not get to lower that bar for a reliability use case. India's electricity regulatory framework assumes a utility officer is responsible for supply decisions — UrjaGrid is built to fit inside that framework, not route around it.
 4. **It is cheap to keep.** The approval step costs an engineer perhaps a few minutes per plan on a dashboard built for exactly this (`/plans`, `/plans/[planId]`) — a trivial cost against the first two reasons.
 
 The backend encodes this as one of six hard, always-run safety invariants (`backend/tests/test_invariants.py`), including: T0/life-support consumers are never capped or DR'd; no cap ever goes below the 300 W floor; every cap command carries an expiry; every cap/shed command gives at least 30 minutes' notice; **no autonomous action ever dispatches without a named human approver**; and the simulation/forecast/optimisation engines never import an LLM SDK at all — so there is no path by which a language model could ever produce a number, a decision, or a dispatched command. Gemini and the voice pipeline exist only to *phrase* what the engines already decided.
 
 ## 3. Why this is suited to Indian conditions
 
-- **Works on existing RDSS rails — no new hardware.** The single most important design constraint. The control point (remote load-limit) is already on the wall for 3.90 crore meters under RDSS; LifelineGrid is the missing orchestration layer, not a new box to bolt onto a pole.
+- **Works on existing RDSS rails — no new hardware.** The single most important design constraint. The control point (remote load-limit) is already on the wall for 3.90 crore meters under RDSS; UrjaGrid is the missing orchestration layer, not a new box to bolt onto a pole.
 - **Built for the UP DISCOM context specifically.** The simulated network models two real UP DISCOMs (MVVNL, DVVNL) across two real towns (Bareilly, Mathura) — the same two towns CEEW's own smart-meter study covers — with five real sub-divisions, 12 feeders, 48 distribution transformers, and roughly 7,000 consumers. The scenarios (heatwave evening peak, monsoon cloud cover, clear solar noon, a 2047 high-renewable day) are built from this geography's actual weather patterns via the Open-Meteo historical archive, not generic placeholders.
 - **Vernacular, voice-first channels for low-literacy and low-connectivity users.** Consumer notices go out as Hindi-first WhatsApp/IVR/SMS templates with a two-hour lead time, and the voice persona "Urja" answers questions by phone in the user's own language — because a dashboard is useless to the household it's trying to protect.
 - **A fairness ledger that rotates the burden**, because the realistic Indian grid-reliability failure mode isn't just "not enough power" — it's the same low-income households absorbing every shortfall, every time, because they have the least leverage to complain.

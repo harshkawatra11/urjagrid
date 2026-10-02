@@ -140,7 +140,7 @@ CONSUMER_TOOL_SCHEMAS: list[dict] = [
     },
     {
         "name": "get_my_messages",
-        "description": "Get the calling consumer's recent WhatsApp/IVR/SMS messages from LifelineGrid.",  # noqa: E501
+        "description": "Get the calling consumer's recent WhatsApp/IVR/SMS messages from UrjaGrid.",  # noqa: E501
         "parameters": {
             "type": "object",
             "properties": {"consumer_id": {"type": "string"}},
