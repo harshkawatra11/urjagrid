@@ -185,6 +185,21 @@ export interface PlanOverrides {
   drParticipationMultiplier?: number;
 }
 
+/** Scenario Lab (B10) run result: solution track vs. shadow baseline for a named built-in scenario. */
+export interface ScenarioKpis {
+  totalServedKw: number;
+  totalUnservedKw: number;
+  hoursOfHardship: number;
+}
+
+export interface ScenarioRunResult {
+  scenarioName: string;
+  nIntervals: number;
+  solution: ScenarioKpis;
+  shadowBaseline: ScenarioKpis;
+  diff: { reliefKwAvoided: number; hardshipHoursAvoided: number };
+}
+
 export interface EventLogEntry {
   id: string;
   timestampIso: string;

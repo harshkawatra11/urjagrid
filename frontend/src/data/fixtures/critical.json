@@ -1,0 +1,9 @@
+{
+  "facilities": [
+    { "id": "cf_sn_01", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "name": "Subhash Nagar Community Health Centre", "kind": "hospital", "backupAvailable": true },
+    { "id": "cf_sn_02", "dtId": "dt_sn_02", "subdivisionId": "sd_subhashnagar", "name": "Subhash Nagar Water Pumping Station", "kind": "water", "backupAvailable": false },
+    { "id": "cf_kn_01", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Krishna Nagar Telecom Tower 4", "kind": "telecom", "backupAvailable": true },
+    { "id": "cf_kn_02", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Mishra Life-support Home", "kind": "life_support", "backupAvailable": true },
+    { "id": "cf_kk_01", "dtId": "dt_kk_01", "subdivisionId": "sd_kosikalan", "name": "Kosi Kalan Primary Health Centre", "kind": "hospital", "backupAvailable": false }
+  ]
+}

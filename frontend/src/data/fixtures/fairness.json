@@ -1,0 +1,13 @@
+{
+  "subdivisionId": "all",
+  "jainIndex": 0.93,
+  "giniCoefficient": 0.11,
+  "lorenzPoints": [
+    { "cumulativePopulationPct": 0, "cumulativeServedPct": 0 },
+    { "cumulativePopulationPct": 20, "cumulativeServedPct": 17 },
+    { "cumulativePopulationPct": 40, "cumulativeServedPct": 36 },
+    { "cumulativePopulationPct": 60, "cumulativeServedPct": 57 },
+    { "cumulativePopulationPct": 80, "cumulativeServedPct": 78 },
+    { "cumulativePopulationPct": 100, "cumulativeServedPct": 100 }
+  ]
+}

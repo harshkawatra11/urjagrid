@@ -1,0 +1,7 @@
+{
+  "scenarioName": "monsoon_cloud",
+  "nIntervals": 24,
+  "solution": { "totalServedKw": 4890.1, "totalUnservedKw": 32.5, "hoursOfHardship": 0.6 },
+  "shadowBaseline": { "totalServedKw": 4701.0, "totalUnservedKw": 221.6, "hoursOfHardship": 2.1 },
+  "diff": { "reliefKwAvoided": 189.1, "hardshipHoursAvoided": 1.5 }
+}

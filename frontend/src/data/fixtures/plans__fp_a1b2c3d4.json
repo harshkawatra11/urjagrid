@@ -1,0 +1,20 @@
+{
+  "id": "fp_a1b2c3d4",
+  "subdivisionId": "sd_krishnanagar",
+  "dtIds": ["dt_kn_01"],
+  "status": "proposed",
+  "deficitWindowId": "dw_9f8e7d6c",
+  "createdIso": "2026-10-02T14:30:00+05:30",
+  "windowStartIso": "2026-10-02T18:00:00+05:30",
+  "windowEndIso": "2026-10-02T20:00:00+05:30",
+  "gapKw": 86.5,
+  "coveredKw": 71.2,
+  "levers": [
+    { "lever": "behavioral_dr", "reliefKw": 22.0, "costRs": 1320, "consumerCount": 180 },
+    { "lever": "managed_charging", "reliefKw": 18.4, "costRs": 0, "consumerCount": 6 },
+    { "lever": "lifeline_cap", "reliefKw": 30.8, "costRs": 0, "consumerCount": 95 }
+  ],
+  "approverName": null,
+  "approvedIso": null,
+  "notes": null
+}

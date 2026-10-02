@@ -1,0 +1,22 @@
+{
+  "id": "dt_sn_01",
+  "feederId": "fdr_sn_a",
+  "subdivisionId": "sd_subhashnagar",
+  "name": "Subhash Nagar DT 01",
+  "ratingKva": 250,
+  "loadingPu": 1.18,
+  "hotspotC": 104.5,
+  "lossOfLifePct": 2.3,
+  "riskLevel": "high",
+  "riskIndex": 0.74,
+  "consumerCount": 210,
+  "servedFraction": 0.9,
+  "voltagePu": 0.96,
+  "location": { "lat": 28.3791, "lng": 79.4552 },
+  "serviceAreaPolygon": [
+    { "lat": 28.3781, "lng": 79.4532 },
+    { "lat": 28.3801, "lng": 79.4532 },
+    { "lat": 28.3801, "lng": 79.4572 },
+    { "lat": 28.3781, "lng": 79.4572 }
+  ]
+}

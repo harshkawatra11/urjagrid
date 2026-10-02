@@ -1,0 +1,7 @@
+{
+  "scenarioName": "re_2047",
+  "nIntervals": 24,
+  "solution": { "totalServedKw": 5602.3, "totalUnservedKw": 12.9, "hoursOfHardship": 0.2 },
+  "shadowBaseline": { "totalServedKw": 5398.5, "totalUnservedKw": 216.7, "hoursOfHardship": 1.8 },
+  "diff": { "reliefKwAvoided": 203.8, "hardshipHoursAvoided": 1.6 }
+}

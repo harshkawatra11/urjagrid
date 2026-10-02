@@ -1,0 +1,7 @@
+{
+  "scenarioName": "solar_noon",
+  "nIntervals": 24,
+  "solution": { "totalServedKw": 5310.7, "totalUnservedKw": 4.1, "hoursOfHardship": 0.1 },
+  "shadowBaseline": { "totalServedKw": 5280.2, "totalUnservedKw": 34.6, "hoursOfHardship": 0.4 },
+  "diff": { "reliefKwAvoided": 30.5, "hardshipHoursAvoided": 0.3 }
+}
