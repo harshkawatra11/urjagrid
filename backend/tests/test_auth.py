@@ -86,7 +86,9 @@ def test_demo_login_endpoint(client: TestClient) -> None:
 
 
 def test_login_endpoint_wrong_password(client: TestClient) -> None:
-    resp = client.post("/api/v1/auth/login", json={"username": "je_subhashnagar", "password": "nope"})
+    resp = client.post(
+        "/api/v1/auth/login", json={"username": "je_subhashnagar", "password": "nope"}
+    )
     assert resp.status_code == 401
 
 

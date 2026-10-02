@@ -10,13 +10,13 @@ prototype; see docs/SPEC.md B6).
 
 from __future__ import annotations
 
-import bcrypt
-import jwt
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from typing import Any
 
+import bcrypt
+import jwt
 from fastapi import Depends, Header
 
 from app.core.config import get_settings
@@ -152,8 +152,12 @@ class AuditLog:
     def __init__(self) -> None:
         self._rows: list[AuditRow] = []
 
-    def record(self, actor: str, action: str, entity: str, entity_id: str, **detail: Any) -> AuditRow:
-        row = AuditRow(actor=actor, action=action, entity=entity, entity_id=entity_id, detail=detail)
+    def record(
+        self, actor: str, action: str, entity: str, entity_id: str, **detail: Any
+    ) -> AuditRow:
+        row = AuditRow(
+            actor=actor, action=action, entity=entity, entity_id=entity_id, detail=detail
+        )
         self._rows.append(row)
         return row
 
@@ -196,7 +200,10 @@ def require_roles(*roles: Role):
 
     def _dependency(user: AuthenticatedUser = Depends(get_current_user)) -> AuthenticatedUser:
         if user.role not in roles:
-            raise ApiError(403, f"role {user.role.value!r} is not permitted; requires one of {[r.value for r in roles]}")
+            allowed = [r.value for r in roles]
+            raise ApiError(
+                403, f"role {user.role.value!r} is not permitted; requires one of {allowed}"
+            )
         return user
 
     return _dependency

@@ -48,8 +48,12 @@ def test_supply_fraction_formula_matches_spec() -> None:
 
 def test_supply_fraction_capped_at_one() -> None:
     result = supply_fraction(
-        firm=0.95, re_share=0.9, solar_cf=np.array([1.0]), wind_cf=np.array([1.0]),
-        grid_storage=0.5, evening=np.array([1.0]),
+        firm=0.95,
+        re_share=0.9,
+        solar_cf=np.array([1.0]),
+        wind_cf=np.array([1.0]),
+        grid_storage=0.5,
+        evening=np.array([1.0]),
     )
     assert result[0] == 1.0
 

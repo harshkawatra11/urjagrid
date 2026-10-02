@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.grid.models import FlexPlan, RiskLevel
+from app.grid.models import FlexPlan
 from app.grid.network import NetworkData, SyntheticNetwork
 from app.grid.risk import DtRisk
 
@@ -32,10 +32,10 @@ def subdivisions_view(network: AnyNetwork) -> list[dict[str, Any]]:
         else dict.fromkeys(network.subdivision_ids, "mvvnl_bareilly")
     )
     dt_counts: dict[str, int] = {}
-    for dt_id, sub_id in network.dt_subdivision.items():
+    for _dt_id, sub_id in network.dt_subdivision.items():
         dt_counts[sub_id] = dt_counts.get(sub_id, 0) + 1
     feeder_counts: dict[str, int] = {}
-    for fdr_id, sub_id in network.feeder_subdivision.items():
+    for _fdr_id, sub_id in network.feeder_subdivision.items():
         feeder_counts[sub_id] = feeder_counts.get(sub_id, 0) + 1
 
     return [
@@ -51,7 +51,7 @@ def subdivisions_view(network: AnyNetwork) -> list[dict[str, Any]]:
 
 def feeders_view(network: AnyNetwork, subdivision_id: str | None = None) -> list[dict[str, Any]]:
     dt_counts: dict[str, int] = {}
-    for dt_id, fdr_id in network.dt_feeder.items():
+    for _dt_id, fdr_id in network.dt_feeder.items():
         dt_counts[fdr_id] = dt_counts.get(fdr_id, 0) + 1
     rows = [
         {
@@ -176,9 +176,7 @@ def consumers_sample_view(
 
 def critical_facilities_view(network: SyntheticNetwork) -> list[dict[str, Any]]:
     """T0 (critical/life-support) consumers -- never capped/asked/shed."""
-    return [
-        row for row in consumers_sample_view(network, limit=10_000) if row["tier"] == "t0"
-    ]
+    return [row for row in consumers_sample_view(network, limit=10_000) if row["tier"] == "t0"]
 
 
 __all__ = [

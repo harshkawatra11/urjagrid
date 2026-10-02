@@ -8,9 +8,15 @@ from app.adapters.hes import MockHes
 from app.adapters.ledger import ProtocolLedger
 from app.adapters.ocpp import MockChargePoint
 from app.adapters.openadr import OpenAdrVtn
-from app.grid.constants import HES_LEAD_MIN, NOTIFY_LEAD_MIN, NOTICE_MIN_CAPS, SIGNAL_LEAD_MIN, VERIFY_DELAY_MIN
+from app.grid.constants import (
+    HES_LEAD_MIN,
+    NOTICE_MIN_CAPS,
+    NOTIFY_LEAD_MIN,
+    SIGNAL_LEAD_MIN,
+    VERIFY_DELAY_MIN,
+)
 from app.grid.planner import FlexPlanService
-from app.services.dispatch import DispatchStep, Dispatcher, DispatcherError, build_timeline
+from app.services.dispatch import Dispatcher, DispatcherError, DispatchStep, build_timeline
 
 
 def _make_dispatcher() -> tuple[Dispatcher, FlexPlanService]:
@@ -65,9 +71,13 @@ def test_cannot_schedule_unapproved_plan() -> None:
     dispatcher, plan_service = _make_dispatcher()
     gap_series = {"dt_a": np.array([0.0, 20.0, 20.0, 20.0, 0.0])}
     plans = plan_service.refresh_from_series(
-        subdivision_id="sd_subhashnagar", dt_ids=["dt_a"], gap_kw_series=gap_series,
-        dt_limit_kw={"dt_a": 100.0}, dr_potential_kw={"dt_a": 2.0},
-        hub_potential_kw={"dt_a": 3.0}, storage_energy_kwh={"dt_a": 5.0},
+        subdivision_id="sd_subhashnagar",
+        dt_ids=["dt_a"],
+        gap_kw_series=gap_series,
+        dt_limit_kw={"dt_a": 100.0},
+        dr_potential_kw={"dt_a": 2.0},
+        hub_potential_kw={"dt_a": 3.0},
+        storage_energy_kwh={"dt_a": 5.0},
         shift_potential_kw={"dt_a": 1.0},
     )
     start = datetime(2026, 1, 1, 19, 0, tzinfo=UTC)
@@ -90,8 +100,12 @@ def test_schedule_and_fire_full_timeline_in_order() -> None:
         now += timedelta(minutes=45)
 
     assert all_fired == [
-        DispatchStep.NOTIFY, DispatchStep.SIGNAL, DispatchStep.HES,
-        DispatchStep.START, DispatchStep.END, DispatchStep.VERIFY,
+        DispatchStep.NOTIFY,
+        DispatchStep.SIGNAL,
+        DispatchStep.HES,
+        DispatchStep.START,
+        DispatchStep.END,
+        DispatchStep.VERIFY,
     ]
     assert plan_service.get(plan.id).status.value == "completed"
 

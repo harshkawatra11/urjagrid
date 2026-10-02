@@ -14,7 +14,9 @@ from app.grid.constants import DR_REBATE_RS_PER_KWH
 # -- Documented assumptions --------------------------------------------------
 
 SOFTWARE_FEE_RS_PER_METER_PER_MONTH = 8.0
-AVOIDED_SHEDDING_VALUE_RS_PER_KWH = 9.5  # DISCOM's avg. cost of unsupplied energy (prototype estimate)
+AVOIDED_SHEDDING_VALUE_RS_PER_KWH = (
+    9.5  # DISCOM's avg. cost of unsupplied energy (prototype estimate)
+)
 FIELD_WORKER_PAYMENT_RS_PER_VERIFIED_REGISTRATION = 25.0
 INDIA_DISCOM_METER_COUNT_ESTIMATE = 300_000_000  # prototype national-scale assumption, documented
 
@@ -36,7 +38,9 @@ class UnitEconomics:
             "monthly_avoided_shedding_value_rs": round(self.monthly_avoided_shedding_value_rs, 2),
             "monthly_net_benefit_rs": round(self.monthly_net_benefit_rs, 2),
             "payback_period_months": (
-                round(self.payback_period_months, 2) if self.payback_period_months is not None else None
+                round(self.payback_period_months, 2)
+                if self.payback_period_months is not None
+                else None
             ),
         }
 
@@ -90,10 +94,7 @@ def national_impact(
     """Linearly scale a pilot's per-month figures to a national annual estimate
     -- an extrapolation, not a forecast; documented as such.
     """
-    if pilot_meter_count <= 0:
-        scale_factor = 0.0
-    else:
-        scale_factor = national_meter_count / pilot_meter_count
+    scale_factor = 0.0 if pilot_meter_count <= 0 else national_meter_count / pilot_meter_count
 
     return NationalImpact(
         scale_factor=scale_factor,

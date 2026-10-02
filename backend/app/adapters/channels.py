@@ -39,11 +39,11 @@ TEMPLATES: dict[str, dict[str, str]] = {
         ),
     },
     "outage_notice": {
-        "hi": "LifelineGrid: Maintenance ke karan {start_time} se {end_time} tak bijli band rahegi.",
+        "hi": "LifelineGrid: Maintenance ke karan {start_time} se {end_time} tak bijli band rahegi.",  # noqa: E501
         "en": "LifelineGrid: Power will be off for maintenance from {start_time} to {end_time}.",
     },
     "relief_confirmed": {
-        "hi": "LifelineGrid: Dhanyavaad! Aapke sahyog se {relief_kwh} kWh ki bachat hui. Rebate credited.",
+        "hi": "LifelineGrid: Dhanyavaad! Aapke sahyog se {relief_kwh} kWh ki bachat hui. Rebate credited.",  # noqa: E501
         "en": "LifelineGrid: Thank you! Your cooperation saved {relief_kwh} kWh. Rebate credited.",
     },
 }
@@ -87,9 +87,7 @@ class TwilioSandboxTransport:
         except ImportError:
             return False
         client = Client(self.account_sid, self.auth_token)
-        client.messages.create(
-            body=message.text, from_=self.from_number, to=message.recipient_id
-        )
+        client.messages.create(body=message.text, from_=self.from_number, to=message.recipient_id)
         return True
 
 
@@ -144,7 +142,12 @@ class ChannelGateway:
         self.ledger.record(
             channel,
             MessageDirection.OUTBOUND,
-            {"recipient_id": recipient_id, "template": template, "language": language, "text": text},
+            {
+                "recipient_id": recipient_id,
+                "template": template,
+                "language": language,
+                "text": text,
+            },
             status=MessageStatus.SENT if delivered else MessageStatus.FAILED,
             correlation_id=consumer_id,
         )
@@ -159,7 +162,9 @@ class ChannelGateway:
         **kwargs: object,
     ) -> dict[str, bool]:
         return {
-            recipient_id: self.send_one(channel, recipient_id, template, language, consumer_id=recipient_id, **kwargs)
+            recipient_id: self.send_one(
+                channel, recipient_id, template, language, consumer_id=recipient_id, **kwargs
+            )
             for recipient_id in recipient_ids
         }
 

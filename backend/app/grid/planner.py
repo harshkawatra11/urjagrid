@@ -74,9 +74,7 @@ class DtForecastInput:
     available_kw: np.ndarray
 
 
-def build_forecast_bundle(
-    subdivision_id: str, dt_inputs: list[DtForecastInput]
-) -> ForecastBundle:
+def build_forecast_bundle(subdivision_id: str, dt_inputs: list[DtForecastInput]) -> ForecastBundle:
     """Reconcile every DT's bottom-up/top-down demand and aggregate to the
     sub-division level expected by ``ForecastBundle``.
     """
@@ -369,7 +367,7 @@ class FlexPlanService:
             adjusted.shift_potential_kw = dict.fromkeys(adjusted.shift_potential_kw, 0.0)
         if LeverKey.STORAGE in overrides.disabled_levers:
             adjusted.storage_energy_kwh = dict.fromkeys(adjusted.storage_energy_kwh, 0.0)
-        for dt_id, level in overrides.cap_level_overrides.items():
+        for dt_id, _level in overrides.cap_level_overrides.items():
             # cap overrides are informational for the optimiser's starting point;
             # the greedy/MILP solve still determines final feasibility.
             adjusted.dt_limit_kw[dt_id] = adjusted.dt_limit_kw.get(dt_id, 0.0)

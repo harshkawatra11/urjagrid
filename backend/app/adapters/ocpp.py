@@ -120,8 +120,11 @@ class MockChargePoint:
         payload = request.to_ocpp_payload()
         validate_set_charging_profile(payload)
         self.ledger.record(
-            "ocpp", MessageDirection.OUTBOUND, payload,
-            status=MessageStatus.SENT, correlation_id=correlation_id,
+            "ocpp",
+            MessageDirection.OUTBOUND,
+            payload,
+            status=MessageStatus.SENT,
+            correlation_id=correlation_id,
         )
         self.active_profiles[request.hub_id] = payload
         self.ledger.record(

@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from app.services.deps import get_grid_service, reset_grid_service
 from app.services.service import GridService, build_scenario
 from app.services.store import StateStore

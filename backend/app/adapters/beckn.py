@@ -14,8 +14,8 @@ import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from app.grid.constants import P2P_CHARGE_RS_PER_KWH
 from app.adapters.ledger import MessageDirection, MessageStatus, ProtocolLedger
+from app.grid.constants import P2P_CHARGE_RS_PER_KWH
 
 
 @dataclass
@@ -73,16 +73,22 @@ class BecknGateway:
         transaction_id = f"txn_{uuid.uuid4().hex[:10]}"
         confirm_msg = request.to_confirm_message(transaction_id)
         self.ledger.record(
-            "beckn", MessageDirection.OUTBOUND, confirm_msg,
-            status=MessageStatus.SENT, correlation_id=transaction_id,
+            "beckn",
+            MessageDirection.OUTBOUND,
+            confirm_msg,
+            status=MessageStatus.SENT,
+            correlation_id=transaction_id,
         )
         on_confirm = {
             "context": {**confirm_msg["context"], "action": "on_confirm"},
             "message": {"order": {**confirm_msg["message"]["order"], "state": "Completed"}},
         }
         self.ledger.record(
-            "beckn", MessageDirection.INBOUND, on_confirm,
-            status=MessageStatus.ACKED, correlation_id=transaction_id,
+            "beckn",
+            MessageDirection.INBOUND,
+            on_confirm,
+            status=MessageStatus.ACKED,
+            correlation_id=transaction_id,
         )
         return on_confirm
 

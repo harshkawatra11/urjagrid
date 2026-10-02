@@ -147,9 +147,7 @@ class GridWorld:
     ) -> tuple[IntervalResult, IntervalResult]:
         """Step both tracks forward by one interval; returns (solution, shadow)."""
         actions_by_dt = actions_by_dt or {}
-        solution_result = self._advance_track(
-            self.solution, slot, actions_by_dt, apply_levers=True
-        )
+        solution_result = self._advance_track(self.solution, slot, actions_by_dt, apply_levers=True)
         shadow_result = self._advance_track(self.shadow, slot, {}, apply_levers=False)
         return solution_result, shadow_result
 

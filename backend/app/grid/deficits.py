@@ -95,9 +95,7 @@ class DeficitWindow:
         return self.end_slot - self.start_slot
 
 
-def build_deficit_windows(
-    dt_id: str, gap_kw: np.ndarray, **kwargs: object
-) -> list[DeficitWindow]:
+def build_deficit_windows(dt_id: str, gap_kw: np.ndarray, **kwargs: object) -> list[DeficitWindow]:
     windows = find_deficit_windows(gap_kw, **kwargs)  # type: ignore[arg-type]
     return [
         DeficitWindow(dt_id=dt_id, start_slot=s, end_slot=e, gap_kw=gap_kw[s:e]) for s, e in windows

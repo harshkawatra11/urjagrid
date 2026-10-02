@@ -51,8 +51,12 @@ def test_load_limit_command_rejects_below_lifeline_floor() -> None:
     issued = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
     with pytest.raises(LoadLimitError):
         build_load_limit_command(
-            "c_sn_01_0007", 100.0, issued + timedelta(minutes=45),
-            issued + timedelta(hours=2), issued, tier="t1",
+            "c_sn_01_0007",
+            100.0,
+            issued + timedelta(minutes=45),
+            issued + timedelta(hours=2),
+            issued,
+            tier="t1",
         )
 
 
@@ -60,8 +64,12 @@ def test_load_limit_command_rejects_t0() -> None:
     issued = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
     with pytest.raises(LoadLimitError):
         build_load_limit_command(
-            "c_sn_01_0001", 300.0, issued + timedelta(minutes=45),
-            issued + timedelta(hours=2), issued, tier="t0",
+            "c_sn_01_0001",
+            300.0,
+            issued + timedelta(minutes=45),
+            issued + timedelta(hours=2),
+            issued,
+            tier="t0",
         )
 
 
@@ -69,16 +77,24 @@ def test_load_limit_command_requires_expiry_after_effective() -> None:
     issued = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
     with pytest.raises(LoadLimitError):
         build_load_limit_command(
-            "c_sn_01_0007", 300.0, issued + timedelta(minutes=45),
-            issued + timedelta(minutes=40), issued, tier="t1",
+            "c_sn_01_0007",
+            300.0,
+            issued + timedelta(minutes=45),
+            issued + timedelta(minutes=40),
+            issued,
+            tier="t1",
         )
 
 
 def test_load_limit_command_valid_builds_dlms_payload() -> None:
     issued = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
     cmd = build_load_limit_command(
-        "c_sn_01_0007", 300.0, issued + timedelta(minutes=45),
-        issued + timedelta(hours=2), issued, tier="t1",
+        "c_sn_01_0007",
+        300.0,
+        issued + timedelta(minutes=45),
+        issued + timedelta(hours=2),
+        issued,
+        tier="t1",
     )
     payload = cmd.to_dlms_payload()
     assert payload["class_id"] == 71
@@ -91,8 +107,12 @@ def test_mock_hes_sends_and_acks() -> None:
     hes = MockHes(ledger, ack_probability=1.0)
     issued = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
     cmd = build_load_limit_command(
-        "c_sn_01_0007", 300.0, issued + timedelta(minutes=45),
-        issued + timedelta(hours=2), issued, tier="t1",
+        "c_sn_01_0007",
+        300.0,
+        issued + timedelta(minutes=45),
+        issued + timedelta(hours=2),
+        issued,
+        tier="t1",
     )
     acked = hes.send_load_limit(cmd, correlation_id="corr_1")
     assert acked is True
@@ -104,8 +124,12 @@ def test_mock_hes_can_fail_ack() -> None:
     hes = MockHes(ledger, ack_probability=0.0)
     issued = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
     cmd = build_load_limit_command(
-        "c_sn_01_0007", 300.0, issued + timedelta(minutes=45),
-        issued + timedelta(hours=2), issued, tier="t1",
+        "c_sn_01_0007",
+        300.0,
+        issued + timedelta(minutes=45),
+        issued + timedelta(hours=2),
+        issued,
+        tier="t1",
     )
     assert hes.send_load_limit(cmd, correlation_id="corr_2") is False
 
@@ -115,15 +139,20 @@ def test_mock_hes_can_fail_ack() -> None:
 
 def test_ocpp_payload_validates_against_schema() -> None:
     request = ChargingProfileRequest(
-        hub_id="hub_sn_01", connector_id=1, limit_w=1500.0,
-        duration_seconds=3600, start_schedule_iso="2026-01-01T18:00:00Z",
+        hub_id="hub_sn_01",
+        connector_id=1,
+        limit_w=1500.0,
+        duration_seconds=3600,
+        start_schedule_iso="2026-01-01T18:00:00Z",
     )
     payload = request.to_ocpp_payload()
     validate_set_charging_profile(payload)  # should not raise
 
 
 def test_ocpp_rejects_malformed_payload() -> None:
-    with pytest.raises(Exception):
+    import jsonschema
+
+    with pytest.raises(jsonschema.ValidationError):
         validate_set_charging_profile({"connectorId": "not-an-int"})
 
 
@@ -131,8 +160,11 @@ def test_mock_charge_point_sets_profile_and_acks() -> None:
     ledger = ProtocolLedger()
     cp = MockChargePoint(ledger)
     request = ChargingProfileRequest(
-        hub_id="hub_sn_01", connector_id=1, limit_w=1500.0,
-        duration_seconds=3600, start_schedule_iso="2026-01-01T18:00:00Z",
+        hub_id="hub_sn_01",
+        connector_id=1,
+        limit_w=1500.0,
+        duration_seconds=3600,
+        start_schedule_iso="2026-01-01T18:00:00Z",
     )
     assert cp.set_charging_profile(request, correlation_id="corr_3") is True
     assert "hub_sn_01" in cp.active_profiles
@@ -147,8 +179,12 @@ def test_openadr_ven_polls_and_pauses() -> None:
     vtn = OpenAdrVtn(ledger)
     ven = MockVen(vtn, target_id="pump_sn_01")
     event = OpenAdrEvent(
-        event_id="evt_1", program_id="prog_1", target_ids=["pump_sn_01"],
-        start=datetime(2026, 1, 1, 13, 0, tzinfo=UTC), duration_minutes=60, value=0.0,
+        event_id="evt_1",
+        program_id="prog_1",
+        target_ids=["pump_sn_01"],
+        start=datetime(2026, 1, 1, 13, 0, tzinfo=UTC),
+        duration_minutes=60,
+        value=0.0,
     )
     vtn.publish_event("prog_1", event, correlation_id="corr_4")
     assert ven.poll("prog_1") is True
@@ -159,8 +195,12 @@ def test_openadr_ven_not_targeted_stays_unpaused() -> None:
     vtn = OpenAdrVtn(ledger)
     ven = MockVen(vtn, target_id="pump_other")
     event = OpenAdrEvent(
-        event_id="evt_2", program_id="prog_1", target_ids=["pump_sn_01"],
-        start=datetime(2026, 1, 1, 13, 0, tzinfo=UTC), duration_minutes=60, value=0.0,
+        event_id="evt_2",
+        program_id="prog_1",
+        target_ids=["pump_sn_01"],
+        start=datetime(2026, 1, 1, 13, 0, tzinfo=UTC),
+        duration_minutes=60,
+        value=0.0,
     )
     vtn.publish_event("prog_1", event, correlation_id="corr_5")
     assert ven.poll("prog_1") is False
@@ -172,14 +212,18 @@ def test_openadr_ven_not_targeted_stays_unpaused() -> None:
 def test_beckn_confirm_trade_logs_both_legs() -> None:
     ledger = ProtocolLedger()
     gateway = BecknGateway(ledger)
-    request = TradeConfirmRequest(seller_asset_id="battery_sn_01", buyer_dt_id="dt_sn_01", energy_kwh=5.0)
+    request = TradeConfirmRequest(
+        seller_asset_id="battery_sn_01", buyer_dt_id="dt_sn_01", energy_kwh=5.0
+    )
     on_confirm = gateway.confirm_trade(request)
     assert on_confirm["message"]["order"]["state"] == "Completed"
     assert len(ledger.by_protocol("beckn")) == 2
 
 
 def test_beckn_trade_total_uses_p2p_rate() -> None:
-    request = TradeConfirmRequest(seller_asset_id="battery_sn_01", buyer_dt_id="dt_sn_01", energy_kwh=10.0)
+    request = TradeConfirmRequest(
+        seller_asset_id="battery_sn_01", buyer_dt_id="dt_sn_01", energy_kwh=10.0
+    )
     assert request.total_rs == pytest.approx(4.2, abs=1e-6)
 
 
@@ -200,8 +244,13 @@ def test_channel_gateway_send_one_renders_and_logs() -> None:
     ledger = ProtocolLedger()
     gateway = ChannelGateway(ledger, transport=MockTransport())
     ok = gateway.send_one(
-        "whatsapp", "c_sn_01_0007", "dr_ask", "hi",
-        start_time="19:00", end_time="21:00", rebate="2",
+        "whatsapp",
+        "c_sn_01_0007",
+        "dr_ask",
+        "hi",
+        start_time="19:00",
+        end_time="21:00",
+        rebate="2",
     )
     assert ok is True
     entries = ledger.by_protocol("whatsapp")
@@ -220,8 +269,12 @@ def test_channel_gateway_broadcast_sends_to_all() -> None:
     ledger = ProtocolLedger()
     gateway = ChannelGateway(ledger)
     results = gateway.broadcast(
-        "sms", ["c_1", "c_2", "c_3"], "outage_notice", "en",
-        start_time="20:00", end_time="22:00",
+        "sms",
+        ["c_1", "c_2", "c_3"],
+        "outage_notice",
+        "en",
+        start_time="20:00",
+        end_time="22:00",
     )
     assert all(results.values())
     assert len(ledger.by_protocol("sms")) == 3

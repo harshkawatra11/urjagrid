@@ -26,7 +26,9 @@ class StateStore:
     last write.
     """
 
-    def __init__(self, path: Path | None = None, min_interval_seconds: float = MIN_SAVE_INTERVAL_SECONDS) -> None:
+    def __init__(
+        self, path: Path | None = None, min_interval_seconds: float = MIN_SAVE_INTERVAL_SECONDS
+    ) -> None:
         self.path = path or DEFAULT_STATE_PATH
         self.min_interval_seconds = min_interval_seconds
         self._dirty = False
@@ -42,9 +44,12 @@ class StateStore:
         if not self._dirty and not force:
             return False
         now = time.monotonic()
-        if not force and self._last_write_monotonic is not None:
-            if now - self._last_write_monotonic < self.min_interval_seconds:
-                return False
+        if (
+            not force
+            and self._last_write_monotonic is not None
+            and now - self._last_write_monotonic < self.min_interval_seconds
+        ):
+            return False
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(json.dumps(state, indent=2), encoding="utf-8")
         self._dirty = False

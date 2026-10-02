@@ -15,16 +15,18 @@ is no durable sim-state database, only the best-effort JSON snapshot in
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import UTC, datetime, timedelta
+from dataclasses import dataclass
+from datetime import UTC, datetime
 
 import numpy as np
 
+from app.adapters.channels import ChannelGateway
+from app.adapters.hes import MockHes
+from app.adapters.ledger import ProtocolLedger
+from app.adapters.ocpp import MockChargePoint
+from app.adapters.openadr import OpenAdrVtn
 from app.grid.constants import (
-    CAP_LEVEL_WATTS,
     INTERVAL_MIN,
-    SLOTS_PER_DAY,
-    SUBDIVISION_IDS,
 )
 from app.grid.fairness import jain_index
 from app.grid.loadgen import LoadModel
@@ -36,12 +38,6 @@ from app.grid.risk import compute_dt_risk, rank_by_risk
 from app.grid.supply import supply_fraction_for_subdivision
 from app.grid.weather import WeatherSeries, synthetic_series
 from app.grid.world import DtStatic, GridWorld
-
-from app.adapters.channels import ChannelGateway
-from app.adapters.hes import MockHes
-from app.adapters.ledger import ProtocolLedger
-from app.adapters.ocpp import MockChargePoint
-from app.adapters.openadr import OpenAdrVtn
 from app.services.dispatch import Dispatcher
 
 SCENARIO_START_IST_HOUR = 0  # slot 0 == 00:00 IST of the scenario's single simulated day
@@ -63,8 +59,12 @@ def actions_from_plan_solution(dt_id: str, rated_kw: float, solution) -> Actions
     storage_kw = {f"{dt_id}_storage": float(solution.storage_kw_by_dt.get(dt_id, 0.0))}
     shift_on = {dt_id: bool(solution.shift_on_by_dt.get(dt_id, True))}
     return Actions(
-        cap_kw=cap_kw, cap_started=cap_started, dr_on=dr_on,
-        hub_frac=hub_frac, storage_kw=storage_kw, shift_on=shift_on,
+        cap_kw=cap_kw,
+        cap_started=cap_started,
+        dr_on=dr_on,
+        hub_frac=hub_frac,
+        storage_kw=storage_kw,
+        shift_on=shift_on,
     )
 
 
@@ -81,7 +81,11 @@ def build_scenario(seed: int = 0, scenario_name: str = "synthetic_default") -> S
     network = synthetic_network(seed=seed)
     from app.grid.weather import BUILTIN_SCENARIOS
 
-    weather = BUILTIN_SCENARIOS[scenario_name].to_series() if scenario_name in BUILTIN_SCENARIOS else synthetic_series(seed=seed)
+    weather = (
+        BUILTIN_SCENARIOS[scenario_name].to_series()
+        if scenario_name in BUILTIN_SCENARIOS
+        else synthetic_series(seed=seed)
+    )
     load_model = LoadModel(seed=seed)
     dt_gross_kw = load_model.generate_network_demand(network.consumers, weather)
 
@@ -91,14 +95,22 @@ def build_scenario(seed: int = 0, scenario_name: str = "synthetic_default") -> S
         subdivision_id = network.dt_subdivision[dt_id]
         dt_ambient_c[dt_id] = weather.temp_c
         frac = supply_fraction_for_subdivision(
-            subdivision_id, re_share=0.15, solar_cf=weather.solar_cf,
-            wind_cf=weather.wind_cf, grid_storage=0.05,
+            subdivision_id,
+            re_share=0.15,
+            solar_cf=weather.solar_cf,
+            wind_cf=weather.wind_cf,
+            grid_storage=0.05,
         )
-        dt_available_kw[dt_id] = frac * dt_gross_kw[dt_id].max() if dt_gross_kw[dt_id].max() > 0 else frac
+        dt_available_kw[dt_id] = (
+            frac * dt_gross_kw[dt_id].max() if dt_gross_kw[dt_id].max() > 0 else frac
+        )
 
     return ScenarioData(
-        network=network, weather=weather, dt_gross_kw=dt_gross_kw,
-        dt_ambient_c=dt_ambient_c, dt_available_kw=dt_available_kw,
+        network=network,
+        weather=weather,
+        dt_gross_kw=dt_gross_kw,
+        dt_ambient_c=dt_ambient_c,
+        dt_available_kw=dt_available_kw,
     )
 
 
@@ -115,7 +127,9 @@ class GridService:
     real-time tick loop that advances them.
     """
 
-    def __init__(self, seed: int = 0, time_scale: int = 60, scenario_name: str = "synthetic_default") -> None:
+    def __init__(
+        self, seed: int = 0, time_scale: int = 60, scenario_name: str = "synthetic_default"
+    ) -> None:
         self.seed = seed
         self.time_scale = time_scale
         self.state = GridServiceState(scenario_name=scenario_name)
@@ -138,7 +152,9 @@ class GridService:
             for dt_id in self.scenario.network.dt_ids
         ]
         self.world = GridWorld(
-            self.dt_statics, self.scenario.dt_gross_kw, self.scenario.dt_ambient_c,
+            self.dt_statics,
+            self.scenario.dt_gross_kw,
+            self.scenario.dt_ambient_c,
             self.scenario.dt_available_kw,
         )
         self.solution_logs: list[LogRow] = []
@@ -154,7 +170,9 @@ class GridService:
         self.shadow_logs.clear()
 
     def reset(self) -> None:
-        self.__init__(seed=self.seed, time_scale=self.time_scale, scenario_name=self.state.scenario_name)  # type: ignore[misc]
+        self.__init__(
+            seed=self.seed, time_scale=self.time_scale, scenario_name=self.state.scenario_name
+        )  # type: ignore[misc]
 
     def _active_actions(self) -> dict[str, Actions]:
         actions: dict[str, Actions] = {}
@@ -238,9 +256,15 @@ class GridService:
         return {
             "slot": self.state.slot,
             "n_intervals_simulated": len(self.solution_logs),
-            "solution_hours_of_hardship": hours_of_hardship(sol_unserved) if len(sol_unserved) else 0.0,
-            "shadow_hours_of_hardship": hours_of_hardship(shadow_unserved) if len(shadow_unserved) else 0.0,
-            "solution_lifeline_availability": lifeline_availability(sol_served * 1000.0) if len(sol_served) else 1.0,
+            "solution_hours_of_hardship": hours_of_hardship(sol_unserved)
+            if len(sol_unserved)
+            else 0.0,
+            "shadow_hours_of_hardship": hours_of_hardship(shadow_unserved)
+            if len(shadow_unserved)
+            else 0.0,
+            "solution_lifeline_availability": lifeline_availability(sol_served * 1000.0)
+            if len(sol_served)
+            else 1.0,
             "fairness_jain_index": fairness,
             "active_plans": len(
                 [p for p in self.plan_service.list_plans() if p.status == PlanStatus.DRAFT]
@@ -257,15 +281,21 @@ class GridService:
         for static in self.dt_statics:
             hotspot = self.world.solution.cumulative_loss_of_life_hours.get(static.dt_id, 0.0)
             risk = compute_dt_risk(
-                dt_id=static.dt_id, hot_spot_c=30.0 + hotspot, forecast_gap_kw=0.0,
-                dt_limit_kw=static.rated_kw, ageing_factor=1.0,
+                dt_id=static.dt_id,
+                hot_spot_c=30.0 + hotspot,
+                forecast_gap_kw=0.0,
+                dt_limit_kw=static.rated_kw,
+                ageing_factor=1.0,
             )
             risks.append(risk)
         ranked = rank_by_risk(risks)
-        return [
-            {"dt_id": r.dt_id, "score": r.score, "level": r.level.value}
-            for r in ranked
-        ]
+        return [{"dt_id": r.dt_id, "score": r.score, "level": r.level.value} for r in ranked]
 
 
-__all__ = ["GridService", "GridServiceState", "ScenarioData", "build_scenario", "actions_from_plan_solution"]
+__all__ = [
+    "GridService",
+    "GridServiceState",
+    "ScenarioData",
+    "build_scenario",
+    "actions_from_plan_solution",
+]

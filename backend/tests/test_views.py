@@ -1,5 +1,4 @@
 import json
-from datetime import UTC, datetime
 
 from app.adapters.ledger import MessageDirection, ProtocolLedger
 from app.grid.network import synthetic_network
@@ -31,7 +30,9 @@ def _assert_json_serialisable(obj) -> None:
 def test_subdivisions_view_is_json_ready() -> None:
     rows = subdivisions_view(_net())
     _assert_json_serialisable(rows)
-    assert all({"id", "discom_id", "feeder_count", "transformer_count"} <= row.keys() for row in rows)
+    assert all(
+        {"id", "discom_id", "feeder_count", "transformer_count"} <= row.keys() for row in rows
+    )
 
 
 def test_feeders_view_filters_by_subdivision() -> None:
@@ -66,7 +67,9 @@ def test_geo_view_has_point_geometry_only() -> None:
 
 
 def test_risk_view_is_json_ready() -> None:
-    risk = compute_dt_risk("dt_a", hot_spot_c=100.0, forecast_gap_kw=5.0, dt_limit_kw=50.0, ageing_factor=1.0)
+    risk = compute_dt_risk(
+        "dt_a", hot_spot_c=100.0, forecast_gap_kw=5.0, dt_limit_kw=50.0, ageing_factor=1.0
+    )
     rows = risk_view([risk])
     _assert_json_serialisable(rows)
     assert rows[0]["dt_id"] == "dt_a"
@@ -77,10 +80,13 @@ def test_plan_view_has_no_raw_datetime() -> None:
     import numpy as np
 
     plans = service.refresh_from_series(
-        subdivision_id="sd_subhashnagar", dt_ids=["dt_a"],
+        subdivision_id="sd_subhashnagar",
+        dt_ids=["dt_a"],
         gap_kw_series={"dt_a": np.array([0.0, 10.0, 10.0, 0.0])},
-        dt_limit_kw={"dt_a": 100.0}, dr_potential_kw={"dt_a": 1.0},
-        hub_potential_kw={"dt_a": 1.0}, storage_energy_kwh={"dt_a": 1.0},
+        dt_limit_kw={"dt_a": 100.0},
+        dr_potential_kw={"dt_a": 1.0},
+        hub_potential_kw={"dt_a": 1.0},
+        storage_energy_kwh={"dt_a": 1.0},
         shift_potential_kw={"dt_a": 1.0},
     )
     view = plan_view(plans[0])
@@ -93,10 +99,13 @@ def test_plans_view_is_a_list_of_plan_views() -> None:
     import numpy as np
 
     plans = service.refresh_from_series(
-        subdivision_id="sd_subhashnagar", dt_ids=["dt_a"],
+        subdivision_id="sd_subhashnagar",
+        dt_ids=["dt_a"],
         gap_kw_series={"dt_a": np.array([0.0, 10.0, 10.0, 0.0])},
-        dt_limit_kw={"dt_a": 100.0}, dr_potential_kw={"dt_a": 1.0},
-        hub_potential_kw={"dt_a": 1.0}, storage_energy_kwh={"dt_a": 1.0},
+        dt_limit_kw={"dt_a": 100.0},
+        dr_potential_kw={"dt_a": 1.0},
+        hub_potential_kw={"dt_a": 1.0},
+        storage_energy_kwh={"dt_a": 1.0},
         shift_potential_kw={"dt_a": 1.0},
     )
     views = plans_view(plans)

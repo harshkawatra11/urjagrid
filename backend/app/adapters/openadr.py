@@ -60,17 +60,18 @@ class OpenAdrVtn:
         program = self.programs.setdefault(program_id, OpenAdrProgram(program_id=program_id))
         program.events.append(event)
         self.ledger.record(
-            "openadr", MessageDirection.OUTBOUND, event.to_resource(),
-            status=MessageStatus.SENT, correlation_id=correlation_id,
+            "openadr",
+            MessageDirection.OUTBOUND,
+            event.to_resource(),
+            status=MessageStatus.SENT,
+            correlation_id=correlation_id,
         )
 
     def poll_events(self, program_id: str, ven_target_id: str) -> list[dict]:
         program = self.programs.get(program_id)
         if program is None:
             return []
-        matching = [
-            e.to_resource() for e in program.events if ven_target_id in e.target_ids
-        ]
+        matching = [e.to_resource() for e in program.events if ven_target_id in e.target_ids]
         self.ledger.record(
             "openadr",
             MessageDirection.INBOUND,

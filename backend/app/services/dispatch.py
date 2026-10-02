@@ -25,6 +25,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import StrEnum
 
+from app.adapters.channels import ChannelGateway
+from app.adapters.hes import MockHes, build_load_limit_command
+from app.adapters.ocpp import ChargingProfileRequest, MockChargePoint
+from app.adapters.openadr import OpenAdrEvent, OpenAdrVtn
 from app.grid.constants import (
     HES_LEAD_MIN,
     NOTIFY_LEAD_MIN,
@@ -33,11 +37,6 @@ from app.grid.constants import (
 )
 from app.grid.models import FlexPlan, PlanStatus
 from app.grid.planner import FlexPlanService
-
-from app.adapters.channels import ChannelGateway
-from app.adapters.hes import MockHes, build_load_limit_command
-from app.adapters.ocpp import ChargingProfileRequest, MockChargePoint
-from app.adapters.openadr import MockVen, OpenAdrEvent, OpenAdrVtn
 
 
 class DispatchStep(StrEnum):
@@ -85,16 +84,10 @@ class DispatchTimeline:
         }[step]
 
     def due_steps(self, now: datetime) -> list[DispatchStep]:
-        return [
-            s
-            for s in _STEP_ORDER
-            if s not in self.fired_steps and self.step_time(s) <= now
-        ]
+        return [s for s in _STEP_ORDER if s not in self.fired_steps and self.step_time(s) <= now]
 
 
-def build_timeline(
-    plan_id: str, window_start: datetime, window_end: datetime
-) -> DispatchTimeline:
+def build_timeline(plan_id: str, window_start: datetime, window_end: datetime) -> DispatchTimeline:
     return DispatchTimeline(
         plan_id=plan_id,
         window_start=window_start,
@@ -130,7 +123,9 @@ class Dispatcher:
         self.openadr_vtn = openadr_vtn
         self.timelines: dict[str, DispatchTimeline] = {}
 
-    def schedule_plan(self, plan: FlexPlan, window_start: datetime, window_end: datetime) -> DispatchTimeline:
+    def schedule_plan(
+        self, plan: FlexPlan, window_start: datetime, window_end: datetime
+    ) -> DispatchTimeline:
         if plan.status != PlanStatus.APPROVED or not plan.approved_by:
             raise DispatcherError(
                 "cannot schedule a plan that is not APPROVED with a named human approver "
@@ -140,7 +135,9 @@ class Dispatcher:
         self.timelines[plan.id] = timeline
         return timeline
 
-    def fire_due_steps(self, plan_id: str, now: datetime, affected_consumer_ids: list[str] | None = None) -> list[DispatchStep]:
+    def fire_due_steps(
+        self, plan_id: str, now: datetime, affected_consumer_ids: list[str] | None = None
+    ) -> list[DispatchStep]:
         """Fire every step of ``plan_id``'s timeline whose time has arrived
         (idempotent -- already-fired steps are skipped). Returns the steps
         fired on this call.
@@ -157,7 +154,11 @@ class Dispatcher:
         return fired
 
     def _fire_step(
-        self, plan: FlexPlan, timeline: DispatchTimeline, step: DispatchStep, consumer_ids: list[str]
+        self,
+        plan: FlexPlan,
+        timeline: DispatchTimeline,
+        step: DispatchStep,
+        consumer_ids: list[str],
     ) -> None:
         if step is DispatchStep.NOTIFY:
             self.channels.broadcast(
@@ -176,7 +177,9 @@ class Dispatcher:
                     program_id=plan.subdivision_id,
                     target_ids=[dt_id],
                     start=timeline.start_at,
-                    duration_minutes=int((timeline.end_at - timeline.start_at).total_seconds() / 60),
+                    duration_minutes=int(
+                        (timeline.end_at - timeline.start_at).total_seconds() / 60
+                    ),
                     value=hub_frac,
                 )
                 self.openadr_vtn.publish_event(plan.subdivision_id, event, correlation_id=plan.id)

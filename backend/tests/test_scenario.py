@@ -1,5 +1,3 @@
-import pytest
-
 from app.grid.supply import FIRM_SHARE_BY_KIND
 from app.services.scenario import BUILTIN_SCENARIO_NAMES, run_scenario
 
@@ -29,4 +27,6 @@ def test_firm_share_rank_order_rural_below_urban() -> None:
     # Calibration acceptance check (B10): rural sub-divisions should have a
     # materially lower firm-supply share than urban ones (CEEW rank-order,
     # not a statistical fit -- see scenario.py module docstring).
-    assert FIRM_SHARE_BY_KIND["rural"] < FIRM_SHARE_BY_KIND["semi_urban"] < FIRM_SHARE_BY_KIND["urban"]
+    assert (
+        FIRM_SHARE_BY_KIND["rural"] < FIRM_SHARE_BY_KIND["semi_urban"] < FIRM_SHARE_BY_KIND["urban"]
+    )

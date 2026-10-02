@@ -17,10 +17,10 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from app.grid.constants import HES_ACK_PROB, LIFELINE_FLOOR_W, NOTICE_MIN_CAPS
 from app.adapters.ledger import MessageDirection, MessageStatus, ProtocolLedger
+from app.grid.constants import HES_ACK_PROB, LIFELINE_FLOOR_W, NOTICE_MIN_CAPS
 
 
 class LoadLimitError(ValueError):
@@ -93,8 +93,12 @@ class MockHes:
     acknowledges it (``HES_ACK_PROB``), logging every exchange to the ledger.
     """
 
-    def __init__(self, ledger: ProtocolLedger, ack_probability: float = HES_ACK_PROB,
-                 rng: random.Random | None = None) -> None:
+    def __init__(
+        self,
+        ledger: ProtocolLedger,
+        ack_probability: float = HES_ACK_PROB,
+        rng: random.Random | None = None,
+    ) -> None:
         self.ledger = ledger
         self.ack_probability = ack_probability
         self._rng = rng or random.Random(0)
@@ -102,8 +106,11 @@ class MockHes:
     def send_load_limit(self, command: LoadLimitCommand, correlation_id: str) -> bool:
         payload = command.to_dlms_payload()
         self.ledger.record(
-            "dlms_hes", MessageDirection.OUTBOUND, payload,
-            status=MessageStatus.SENT, correlation_id=correlation_id,
+            "dlms_hes",
+            MessageDirection.OUTBOUND,
+            payload,
+            status=MessageStatus.SENT,
+            correlation_id=correlation_id,
         )
         acked = self._rng.random() < self.ack_probability
         self.ledger.record(

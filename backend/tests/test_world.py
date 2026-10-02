@@ -6,8 +6,13 @@ from app.grid.models import Actions
 from app.grid.world import DtStatic, GridWorld
 
 
-def _flat_world(n_slots: int = 20, gross_kw: float = 100.0, available_kw: float = 100.0,
-                 rating_kva: float = 160.0, ambient_c: float = 30.0) -> GridWorld:
+def _flat_world(
+    n_slots: int = 20,
+    gross_kw: float = 100.0,
+    available_kw: float = 100.0,
+    rating_kva: float = 160.0,
+    ambient_c: float = 30.0,
+) -> GridWorld:
     dt = DtStatic(dt_id="dt_sn_01", subdivision_id="sd_subhashnagar", rating_kva=rating_kva)
     gross = {"dt_sn_01": np.full(n_slots, gross_kw)}
     ambient = {"dt_sn_01": np.full(n_slots, ambient_c)}

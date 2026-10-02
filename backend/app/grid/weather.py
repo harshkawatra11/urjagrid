@@ -202,5 +202,5 @@ class WeatherProvider:
             actual.humidity_pct + self._rng.normal(0, temp_sd * 2, SLOTS_PER_DAY), 10.0, 100.0
         )
         return WeatherSeries(
-        temp_c=temp_c, solar_cf=solar_cf, wind_cf=wind_cf, humidity_pct=humidity_pct
-    )
+            temp_c=temp_c, solar_cf=solar_cf, wind_cf=wind_cf, humidity_pct=humidity_pct
+        )
