@@ -1,0 +1,7 @@
+{
+  "scenarioName": "heatwave_evening",
+  "nIntervals": 24,
+  "solution": { "totalServedKw": 5120.4, "totalUnservedKw": 86.2, "hoursOfHardship": 1.4 },
+  "shadowBaseline": { "totalServedKw": 4512.8, "totalUnservedKw": 693.8, "hoursOfHardship": 5.9 },
+  "diff": { "reliefKwAvoided": 607.6, "hardshipHoursAvoided": 4.5 }
+}

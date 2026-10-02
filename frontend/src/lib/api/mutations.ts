@@ -1,8 +1,9 @@
 "use client";
 
 import { ApiError, fetchJson, isNetworkError } from "./base";
+import { fixtureNameFor, loadFixture } from "./fixtures";
 import { readSession, authHeader } from "@/lib/auth";
-import type { FlexPlan, PlanOverrides } from "./types";
+import type { FlexPlan, PlanOverrides, ScenarioRunResult } from "./types";
 
 export type MutationResult<T> = { ok: true; data: T } | { ok: false; error: ApiError };
 
@@ -82,4 +83,22 @@ export async function refreshPlan(planId: string): Promise<MutationResult<FlexPl
 
 export async function reportOutage(dtId: string, consumerId: string, description: string): Promise<MutationResult<{ id: string }>> {
   return post<{ id: string }>(`${P}/consumers/${consumerId}/report-outage`, { dtId, description });
+}
+
+export type ScenarioRunOutcome = { ok: true; offline: boolean; result: ScenarioRunResult } | { ok: false; error: string };
+
+/**
+ * Runs a Scenario Lab preset (D22). When the backend is unreachable, falls back to the committed
+ * fixture for that scenario so the lab stays demoable offline, with `offline: true` so the UI can
+ * show the honest-status banner instead of pretending the number is a fresh simulation.
+ */
+export async function runScenario(scenarioName: string, nIntervals = 24): Promise<ScenarioRunOutcome> {
+  const path = `${P}/scenario/${scenarioName}/run?n_intervals=${nIntervals}`;
+  const result = await post<ScenarioRunResult>(path, {});
+  if (result.ok) return { ok: true, offline: false, result: result.data };
+  if (isNetworkError(result.error)) {
+    const fixture = await loadFixture<ScenarioRunResult | null>(fixtureNameFor(path), null);
+    if (fixture) return { ok: true, offline: true, result: fixture };
+  }
+  return { ok: false, error: result.error.detail };
 }

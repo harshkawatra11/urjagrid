@@ -1,0 +1,32 @@
+{
+  "feeders": [
+    {
+      "id": "fdr_sn_a",
+      "subdivisionId": "sd_subhashnagar",
+      "name": "Subhash Nagar Feeder A",
+      "voltageKv": 11,
+      "dtIds": ["dt_sn_01", "dt_sn_02"],
+      "loadingPu": 1.02,
+      "riskLevel": "high",
+      "path": [
+        { "lat": 28.3772, "lng": 79.4521 },
+        { "lat": 28.3791, "lng": 79.4552 },
+        { "lat": 28.3812, "lng": 79.4581 }
+      ]
+    },
+    {
+      "id": "fdr_kn_a",
+      "subdivisionId": "sd_krishnanagar",
+      "name": "Krishna Nagar Feeder A",
+      "voltageKv": 11,
+      "dtIds": ["dt_kn_01"],
+      "loadingPu": 1.21,
+      "riskLevel": "critical",
+      "path": [
+        { "lat": 27.4905, "lng": 77.6710 },
+        { "lat": 27.4927, "lng": 77.6741 },
+        { "lat": 27.4948, "lng": 77.6770 }
+      ]
+    }
+  ]
+}
