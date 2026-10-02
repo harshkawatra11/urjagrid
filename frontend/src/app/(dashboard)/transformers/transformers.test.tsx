@@ -52,8 +52,13 @@ describe("TransformersView", () => {
         <TransformersView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Transformers")).toBeInTheDocument();
+    // Query first for content that only exists once the offline fixture has loaded (the tile
+    // grid), not the page title (present in both the loading skeleton and the loaded view) --
+    // querying the title first can resolve against the skeleton's heading just before React
+    // replaces that whole subtree with the loaded one, intermittently failing on the
+    // now-detached node even though the right text is on screen a moment later.
     expect(await screen.findByRole("list", { name: "Transformer tile grid" })).toBeInTheDocument();
+    expect(screen.getByText("Transformers")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Hot-spot" }));
     expect(screen.getAllByText(/°C/).length).toBeGreaterThan(0);
   });

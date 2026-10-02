@@ -36,8 +36,8 @@ describe("ConsumersView", () => {
         <ConsumersView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Consumers & Channels")).toBeInTheDocument();
     expect(await screen.findByText("Consumer preview")).toBeInTheDocument();
+    expect(screen.getByText("Consumers & Channels")).toBeInTheDocument();
     expect(screen.getByText("Complaints")).toBeInTheDocument();
   });
 });

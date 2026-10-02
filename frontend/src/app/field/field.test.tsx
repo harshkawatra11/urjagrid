@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ScopeProvider } from "@/lib/scope";
 import { RoleProvider, useRole } from "@/lib/roleContext";
@@ -31,6 +31,13 @@ describe("titles.ts pure functions", () => {
 });
 
 describe("FieldAppView role gate", () => {
+  // Role/scope context providers seed their initial state from localStorage; without clearing it
+  // between tests, the previous test's role (set via `setRole`, which persists) can still be
+  // read synchronously by the next test's fresh RoleProvider before its own effect overwrites it.
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it("blocks a consumer role from the field app", async () => {
     render(
       <RoleProvider>
@@ -52,8 +59,8 @@ describe("FieldAppView role gate", () => {
         </ScopeProvider>
       </RoleProvider>,
     );
-    expect(await screen.findByText("Field Worker App")).toBeInTheDocument();
     expect(await screen.findByText(/Register life-support home/)).toBeInTheDocument();
+    expect(screen.getByText("Field Worker App")).toBeInTheDocument();
     const consentCheckbox = screen.getByRole("checkbox");
     expect(consentCheckbox).not.toBeChecked();
     fireEvent.click(consentCheckbox);

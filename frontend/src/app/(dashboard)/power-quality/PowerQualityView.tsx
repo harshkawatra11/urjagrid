@@ -9,7 +9,7 @@ import { OfflineBanner } from "@/components/ds/OfflineBanner";
 import { StepLine, type StepLinePoint } from "@/components/charts/StepLine";
 import { CompareBars } from "@/components/charts/CompareBars";
 import { GaugeArc } from "@/components/charts/GaugeArc";
-import { heatVar, voltageHeat } from "@/lib/heat";
+import { voltageHeat } from "@/lib/heat";
 import { formatKw } from "@/lib/format";
 import { lossBreakdown, moneyshotTitle, technicalLossKw, voltageViolations } from "./titles";
 

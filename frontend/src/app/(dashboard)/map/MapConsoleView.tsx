@@ -32,7 +32,10 @@ export function MapConsoleView() {
   const feeders = feedersData?.feeders ?? [];
   const facilities = criticalData?.facilities ?? [];
 
-  const fitPoints = useMemo(() => transformers.map((t) => [t.location.lat, t.location.lng] as [number, number]), [transformers]);
+  const fitPoints = useMemo(
+    () => (transformersData?.transformers ?? []).map((t) => [t.location.lat, t.location.lng] as [number, number]),
+    [transformersData?.transformers],
+  );
 
   if (isLoading && transformers.length === 0) {
     return (

@@ -33,7 +33,7 @@ describe("CriticalView", () => {
         <CriticalView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Critical Loads")).toBeInTheDocument();
     expect(await screen.findByText("Coverage matrix")).toBeInTheDocument();
+    expect(screen.getByText("Critical Loads")).toBeInTheDocument();
   });
 });

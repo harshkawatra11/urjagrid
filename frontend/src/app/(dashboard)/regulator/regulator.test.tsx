@@ -33,8 +33,8 @@ describe("RegulatorView", () => {
         <RegulatorView />
       </RoleProvider>,
     );
-    expect(await screen.findByText("Regulator View")).toBeInTheDocument();
     expect(await screen.findByText(/Aggregates only/)).toBeInTheDocument();
+    expect(screen.getByText("Regulator View")).toBeInTheDocument();
     expect(screen.getAllByText(/MVVNL|DVVNL/).length).toBeGreaterThan(0);
   });
 });

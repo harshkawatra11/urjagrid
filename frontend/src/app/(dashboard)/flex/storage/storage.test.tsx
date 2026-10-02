@@ -35,7 +35,7 @@ describe("StorageView", () => {
         <StorageView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Storage & P2P")).toBeInTheDocument();
     expect(await screen.findByText("P2P trade ledger")).toBeInTheDocument();
+    expect(screen.getByText("Storage & P2P")).toBeInTheDocument();
   });
 });

@@ -34,9 +34,11 @@ describe("SubdivisionsView", () => {
         <SubdivisionsView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Sub-division Lab")).toBeInTheDocument();
+    // Query first for content unique to the loaded state (the title text alone is also present
+    // in the loading skeleton, so resolving against it can race the skeleton -> loaded swap).
     expect(await screen.findByText(/average served across 5 sub-divisions/)).toBeInTheDocument();
-    expect(await screen.findByText(/Comparison matrix/)).toBeInTheDocument();
+    expect(screen.getByText("Sub-division Lab")).toBeInTheDocument();
+    expect(screen.getByText(/Comparison matrix/)).toBeInTheDocument();
     expect(screen.getAllByText("Krishna Nagar").length).toBeGreaterThan(0);
   });
 });

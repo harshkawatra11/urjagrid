@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { ScopeProvider } from "@/lib/scope";
 import { DrView } from "./DrView";
 import { betaPdf, densityCurve, totalRebate, totalShifted } from "./titles";
-import type { DrBelief, RebateLedgerEntry } from "@/lib/api/types";
+import type { RebateLedgerEntry } from "@/lib/api/types";
 
 describe("titles.ts Beta-Bernoulli math", () => {
   it("betaPdf is 0 outside (0,1) and positive inside", () => {
@@ -36,7 +36,7 @@ describe("DrView", () => {
         <DrView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Demand Response")).toBeInTheDocument();
     expect(await screen.findByText("Rebate ledger")).toBeInTheDocument();
+    expect(screen.getByText("Demand Response")).toBeInTheDocument();
   });
 });

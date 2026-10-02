@@ -41,15 +41,15 @@ describe("titles.ts pure functions", () => {
 describe("EconomicsView", () => {
   it("renders sliders, money flow, and sensitivity matrix from offline fixtures", async () => {
     render(<EconomicsView />);
-    expect(await screen.findByText("Economics")).toBeInTheDocument();
     expect(await screen.findByText("Money flow")).toBeInTheDocument();
+    expect(screen.getByText("Economics")).toBeInTheDocument();
     const slider = screen.getByText(/DR rebate:/);
     expect(slider).toBeInTheDocument();
   });
 
   it("moving a slider updates the payback moneyshot", async () => {
     render(<EconomicsView />);
-    await screen.findByText("Economics");
+    await screen.findByText("Money flow");
     const sliders = screen.getAllByRole("slider");
     fireEvent.change(sliders[0], { target: { value: "5" } });
     expect(screen.getByText(/DR rebate: ₹5\.00\/kWh/)).toBeInTheDocument();

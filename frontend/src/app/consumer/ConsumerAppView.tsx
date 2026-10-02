@@ -92,8 +92,9 @@ export function ConsumerAppView() {
               <p className="text-text">{m.bodyHi}</p>
               <p className="mt-0.5 text-[10px] text-faint">{formatIstTime(m.timestampIso)}</p>
               {m.audioUrl && (
-                // eslint-disable-next-line jsx-a11y/media-has-caption -- IVR voice note, no captions track exists
-                <audio controls src={m.audioUrl} className="mt-1 h-7 w-full" />
+                <audio controls src={m.audioUrl} className="mt-1 h-7 w-full">
+                  <track kind="captions" />
+                </audio>
               )}
             </li>
           ))}

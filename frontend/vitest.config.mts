@@ -16,9 +16,11 @@ export default defineConfig({
     // slower CI machines, not for a real network round trip.
     testTimeout: 20000,
     // This machine's CPU/IO starves badly when every one of the ~28 test files gets its own
-    // worker at once (observed: 100s+ just in transform/setup before any test runs, then
-    // individually-fast tests time out waiting for a starved event loop). Capping workers keeps
-    // each file's own timers and fetch-mock promises responsive.
-    maxWorkers: 4,
+    // worker at once: observed symptoms ranged from 100s+ of pure transform/setup overhead to
+    // components silently failing to reach their loaded render (likely React 19 unmounting on an
+    // error from a starved/delayed microtask queue racing the mocked-fetch resolution), both of
+    // which went away running files one at a time. The fetch mock above keeps each individual
+    // file fast, so serializing is a small cost for a suite that is otherwise flaky.
+    fileParallelism: false,
   },
 });

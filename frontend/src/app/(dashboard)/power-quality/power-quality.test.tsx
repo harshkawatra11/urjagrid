@@ -54,7 +54,7 @@ describe("PowerQualityView", () => {
         <PowerQualityView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Voltage & Losses")).toBeInTheDocument();
     expect(await screen.findByText("Voltage heat matrix")).toBeInTheDocument();
+    expect(screen.getByText("Voltage & Losses")).toBeInTheDocument();
   });
 });

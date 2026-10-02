@@ -29,7 +29,7 @@ describe("AnalyticsView", () => {
         <AnalyticsView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Analytics")).toBeInTheDocument();
     expect(await screen.findByText("Role / permission matrix")).toBeInTheDocument();
+    expect(screen.getByText("Analytics")).toBeInTheDocument();
   });
 });

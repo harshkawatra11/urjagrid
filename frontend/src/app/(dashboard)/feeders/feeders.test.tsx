@@ -39,8 +39,8 @@ describe("FeedersView", () => {
         <FeedersView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Feeders")).toBeInTheDocument();
     expect(await screen.findByText("On/off strip (24h)")).toBeInTheDocument();
+    expect(screen.getByText("Feeders")).toBeInTheDocument();
     expect(screen.getAllByText(/Krishna Nagar Feeder A/).length).toBeGreaterThan(0);
   });
 });

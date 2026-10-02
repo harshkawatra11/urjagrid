@@ -34,8 +34,8 @@ describe("ForecastStudioView", () => {
         <ForecastStudioView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Forecast Studio")).toBeInTheDocument();
     expect(await screen.findByText(/forecast features ranked by importance/)).toBeInTheDocument();
+    expect(screen.getByText("Forecast Studio")).toBeInTheDocument();
     expect(screen.getByText("Forecast quantile matrix")).toBeInTheDocument();
   });
 });

@@ -16,9 +16,9 @@ describe("titles.ts pure functions", () => {
 describe("ProtocolsView", () => {
   it("renders protocol cards and an expandable payload inspector from offline fixtures", async () => {
     render(<ProtocolsView />);
-    expect(await screen.findByText("Integrations")).toBeInTheDocument();
     const inspectButtons = await screen.findAllByText("Inspect payload");
     expect(inspectButtons.length).toBeGreaterThan(0);
+    expect(screen.getByText("Integrations")).toBeInTheDocument();
     fireEvent.click(inspectButtons[0]);
     expect(screen.getByText("Hide payload")).toBeInTheDocument();
   });

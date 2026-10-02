@@ -35,7 +35,7 @@ describe("ChargersView", () => {
         <ChargersView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Managed Charging")).toBeInTheDocument();
     expect(await screen.findByText("Evening-peak curtailment pattern")).toBeInTheDocument();
+    expect(screen.getByText("Managed Charging")).toBeInTheDocument();
   });
 });

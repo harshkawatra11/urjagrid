@@ -36,7 +36,7 @@ describe("ThermalView", () => {
         <ThermalView />
       </ScopeProvider>,
     );
-    expect(await screen.findByText("Transformer Health")).toBeInTheDocument();
     expect(await screen.findByText("Fleet loading heat (evening)")).toBeInTheDocument();
+    expect(screen.getByText("Transformer Health")).toBeInTheDocument();
   });
 });

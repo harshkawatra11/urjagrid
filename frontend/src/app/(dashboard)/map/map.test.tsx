@@ -23,8 +23,10 @@ describe("MapConsoleView", () => {
         <MapConsoleView />
       </ScopeProvider>,
     );
-expect(await screen.findByText("Grid Map")).toBeInTheDocument();
+    // Query first for content unique to the loaded state; the title alone is also present in
+    // the loading skeleton and can race the skeleton -> loaded swap.
     expect(await screen.findByText("Service areas (Voronoi)")).toBeInTheDocument();
+    expect(screen.getByText("Grid Map")).toBeInTheDocument();
     expect(screen.getByText("No selection — click a feeder or DT")).toBeInTheDocument();
   });
 });
