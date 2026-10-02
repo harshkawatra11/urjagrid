@@ -1,0 +1,43 @@
+{
+  "plans": [
+    {
+      "id": "fp_a1b2c3d4",
+      "subdivisionId": "sd_krishnanagar",
+      "dtIds": ["dt_kn_01"],
+      "status": "proposed",
+      "deficitWindowId": "dw_9f8e7d6c",
+      "createdIso": "2026-10-02T14:30:00+05:30",
+      "windowStartIso": "2026-10-02T18:00:00+05:30",
+      "windowEndIso": "2026-10-02T20:00:00+05:30",
+      "gapKw": 86.5,
+      "coveredKw": 71.2,
+      "levers": [
+        { "lever": "behavioral_dr", "reliefKw": 22.0, "costRs": 1320, "consumerCount": 180 },
+        { "lever": "managed_charging", "reliefKw": 18.4, "costRs": 0, "consumerCount": 6 },
+        { "lever": "lifeline_cap", "reliefKw": 30.8, "costRs": 0, "consumerCount": 95 }
+      ],
+      "approverName": null,
+      "approvedIso": null,
+      "notes": null
+    },
+    {
+      "id": "fp_b2c3d4e5",
+      "subdivisionId": "sd_subhashnagar",
+      "dtIds": ["dt_sn_01"],
+      "status": "approved",
+      "deficitWindowId": "dw_1a2b3c4d",
+      "createdIso": "2026-10-02T11:00:00+05:30",
+      "windowStartIso": "2026-10-02T19:00:00+05:30",
+      "windowEndIso": "2026-10-02T21:00:00+05:30",
+      "gapKw": 41.0,
+      "coveredKw": 41.0,
+      "levers": [
+        { "lever": "behavioral_dr", "reliefKw": 15.0, "costRs": 900, "consumerCount": 120 },
+        { "lever": "shiftable_loads", "reliefKw": 26.0, "costRs": 0, "consumerCount": 3 }
+      ],
+      "approverName": "R. Sharma",
+      "approvedIso": "2026-10-02T11:40:00+05:30",
+      "notes": "Approved ahead of evening peak."
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "subdivisions": [
+    {
+      "id": "sd_subhashnagar",
+      "name": "Subhash Nagar",
+      "town": "Bareilly",
+      "discom": "MVVNL",
+      "feederIds": ["fdr_sn_a", "fdr_sn_b"],
+      "riskLevel": "high",
+      "riskIndex": 0.72,
+      "consumerCount": 1480,
+      "activePlanCount": 2,
+      "servedFraction": 0.91,
+      "center": { "lat": 28.3789, "lng": 79.4549 }
+    },
+    {
+      "id": "sd_izzatnagar",
+      "name": "Izzatnagar",
+      "town": "Bareilly",
+      "discom": "MVVNL",
+      "feederIds": ["fdr_iz_a"],
+      "riskLevel": "moderate",
+      "riskIndex": 0.48,
+      "consumerCount": 1320,
+      "activePlanCount": 1,
+      "servedFraction": 0.95,
+      "center": { "lat": 28.3283, "lng": 79.4192 }
+    },
+    {
+      "id": "sd_faridpur",
+      "name": "Faridpur",
+      "town": "Bareilly",
+      "discom": "MVVNL",
+      "feederIds": ["fdr_fp_a"],
+      "riskLevel": "low",
+      "riskIndex": 0.21,
+      "consumerCount": 1210,
+      "activePlanCount": 0,
+      "servedFraction": 0.98,
+      "center": { "lat": 28.2039, "lng": 79.5478 }
+    },
+    {
+      "id": "sd_krishnanagar",
+      "name": "Krishna Nagar",
+      "town": "Mathura",
+      "discom": "DVVNL",
+      "feederIds": ["fdr_kn_a", "fdr_kn_b"],
+      "riskLevel": "critical",
+      "riskIndex": 0.88,
+      "consumerCount": 1560,
+      "activePlanCount": 3,
+      "servedFraction": 0.84,
+      "center": { "lat": 27.4924, "lng": 77.6737 }
+    },
+    {
+      "id": "sd_kosikalan",
+      "name": "Kosi Kalan",
+      "town": "Mathura",
+      "discom": "DVVNL",
+      "feederIds": ["fdr_kk_a"],
+      "riskLevel": "moderate",
+      "riskIndex": 0.5,
+      "consumerCount": 980,
+      "activePlanCount": 1,
+      "servedFraction": 0.93,
+      "center": { "lat": 27.6208, "lng": 77.4342 }
+    }
+  ]
+}

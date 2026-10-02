@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0c0a;
+  --bg-elevated: #0e120e;
+  --surface-1: #12160f;
+  --surface-2: #171c15;
+  --surface-3: #1d241a;
+  --border: #242b20;
+  --border-strong: #303a2a;
+  --text: #e8ecdf;
+  --text-muted: #a0ab93;
+  --text-faint: #6f7a64;
+
+  --brand: #b7e34a;
+  --brand-strong: #9ccb2f;
+  --brand-soft: rgb(183 227 74 / 0.14);
+  --focus-ring: rgb(183 227 74 / 0.55);
+
+  --info: #5b8def;
+  --violet: #9b87f5;
+  --cyan: #4cc9e8;
+  --amber: #f2b84b;
+  --orange: #ff8a4c;
+  --red: #f05260;
+  --green: #34d399;
+
+  --risk-low: #34d399;
+  --risk-moderate: #f2b84b;
+  --risk-high: #ff8a4c;
+  --risk-critical: #f05260;
+
+  /* Honest-status matrix (SPEC section 1): LIVE/WIRED/PILOT */
+  --status-live: #b7e34a;
+  --status-wired: #f2b84b;
+  --status-pilot: #6a7482;
+
+  /* FlexPlan state machine */
+  --plan-draft: #6a7482;
+  --plan-proposed: #5b8def;
+  --plan-approved: #b7e34a;
+  --plan-dispatched: #4cc9e8;
+  --plan-active: #9ccb2f;
+  --plan-verified: #34d399;
+  --plan-rejected: #f05260;
+  --plan-cancelled: #6a7482;
+  --plan-expired: #8391a5;
+
+  /* Meter state */
+  --meter-normal: #34d399;
+  --meter-dr: #5b8def;
+  --meter-capped: #f2b84b;
+  --meter-shed: #f05260;
+  --meter-offline: #6a7482;
+
+  /* Lever colors, L1..L6 */
+  --lever-behavioral-dr: #5b8def;
+  --lever-managed-charging: #4cc9e8;
+  --lever-shiftable-loads: #9b87f5;
+  --lever-storage-discharge: #b7e34a;
+  --lever-lifeline-cap: #f2b84b;
+  --lever-rotational-shedding: #f05260;
+
+  /* Cap levels 0..3 */
+  --cap-none: #6a7482;
+  --cap-comfort: #4cc9e8;
+  --cap-essential: #f2b84b;
+  --cap-lifeline: #f05260;
+
+  --series-1: #5b8def;
+  --series-2: #b7e34a;
+  --series-3: #f2b84b;
+  --series-4: #9b87f5;
+  --series-5: #ff8a4c;
+  --series-6: #4cc9e8;
+
+  /* sequential heat, index 0 = best, 4 = worst */
+  --heat-0: #1c3a1a;
+  --heat-1: #3f6f2a;
+  --heat-2: #b98a2e;
+  --heat-3: #d8663a;
+  --heat-4: #e0424f;
+  --heat-empty: #161b22;
+
+  --shadow-overlay: 0 16px 48px rgb(0 0 0 / 0.5);
+  --inset-highlight: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  --map-tiles-filter: none;
+  --stage-bg: #07090c;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f8f2;
+  --bg-elevated: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f1f5ea;
+  --surface-3: #e8eedd;
+  --border: #dfe6d3;
+  --border-strong: #c8d2b7;
+  --text: #121a0f;
+  --text-muted: #4a5640;
+  --text-faint: #7c8870;
+
+  --brand: #6f9a1f;
+  --brand-strong: #587c18;
+  --brand-soft: rgb(111 154 31 / 0.12);
+  --focus-ring: rgb(111 154 31 / 0.45);
+
+  --info: #2f6fdb;
+  --violet: #6d5bd0;
+  --cyan: #0e9cc0;
+  --amber: #c98a12;
+  --orange: #e0631f;
+  --red: #d63447;
+  --green: #16a34a;
+
+  --risk-low: #16a34a;
+  --risk-moderate: #c98a12;
+  --risk-high: #e0631f;
+  --risk-critical: #d63447;
+
+  --status-live: #587c18;
+  --status-wired: #c98a12;
+  --status-pilot: #8391a5;
+
+  --plan-draft: #8391a5;
+  --plan-proposed: #2f6fdb;
+  --plan-approved: #587c18;
+  --plan-dispatched: #0e9cc0;
+  --plan-active: #6f9a1f;
+  --plan-verified: #16a34a;
+  --plan-rejected: #d63447;
+  --plan-cancelled: #8391a5;
+  --plan-expired: #8391a5;
+
+  --meter-normal: #16a34a;
+  --meter-dr: #2f6fdb;
+  --meter-capped: #c98a12;
+  --meter-shed: #d63447;
+  --meter-offline: #8391a5;
+
+  --lever-behavioral-dr: #2f6fdb;
+  --lever-managed-charging: #0e9cc0;
+  --lever-shiftable-loads: #6d5bd0;
+  --lever-storage-discharge: #587c18;
+  --lever-lifeline-cap: #c98a12;
+  --lever-rotational-shedding: #d63447;
+
+  --cap-none: #8391a5;
+  --cap-comfort: #0e9cc0;
+  --cap-essential: #c98a12;
+  --cap-lifeline: #d63447;
+
+  --series-1: #2f6fdb;
+  --series-2: #587c18;
+  --series-3: #c98a12;
+  --series-4: #6d5bd0;
+  --series-5: #e0631f;
+  --series-6: #0e9cc0;
+
+  --heat-0: #d7f0c6;
+  --heat-1: #9ad86f;
+  --heat-2: #f3d58c;
+  --heat-3: #f2a27a;
+  --heat-4: #e2626f;
+  --heat-empty: #eef1f5;
+
+  --shadow-overlay: 0 16px 40px rgb(15 23 42 / 0.14);
+  --inset-highlight: none;
+  --map-tiles-filter: none;
+  --stage-bg: #07090c;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-info: var(--info);
+  --color-violet: var(--violet);
+  --color-cyan: var(--cyan);
+  --color-amber: var(--amber);
+  --color-orange: var(--orange);
+  --color-red: var(--red);
+  --color-green: var(--green);
+  --color-risk-low: var(--risk-low);
+  --color-risk-moderate: var(--risk-moderate);
+  --color-risk-high: var(--risk-high);
+  --color-risk-critical: var(--risk-critical);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+}
+
+/* Everything below is inside @layer base so Tailwind utilities (border-brand, outline-none, ...)
+   still win. Unlayered rules would beat every layered utility in Tailwind v4. */
+@layer base {
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+  }
+  * { border-color: var(--border); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+  .leaflet-container { background: var(--bg-elevated) !important; font-family: inherit; }
+  .leaflet-tile-pane { filter: var(--map-tiles-filter); }
+}
+
+@layer utilities {
+  .num { font-family: var(--font-geist-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .font-serif-display { font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; font-weight: 600; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
