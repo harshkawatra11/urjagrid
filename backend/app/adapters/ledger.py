@@ -50,15 +50,25 @@ class LedgerEntry:
     note: str | None = None
 
     def to_view(self) -> dict[str, Any]:
+        # `frontend/src/lib/api/types.ts#ProtocolMessageRecord` spells the
+        # DLMS/HES protocol "hes" and has no `dlms_` prefix; translate just
+        # for the wire label, since `PROTOCOL_NAMES`/adapters elsewhere use
+        # the DLMS-accurate "dlms_hes" name throughout the ledger/B7 tests.
+        wire_protocol = "hes" if self.protocol == "dlms_hes" else self.protocol
         return {
             "id": self.id,
             "protocol": self.protocol,
+            "wireProtocol": wire_protocol,
             "status_tag": "WIRED",
+            "statusTag": "WIRED",
             "direction": self.direction.value,
             "status": self.status.value,
+            "summary": self.note or f"{wire_protocol} {self.direction.value} ({self.status.value})",
             "payload": self.payload,
             "timestamp": self.timestamp.isoformat(),
+            "timestampIso": self.timestamp.isoformat(),
             "correlation_id": self.correlation_id,
+            "correlationId": self.correlation_id,
             "note": self.note,
         }
 

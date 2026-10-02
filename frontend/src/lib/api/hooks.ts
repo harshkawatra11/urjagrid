@@ -87,6 +87,29 @@ export function useApi<T>(
 
 const P = "/api/v1";
 
+/**
+ * For a handful of resources the backend's real route exists but serves a
+ * materially different (coarser or differently-keyed) shape than the
+ * frontend type below -- see the per-hook comments. Calling the live
+ * endpoint there would get a 200 with the *wrong* shape (or, where no route
+ * exists at all, a 404), and `useApi`'s offline fallback only triggers on a
+ * network failure (status 0) -- so a shape/404 mismatch would surface as a
+ * broken render or a hard error instead of the honest "offline, showing the
+ * fixture" banner. This hook skips the live call entirely for those few
+ * resources and always renders the committed fixture with `offline: true`,
+ * which is the "leave a clear comment, fixture-only for now" path called out
+ * in the integration-pass instructions rather than silently shipping a
+ * mismatched live response.
+ */
+function useFixtureOnly<T>(path: string | null, empty: T, scope?: string): ApiResult<T> {
+  const { data, error, isLoading, mutate } = useSWR<Payload<T>, ApiError>(
+    path ? `fixture:${path}` : null,
+    async () => ({ data: filterBySubdivision(await loadFixture<T>(fixtureNameFor(path ?? ""), empty), scope), offline: true }),
+    { errorRetryCount: 0 },
+  );
+  return { data: data?.data, offline: true, isLoading, error, mutate };
+}
+
 /* ---------- geography ---------- */
 
 export function useSubdivisions() {
@@ -142,8 +165,16 @@ export function useForecast(dtId: string | null | undefined) {
 
 /* ---------- flex plans ---------- */
 
+/**
+ * Fixture-only (see `useFixtureOnly`): a real WAPE/skill-score/coverage
+ * backtest needs a held-out actual-vs-predicted eval harness run against
+ * the trained quantile models (`grid/forecaster.py`), which is a real but
+ * substantial follow-up, not a thin read-model composition -- building it
+ * is out of scope for this integration pass. `/forecast/importance` (actual
+ * trained-model feature importances) is wired for real; this one isn't.
+ */
 export function useForecastBacktest() {
-  return useApi<ForecastBacktest | null>(`${P}/forecast/backtest`, null, { refreshInterval: REFRESH.analytics });
+  return useFixtureOnly<ForecastBacktest | null>(`${P}/forecast/backtest`, null);
 }
 
 export function useForecastImportance() {
@@ -205,42 +236,68 @@ export function useConsumerMessages(scope: ScopeArg = "all") {
   );
 }
 
+/**
+ * Fixture-only (see `useFixtureOnly`): there is no backend complaint store
+ * distinct from the field/outage registry (billing/voltage/"other"
+ * complaint kinds aren't modelled anywhere in the simulation) -- building
+ * one is new scope beyond composing an existing read-model, so this stays
+ * fixture-only rather than fabricating complaint rows.
+ */
 export function useComplaints(scope: ScopeArg = "all") {
-  return useApi<{ complaints: Complaint[] }>(`${P}/consumers/complaints${scopeQuery(scope)}`, { complaints: [] }, {
-    refreshInterval: REFRESH.lists,
-    scope,
-  });
+  return useFixtureOnly<{ complaints: Complaint[] }>(`${P}/consumers/complaints${scopeQuery(scope)}`, { complaints: [] }, scope);
 }
 
-/** D27 consumer phone app: a single consumer's own status card. */
+/**
+ * Fixture-only (see `useFixtureOnly`): per-consumer meter state (`normal`/
+ * `dr`/`capped`/`shed`) isn't tracked at consumer granularity anywhere in
+ * `GridWorld` -- the simulator's state is DT-aggregate (see
+ * `services/service.py`'s `Track`), so a truthful per-consumer status card
+ * would need new per-consumer state tracking in the world model, not just a
+ * new read-model composition. D27 consumer phone app: a single consumer's
+ * own status card.
+ */
 export function useConsumerStatus(consumerId: string | null | undefined) {
-  return useApi<ConsumerStatus | null>(consumerId ? `${P}/consumers/${consumerId}/status` : null, null, {
-    refreshInterval: REFRESH.live,
-  });
+  return useFixtureOnly<ConsumerStatus | null>(consumerId ? `${P}/consumers/${consumerId}/status` : null, null);
 }
 
 /* ---------- flex levers detail (D12/D13/D14) ---------- */
 
+/**
+ * Fixture-only (see `useFixtureOnly`): the real `/flex/chargers` exists
+ * (`backend/app/api/v1/flex.py`) but returns DT-keyed lever-status rows
+ * (`{dtId, hubFrac, planId}`), not named per-asset `ChargerStatus` rows
+ * (`id`/`name`/`kind`/`ratedKw`) -- there is no per-charger registry
+ * anywhere in the network model (`AssetProfiles` sizes hub load in
+ * aggregate, see `grid/sizing.py`), so inventing per-asset ids/names would
+ * be fabricated data, not a read-model composition.
+ */
 export function useChargers(scope: ScopeArg = "all") {
-  return useApi<{ chargers: ChargerStatus[] }>(`${P}/flex/chargers${scopeQuery(scope)}`, { chargers: [] }, {
-    refreshInterval: REFRESH.live,
-    scope,
-  });
+  return useFixtureOnly<{ chargers: ChargerStatus[] }>(`${P}/flex/chargers${scopeQuery(scope)}`, { chargers: [] }, scope);
 }
 
+/** Fixture-only (see `useFixtureOnly`) for the same reason as `useChargers`:
+ * no per-storage-asset registry exists to back `StorageAsset`/`P2pTrade` ids. */
 export function useStorageAssets(scope: ScopeArg = "all") {
-  return useApi<{ storageAssets: StorageAsset[]; trades: P2pTrade[] }>(
+  return useFixtureOnly<{ storageAssets: StorageAsset[]; trades: P2pTrade[] }>(
     `${P}/flex/storage${scopeQuery(scope)}`,
     { storageAssets: [], trades: [] },
-    { refreshInterval: REFRESH.live, scope },
+    scope,
   );
 }
 
+/**
+ * Fixture-only (see `useFixtureOnly`): `grid/dr_model.py`'s
+ * `DrAcceptanceRegistry` (the real Beta-Bernoulli acceptance model) is
+ * implemented and tested but not yet instantiated/updated by
+ * `GridService`/`Dispatcher` at runtime, so there is no live alpha/beta
+ * state to read -- wiring that up is real engine-integration work beyond a
+ * thin read-model route.
+ */
 export function useDrBeliefs(scope: ScopeArg = "all") {
-  return useApi<{ beliefs: DrBelief[]; rebateLedger: RebateLedgerEntry[] }>(
+  return useFixtureOnly<{ beliefs: DrBelief[]; rebateLedger: RebateLedgerEntry[] }>(
     `${P}/flex/dr${scopeQuery(scope)}`,
     { beliefs: [], rebateLedger: [] },
-    { refreshInterval: REFRESH.lists, scope },
+    scope,
   );
 }
 

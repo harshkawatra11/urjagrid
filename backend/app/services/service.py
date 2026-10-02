@@ -160,6 +160,14 @@ class GridService:
         self.solution_logs: list[LogRow] = []
         self.shadow_logs: list[LogRow] = []
         self.events: list[str] = []
+        # Latest per-DT telemetry from the most recent interval's solution
+        # track -- read by the `/transformers` views for "live" loading/
+        # hot-spot numbers; empty until the first `advance_one_interval()`.
+        self.latest_dt_loading_pu: dict[str, float] = {}
+        self.latest_dt_hotspot_c: dict[str, float] = {}
+        self.latest_dt_voltage_pu: dict[str, float] = {}
+        self.latest_dt_served_kw: dict[str, float] = {}
+        self.latest_dt_demand_kw: dict[str, float] = {}
 
     # -- lifecycle --------------------------------------------------------
 
@@ -192,13 +200,68 @@ class GridService:
         sol_result, shadow_result = self.world.advance_interval(slot, actions)
         self.events.extend(sol_result.events)
         self.events.extend(shadow_result.events)
+        self.latest_dt_loading_pu = dict(sol_result.dt_loading_pu)
+        self.latest_dt_hotspot_c = dict(sol_result.dt_hotspot_c)
+        self.latest_dt_voltage_pu = dict(sol_result.dt_voltage_pu)
+        self.latest_dt_served_kw = dict(sol_result.dt_served_kw)
+        self.latest_dt_demand_kw = dict(sol_result.dt_demand_kw)
 
         sol_row = self._to_log_row(slot, sol_result, is_shadow=False)
         shadow_row = self._to_log_row(slot, shadow_result, is_shadow=True)
         self.solution_logs.append(sol_row)
         self.shadow_logs.append(shadow_row)
         self.state.slot += 1
+        if self.state.slot % max(60 // INTERVAL_MIN, 1) == 0:
+            self._refresh_plans_for_deficits()
         return sol_row, shadow_row
+
+    def _refresh_plans_for_deficits(self) -> None:
+        """Hourly deficit-window check (docs/SPEC.md B2/B5): for every
+        sub-division with no live (draft/approved/dispatched) plan, look for
+        a gap between gross demand and available supply over this scenario's
+        demand/supply arrays and build a real draft ``FlexPlan`` for it via
+        ``FlexPlanService.refresh_from_series`` -- the same engine code path
+        exercised by ``test_planner.py``, just driven by the live service
+        instead of a hand-built input array.
+        """
+        network = self.scenario.network
+        live_subdivisions = {
+            p.subdivision_id
+            for p in self.plan_service.list_plans()
+            if p.status in (PlanStatus.DRAFT, PlanStatus.APPROVED, PlanStatus.DISPATCHED)
+        }
+        for sub_id in network.subdivision_ids:
+            if sub_id in live_subdivisions:
+                continue
+            dt_ids = [d for d in network.dt_ids if network.dt_subdivision[d] == sub_id]
+            if not dt_ids:
+                continue
+            gap_kw_series: dict[str, np.ndarray] = {}
+            dt_limit_kw: dict[str, float] = {}
+            dr_potential_kw: dict[str, float] = {}
+            hub_potential_kw: dict[str, float] = {}
+            storage_energy_kwh: dict[str, float] = {}
+            shift_potential_kw: dict[str, float] = {}
+            for dt_id in dt_ids:
+                gross = self.scenario.dt_gross_kw[dt_id]
+                available = self.scenario.dt_available_kw[dt_id]
+                gap_kw_series[dt_id] = np.maximum(gross - available, 0.0)
+                rated_kw = next(d.rated_kw for d in self.dt_statics if d.dt_id == dt_id)
+                dt_limit_kw[dt_id] = rated_kw
+                dr_potential_kw[dt_id] = 0.10 * rated_kw
+                hub_potential_kw[dt_id] = 0.05 * rated_kw
+                storage_energy_kwh[dt_id] = 0.0
+                shift_potential_kw[dt_id] = 0.05 * rated_kw
+            self.plan_service.refresh_from_series(
+                subdivision_id=sub_id,
+                dt_ids=dt_ids,
+                gap_kw_series=gap_kw_series,
+                dt_limit_kw=dt_limit_kw,
+                dr_potential_kw=dr_potential_kw,
+                hub_potential_kw=hub_potential_kw,
+                storage_energy_kwh=storage_energy_kwh,
+                shift_potential_kw=shift_potential_kw,
+            )
 
     def _to_log_row(self, slot: int, result, is_shadow: bool) -> LogRow:  # type: ignore[no-untyped-def]
         gross = sum(result.dt_demand_kw.values())

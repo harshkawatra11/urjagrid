@@ -11,8 +11,8 @@ def test_builtin_scenario_names_match_weather_module() -> None:
 def test_run_scenario_produces_both_tracks() -> None:
     result = run_scenario("heatwave_evening", n_intervals=8, seed=3)
     view = result.to_view()
-    assert view["n_intervals"] == 8
-    assert "solution" in view and "shadow_baseline" in view
+    assert view["nIntervals"] == 8
+    assert "solution" in view and "shadowBaseline" in view
     assert "diff" in view
 
 
