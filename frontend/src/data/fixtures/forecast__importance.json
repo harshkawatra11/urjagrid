@@ -1,0 +1,17 @@
+{
+  "features": [
+    { "name": "lag_24h_kw", "importance": 0.22 },
+    { "name": "temperature_c", "importance": 0.16 },
+    { "name": "hour_of_day", "importance": 0.14 },
+    { "name": "lag_168h_kw", "importance": 0.11 },
+    { "name": "rolling_mean_24h_kw", "importance": 0.09 },
+    { "name": "day_of_week", "importance": 0.08 },
+    { "name": "humidity_pct", "importance": 0.06 },
+    { "name": "solar_irradiance", "importance": 0.05 },
+    { "name": "lag_1h_kw", "importance": 0.04 },
+    { "name": "rated_kva", "importance": 0.02 },
+    { "name": "is_holiday", "importance": 0.01 },
+    { "name": "season", "importance": 0.01 },
+    { "name": "historical_p50_pu", "importance": 0.01 }
+  ]
+}

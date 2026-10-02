@@ -1,9 +1,15 @@
 {
   "facilities": [
-    { "id": "cf_sn_01", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "name": "Subhash Nagar Community Health Centre", "kind": "hospital", "backupAvailable": true },
-    { "id": "cf_sn_02", "dtId": "dt_sn_02", "subdivisionId": "sd_subhashnagar", "name": "Subhash Nagar Water Pumping Station", "kind": "water", "backupAvailable": false },
-    { "id": "cf_kn_01", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Krishna Nagar Telecom Tower 4", "kind": "telecom", "backupAvailable": true },
-    { "id": "cf_kn_02", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Mishra Life-support Home", "kind": "life_support", "backupAvailable": true },
-    { "id": "cf_kk_01", "dtId": "dt_kk_01", "subdivisionId": "sd_kosikalan", "name": "Kosi Kalan Primary Health Centre", "kind": "hospital", "backupAvailable": false }
+    { "id": "cf_sn_01", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "name": "Subhash Nagar Primary Health Centre", "kind": "hospital", "backupAvailable": true },
+    { "id": "cf_sn_02", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "name": "Subhash Nagar Water Pumping Station", "kind": "water", "backupAvailable": false },
+    { "id": "cf_sn_03", "dtId": "dt_sn_02", "subdivisionId": "sd_subhashnagar", "name": "Airtel Tower SN-14", "kind": "telecom", "backupAvailable": true },
+    { "id": "cf_sn_04", "dtId": "dt_sn_02", "subdivisionId": "sd_subhashnagar", "name": "House of Mr. Verma (home dialysis)", "kind": "life_support", "backupAvailable": false },
+    { "id": "cf_iz_01", "dtId": "dt_iz_01", "subdivisionId": "sd_izzatnagar", "name": "Izzatnagar Community Health Centre", "kind": "hospital", "backupAvailable": true },
+    { "id": "cf_iz_02", "dtId": "dt_iz_01", "subdivisionId": "sd_izzatnagar", "name": "Izzatnagar Water Works", "kind": "water", "backupAvailable": true },
+    { "id": "cf_fp_01", "dtId": "dt_fp_01", "subdivisionId": "sd_faridpur", "name": "Faridpur Rural Hospital", "kind": "hospital", "backupAvailable": true },
+    { "id": "cf_kn_01", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Krishna Nagar District Hospital", "kind": "hospital", "backupAvailable": true },
+    { "id": "cf_kn_02", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Krishna Nagar Lift Irrigation", "kind": "water", "backupAvailable": false },
+    { "id": "cf_kn_03", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "name": "Mrs. Sharma (home oxygen concentrator)", "kind": "life_support", "backupAvailable": false },
+    { "id": "cf_kk_01", "dtId": "dt_kk_01", "subdivisionId": "sd_kosikalan", "name": "Kosi Kalan Jio Tower", "kind": "telecom", "backupAvailable": true }
   ]
 }

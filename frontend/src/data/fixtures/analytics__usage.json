@@ -1,0 +1,9 @@
+{
+  "stats": [
+    { "metric": "Daily active JE/AE sessions", "value": 18, "unit": "sessions" },
+    { "metric": "Plans approved this week", "value": 46, "unit": "plans" },
+    { "metric": "Voice (Urja) queries today", "value": 212, "unit": "queries" },
+    { "metric": "Avg API p95 latency", "value": 184, "unit": "ms" },
+    { "metric": "Fixture-offline render rate", "value": 0, "unit": "%" }
+  ]
+}

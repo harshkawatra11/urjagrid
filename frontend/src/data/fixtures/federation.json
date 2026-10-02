@@ -1,0 +1,6 @@
+{
+  "nodes": [
+    { "discom": "MVVNL", "town": "Bareilly", "subdivisionCount": 3, "consumerCount": 4010, "reliabilityIndex": 0.91, "flexibilityIndex": 0.68, "fairnessIndex": 0.94 },
+    { "discom": "DVVNL", "town": "Mathura", "subdivisionCount": 2, "consumerCount": 2540, "reliabilityIndex": 0.83, "flexibilityIndex": 0.61, "fairnessIndex": 0.89 }
+  ]
+}

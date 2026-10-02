@@ -1,12 +1,9 @@
 {
   "events": [
-    { "id": "e_1001", "timestampIso": "2026-10-02T19:45:00+05:30", "kind": "dispatch", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": "fp_a1b2c3d4", "message": "Signal sent: managed charging curtailment at Krishna Nagar DT 01" },
-    { "id": "e_1002", "timestampIso": "2026-10-02T19:30:00+05:30", "kind": "risk", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": null, "message": "Krishna Nagar DT 01 risk escalated moderate -> critical (134% loading)" },
-    { "id": "e_1003", "timestampIso": "2026-10-02T19:10:00+05:30", "kind": "approval", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_01", "planId": "fp_b2c3d4e5", "message": "R. Sharma approved Flex Plan fp_b2c3d4e5" },
-    { "id": "e_1004", "timestampIso": "2026-10-02T18:55:00+05:30", "kind": "hes_ack", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_01", "planId": "fp_b2c3d4e5", "message": "HES acknowledged lifeline cap command for 95 meters" },
-    { "id": "e_1005", "timestampIso": "2026-10-02T18:40:00+05:30", "kind": "notify", "subdivisionId": "sd_krishnanagar", "dtId": null, "planId": "fp_a1b2c3d4", "message": "WhatsApp/IVR notice sent to 180 Krishna Nagar households (2hr lead)" },
-    { "id": "e_1006", "timestampIso": "2026-10-02T18:20:00+05:30", "kind": "forecast", "subdivisionId": "sd_kosikalan", "dtId": "dt_kk_01", "planId": null, "message": "Deficit window detected at Kosi Kalan DT 01: 24.5kW gap, 19:00-20:30 IST" },
-    { "id": "e_1007", "timestampIso": "2026-10-02T17:55:00+05:30", "kind": "verify", "subdivisionId": "sd_izzatnagar", "dtId": "dt_iz_01", "planId": "fp_c3d4e5f6", "message": "M&V confirmed 92% relief realised for Izzatnagar plan fp_c3d4e5f6" },
-    { "id": "e_1008", "timestampIso": "2026-10-02T17:30:00+05:30", "kind": "dr_opt_in", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_02", "planId": null, "message": "14 new consumers opted in to behavioural DR at Subhash Nagar DT 02" }
+    { "id": "e1", "timestampIso": "2026-10-02T20:15:00+05:30", "kind": "dispatch", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": "fp_a1b2c3d4", "message": "Flex Plan dispatched: lifeline cap on dt_kn_01" },
+    { "id": "e2", "timestampIso": "2026-10-02T20:00:00+05:30", "kind": "approval", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": "fp_a1b2c3d4", "message": "JE Singh approved plan fp_a1b2c3d4" },
+    { "id": "e3", "timestampIso": "2026-10-02T19:40:00+05:30", "kind": "alarm", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": null, "message": "Hot-spot alarm: dt_kn_01 at 121.8°C" },
+    { "id": "e4", "timestampIso": "2026-10-02T19:10:00+05:30", "kind": "forecast", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_01", "planId": null, "message": "36h forecast refreshed for sd_subhashnagar" },
+    { "id": "e5", "timestampIso": "2026-10-02T18:30:00+05:30", "kind": "verify", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_01", "planId": "fp_88cd99aa", "message": "M&V confirmed 38 kW relief on dt_sn_01" }
   ]
 }

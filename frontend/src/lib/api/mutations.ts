@@ -102,3 +102,35 @@ export async function runScenario(scenarioName: string, nIntervals = 24): Promis
   }
   return { ok: false, error: result.error.detail };
 }
+
+export interface FieldRegistrationRequest {
+  consumerId: string;
+  subdivisionId: string;
+  category: "critical_facility" | "life_support_home";
+  notes: string;
+}
+
+/** Field-worker registration (D28). Offline-tolerant: on network failure, returns an optimistic
+ * unverified row so the field app stays usable without connectivity, mirroring `planTransition`. */
+export async function registerFieldEntry(body: FieldRegistrationRequest): Promise<MutationResult<{ id: string; verified: boolean }>> {
+  const result = await post<{ id: string; verified: boolean }>(`${P}/field/registry`, body);
+  if (result.ok) return result;
+  if (isNetworkError(result.error)) {
+    return { ok: true, data: { id: `offline_${Date.now()}`, verified: false } };
+  }
+  return result;
+}
+
+export async function submitOutageReport(
+  subdivisionId: string,
+  description: string,
+  dtId?: string,
+  consumerId?: string,
+): Promise<MutationResult<{ id: string }>> {
+  const result = await post<{ id: string }>(`${P}/field/outages`, { subdivisionId, description, dtId, consumerId });
+  if (result.ok) return result;
+  if (isNetworkError(result.error)) {
+    return { ok: true, data: { id: `offline_${Date.now()}` } };
+  }
+  return result;
+}

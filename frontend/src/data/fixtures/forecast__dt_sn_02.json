@@ -1,0 +1,20 @@
+{
+  "dtId": "dt_sn_02",
+  "subdivisionId": "sd_subhashnagar",
+  "horizonSlots": 12,
+  "points": [
+    { "slotIso": "2026-10-02T15:00:00+05:30", "p10Kw": 90, "p50Kw": 112, "p90Kw": 134, "availableKw": 180, "limitKw": 200, "actualKw": 114 },
+    { "slotIso": "2026-10-02T15:15:00+05:30", "p10Kw": 92, "p50Kw": 114, "p90Kw": 136, "availableKw": 179, "limitKw": 200, "actualKw": 115 },
+    { "slotIso": "2026-10-02T15:30:00+05:30", "p10Kw": 94, "p50Kw": 117, "p90Kw": 140, "availableKw": 178, "limitKw": 200, "actualKw": 118 },
+    { "slotIso": "2026-10-02T15:45:00+05:30", "p10Kw": 98, "p50Kw": 122, "p90Kw": 146, "availableKw": 176, "limitKw": 200, "actualKw": 120 },
+    { "slotIso": "2026-10-02T16:00:00+05:30", "p10Kw": 103, "p50Kw": 128, "p90Kw": 153, "availableKw": 174, "limitKw": 200, "actualKw": 126 },
+    { "slotIso": "2026-10-02T16:15:00+05:30", "p10Kw": 108, "p50Kw": 134, "p90Kw": 160, "availableKw": 172, "limitKw": 200, "actualKw": 132 },
+    { "slotIso": "2026-10-02T16:30:00+05:30", "p10Kw": 112, "p50Kw": 140, "p90Kw": 168, "availableKw": 170, "limitKw": 200, "actualKw": null },
+    { "slotIso": "2026-10-02T16:45:00+05:30", "p10Kw": 116, "p50Kw": 145, "p90Kw": 174, "availableKw": 169, "limitKw": 200, "actualKw": null },
+    { "slotIso": "2026-10-02T17:00:00+05:30", "p10Kw": 118, "p50Kw": 148, "p90Kw": 178, "availableKw": 168, "limitKw": 200, "actualKw": null },
+    { "slotIso": "2026-10-02T17:15:00+05:30", "p10Kw": 119, "p50Kw": 149, "p90Kw": 179, "availableKw": 168, "limitKw": 200, "actualKw": null },
+    { "slotIso": "2026-10-02T17:30:00+05:30", "p10Kw": 117, "p50Kw": 146, "p90Kw": 175, "availableKw": 169, "limitKw": 200, "actualKw": null },
+    { "slotIso": "2026-10-02T17:45:00+05:30", "p10Kw": 114, "p50Kw": 143, "p90Kw": 172, "availableKw": 170, "limitKw": 200, "actualKw": null }
+  ],
+  "deficitWindows": []
+}

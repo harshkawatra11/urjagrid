@@ -1,0 +1,6 @@
+{
+  "registrations": [
+    { "id": "reg_1", "consumerId": "c_kn_01_0040", "subdivisionId": "sd_krishnanagar", "category": "life_support_home", "notes": "Home oxygen concentrator, 2 units.", "registeredBy": "field_lineman_01", "verified": true, "createdIso": "2026-09-20T10:00:00+05:30" },
+    { "id": "reg_2", "consumerId": "c_sn_01_0022", "subdivisionId": "sd_subhashnagar", "category": "critical_facility", "notes": "General store with cold storage for medicines.", "registeredBy": "field_lineman_02", "verified": false, "createdIso": "2026-09-28T14:30:00+05:30" }
+  ]
+}

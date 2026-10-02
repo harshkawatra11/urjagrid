@@ -209,3 +209,196 @@ export interface EventLogEntry {
   planId: string | null;
   message: string;
 }
+
+/* ---------- D12 managed charging (OCPP) ---------- */
+
+export interface ChargerStatus {
+  id: string;
+  dtId: string;
+  subdivisionId: SubdivisionId;
+  name: string;
+  kind: "ev" | "e_rickshaw";
+  status: "online" | "charging" | "curtailed" | "offline";
+  curtailmentFraction: number;
+  powerKw: number;
+  ratedKw: number;
+}
+
+/* ---------- D13 storage + P2P (OpenADR / Beckn) ---------- */
+
+export interface StorageAsset {
+  id: string;
+  dtId: string;
+  subdivisionId: SubdivisionId;
+  name: string;
+  socPct: number;
+  dispatchKw: number;
+  capacityKwh: number;
+}
+
+export interface P2pTrade {
+  id: string;
+  sellerId: string;
+  buyerId: string;
+  subdivisionId: SubdivisionId;
+  energyKwh: number;
+  priceRs: number;
+  timestampIso: string;
+  protocol: "beckn";
+  status: "confirmed" | "pending" | "failed";
+}
+
+/* ---------- D14 demand response (Beta-Bernoulli acceptance model) ---------- */
+
+export interface DrBelief {
+  subdivisionId: SubdivisionId;
+  alpha: number;
+  beta: number;
+  acceptanceRateEstimate: number;
+  sampleCount: number;
+}
+
+export interface RebateLedgerEntry {
+  subdivisionId: SubdivisionId;
+  consumerCount: number;
+  kwhShifted: number;
+  totalRebateRs: number;
+}
+
+/* ---------- D21 consumers and channels ---------- */
+
+export interface ConsumerMessageRecord {
+  id: string;
+  consumerId: string;
+  subdivisionId: SubdivisionId;
+  channel: "whatsapp" | "ivr" | "sms";
+  direction: "outbound" | "inbound";
+  bodyHi: string;
+  bodyEn: string;
+  timestampIso: string;
+  audioUrl: string | null;
+}
+
+export interface Complaint {
+  id: string;
+  consumerId: string;
+  subdivisionId: SubdivisionId;
+  kind: "outage" | "billing" | "voltage" | "other";
+  status: "open" | "ack" | "resolved";
+  createdIso: string;
+  message: string;
+}
+
+/* ---------- D20 critical loads / D28 field registry ---------- */
+
+export interface FieldRegistration {
+  id: string;
+  consumerId: string;
+  subdivisionId: SubdivisionId;
+  category: "critical_facility" | "life_support_home";
+  notes: string;
+  registeredBy: string;
+  verified: boolean;
+  createdIso: string;
+}
+
+export interface OutageReport {
+  id: string;
+  consumerId: string | null;
+  dtId: string | null;
+  subdivisionId: SubdivisionId;
+  description: string;
+  status: "reported" | "confirmed" | "resolved";
+  createdIso: string;
+}
+
+/* ---------- D23 analytics / governance ---------- */
+
+export interface AuditLogEntry {
+  id: string;
+  timestampIso: string;
+  actorName: string;
+  actorRole: string;
+  action: string;
+  targetType: string;
+  targetId: string;
+}
+
+export interface RolePermissionRow {
+  role: string;
+  canApprovePlans: boolean;
+  canEditScenario: boolean;
+  canViewConsumerData: boolean;
+  canDispatch: boolean;
+  canSeeRegulatorAggregates: boolean;
+}
+
+export interface UsageStat {
+  metric: string;
+  value: number;
+  unit: string;
+}
+
+/* ---------- D24 economics ---------- */
+
+export interface EconomicsAssumptions {
+  rebateRsPerKwh: number;
+  dtFailureCostRs: number;
+  deferredUpgradeCostRs: number;
+  energyValueRsPerKwh: number;
+  monthlyFeeRsPerMeter: number;
+}
+
+export interface MoneyFlowEdge {
+  from: string;
+  to: string;
+  amountRs: number;
+}
+
+export interface EconomicsSummary {
+  paybackMonths: number;
+  bcr: number;
+  monthlyFeeRs: number;
+  annualSavingsRs: number;
+  nMeters: number;
+  moneyFlow: MoneyFlowEdge[];
+}
+
+/* ---------- D25 protocols / D26 regulator (federation) ---------- */
+
+export interface FederationNode {
+  discom: "MVVNL" | "DVVNL";
+  town: string;
+  subdivisionCount: number;
+  consumerCount: number;
+  reliabilityIndex: number;
+  flexibilityIndex: number;
+  fairnessIndex: number;
+}
+
+/* ---------- D16 forecast studio ---------- */
+
+export interface ForecastBacktest {
+  wapePct: number;
+  skillScore: number;
+  coveragePct: number;
+  targetCoveragePct: number;
+}
+
+export interface FeatureImportance {
+  name: string;
+  importance: number;
+}
+
+/* ---------- D27 consumer phone app ---------- */
+
+export interface ConsumerStatus {
+  consumerId: string;
+  name: string;
+  subdivisionId: SubdivisionId;
+  tier: "T0" | "T1" | "T2" | "T3";
+  meterState: MeterState;
+  lifelineGuaranteeW: number;
+  availabilityBlocks: Array<"available" | "lifeline" | "shed">;
+  drAsk: { headlineHi: string; windowStartIso: string; windowEndIso: string; rebateRsPerKwh: number } | null;
+}

@@ -1,0 +1,16 @@
+{
+  "beliefs": [
+    { "subdivisionId": "sd_subhashnagar", "alpha": 62, "beta": 18, "acceptanceRateEstimate": 0.775, "sampleCount": 80 },
+    { "subdivisionId": "sd_izzatnagar", "alpha": 40, "beta": 22, "acceptanceRateEstimate": 0.645, "sampleCount": 62 },
+    { "subdivisionId": "sd_faridpur", "alpha": 28, "beta": 10, "acceptanceRateEstimate": 0.737, "sampleCount": 38 },
+    { "subdivisionId": "sd_krishnanagar", "alpha": 71, "beta": 35, "acceptanceRateEstimate": 0.670, "sampleCount": 106 },
+    { "subdivisionId": "sd_kosikalan", "alpha": 33, "beta": 9, "acceptanceRateEstimate": 0.786, "sampleCount": 42 }
+  ],
+  "rebateLedger": [
+    { "subdivisionId": "sd_subhashnagar", "consumerCount": 620, "kwhShifted": 410.2, "totalRebateRs": 820.4 },
+    { "subdivisionId": "sd_izzatnagar", "consumerCount": 410, "kwhShifted": 268.5, "totalRebateRs": 537.0 },
+    { "subdivisionId": "sd_faridpur", "consumerCount": 280, "kwhShifted": 150.3, "totalRebateRs": 300.6 },
+    { "subdivisionId": "sd_krishnanagar", "consumerCount": 740, "kwhShifted": 512.8, "totalRebateRs": 1025.6 },
+    { "subdivisionId": "sd_kosikalan", "consumerCount": 300, "kwhShifted": 182.1, "totalRebateRs": 364.2 }
+  ]
+}

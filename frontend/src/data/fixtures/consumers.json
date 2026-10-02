@@ -1,0 +1,13 @@
+{
+  "consumers": [
+    { "id": "c_sn_01_0001", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "tier": "T1", "name": "House 1", "meterState": "normal", "capLevel": "none", "connectedLoadW": 1200, "lifelineHoursToday": 24, "drOptedIn": true },
+    { "id": "c_sn_01_0007", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "tier": "T1", "name": "Priya Sharma", "meterState": "dr", "capLevel": "none", "connectedLoadW": 1500, "lifelineHoursToday": 24, "drOptedIn": true },
+    { "id": "c_sn_01_0022", "dtId": "dt_sn_01", "subdivisionId": "sd_subhashnagar", "tier": "T2", "name": "Verma General Store", "meterState": "capped", "capLevel": "comfort", "connectedLoadW": 2000, "lifelineHoursToday": 22, "drOptedIn": false },
+    { "id": "c_sn_02_0004", "dtId": "dt_sn_02", "subdivisionId": "sd_subhashnagar", "tier": "T1", "name": "House 4", "meterState": "normal", "capLevel": "none", "connectedLoadW": 900, "lifelineHoursToday": 24, "drOptedIn": false },
+    { "id": "c_kn_01_0005", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "tier": "T1", "name": "Ramesh Yadav", "meterState": "capped", "capLevel": "essential", "connectedLoadW": 1100, "lifelineHoursToday": 18, "drOptedIn": true },
+    { "id": "c_kn_01_0031", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "tier": "T1", "name": "Sunita Devi", "meterState": "shed", "capLevel": "lifeline", "connectedLoadW": 600, "lifelineHoursToday": 14, "drOptedIn": true },
+    { "id": "c_kn_01_0040", "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "tier": "T0", "name": "Mrs. Sharma (home oxygen)", "meterState": "normal", "capLevel": "none", "connectedLoadW": 800, "lifelineHoursToday": 24, "drOptedIn": false },
+    { "id": "c_kk_01_0002", "dtId": "dt_kk_01", "subdivisionId": "sd_kosikalan", "tier": "T2", "name": "Kosi Kalan Dairy", "meterState": "normal", "capLevel": "none", "connectedLoadW": 2600, "lifelineHoursToday": 24, "drOptedIn": true },
+    { "id": "c_kk_01_0009", "dtId": "dt_kk_01", "subdivisionId": "sd_kosikalan", "tier": "T1", "name": "House 9", "meterState": "offline", "capLevel": "none", "connectedLoadW": 0, "lifelineHoursToday": 9, "drOptedIn": false }
+  ]
+}

@@ -238,3 +238,21 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Printable A4 scorecard (D6 /subdivisions/[id]): hide the dashboard shell/chrome and render
+   only the elements marked .print-scorecard, in light ink on a white page. */
+@media print {
+  body * { visibility: hidden; }
+  .print-scorecard, .print-scorecard * { visibility: visible; }
+  .print-scorecard {
+    position: absolute;
+    inset: 0;
+    width: 210mm;
+    margin: 0 auto;
+    background: #fff !important;
+    color: #111 !important;
+    padding: 12mm;
+  }
+  .print-scorecard * { color: #111 !important; background: transparent !important; border-color: #999 !important; }
+  .no-print { display: none !important; }
+}
