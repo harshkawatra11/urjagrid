@@ -19,6 +19,6 @@ export default defineConfig({
     // worker at once (observed: 100s+ just in transform/setup before any test runs, then
     // individually-fast tests time out waiting for a starved event loop). Capping workers keeps
     // each file's own timers and fetch-mock promises responsive.
-    maxForks: 4,
+    maxWorkers: 4,
   },
 });
