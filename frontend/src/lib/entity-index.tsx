@@ -31,7 +31,7 @@ export const STATIC_DATA: EntityData = {
 };
 
 export function buildEntityIndex(data: EntityData): EntityIndex {
-  const subdivisionMap = new Map(data.subdivisions.map((d) => [d.id, d.name]));
+  const subdivisionMap = new Map<string, string>(data.subdivisions.map((d) => [d.id, d.name]));
   const transformerMap = new Map(data.transformers.map((t) => [t.id, t.name]));
   const feederMap = new Map(data.feeders.map((f) => [f.id, f.name]));
   return {
