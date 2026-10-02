@@ -100,9 +100,7 @@ def solve_power_flow(
         branch_current = {}
         for branch in network.branches:
             subtree = _subtree_buses(network, branch.child)
-            branch_current[(branch.parent, branch.child)] = sum(
-                injected[b] for b in subtree
-            )
+            branch_current[(branch.parent, branch.child)] = sum(injected[b] for b in subtree)
 
         # Forward sweep: propagate voltage drops from root outward (BFS order).
         new_voltage = dict(voltage)

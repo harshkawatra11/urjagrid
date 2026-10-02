@@ -59,9 +59,7 @@ def create_app() -> FastAPI:
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
     @app.exception_handler(LifelineGridError)
-    async def lifelinegrid_error_handler(
-        _request: Request, exc: LifelineGridError
-    ) -> JSONResponse:
+    async def lifelinegrid_error_handler(_request: Request, exc: LifelineGridError) -> JSONResponse:
         return JSONResponse(status_code=500, content={"detail": str(exc)})
 
     @app.get("/health")
@@ -69,6 +67,40 @@ def create_app() -> FastAPI:
         return {"status": "ok", "env": settings.env}
 
     # ROUTERS
+    from app.api.v1.admin import router as admin_router
+    from app.api.v1.auth import router as auth_router
+    from app.api.v1.consumers import router as consumers_router
+    from app.api.v1.economics import router as economics_router
+    from app.api.v1.field import router as field_router
+    from app.api.v1.flex import router as flex_router
+    from app.api.v1.forecast import router as forecast_router
+    from app.api.v1.grid import router as grid_router
+    from app.api.v1.insights import router as insights_router
+    from app.api.v1.openadr import router as openadr_router
+    from app.api.v1.plans import router as plans_router
+    from app.api.v1.protocols import router as protocols_router
+    from app.api.v1.scenario import router as scenario_router
+    from app.api.v1.stream import router as stream_router
+    from app.voice.router import router as voice_router
+
+    for r in (
+        auth_router,
+        grid_router,
+        forecast_router,
+        plans_router,
+        flex_router,
+        consumers_router,
+        field_router,
+        protocols_router,
+        scenario_router,
+        economics_router,
+        openadr_router,
+        admin_router,
+        insights_router,
+        stream_router,
+        voice_router,
+    ):
+        app.include_router(r)
 
     return app
 

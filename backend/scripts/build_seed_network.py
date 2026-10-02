@@ -149,8 +149,10 @@ def main() -> None:
                 dt_lon[dt_id] = lon
 
                 target_consumers_this_dt = round(TARGET_CONSUMERS * (n_dts / total_dts) / n_dts)
-                n_consumers = max(80, int(rng.integers(target_consumers_this_dt - 20,
-                                                          target_consumers_this_dt + 21)))
+                n_consumers = max(
+                    80,
+                    int(rng.integers(target_consumers_this_dt - 20, target_consumers_this_dt + 21)),
+                )
                 for c_idx in range(1, n_consumers + 1):
                     c_id = f"c_{code}_{dt_counter:02d}_{c_idx:04d}"
                     consumer_ids.append(c_id)

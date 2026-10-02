@@ -23,9 +23,7 @@ def test_feature_names_has_13_entries() -> None:
 def test_day_builder_output_shape() -> None:
     builder = DayBuilder()
     arrays = _day_arrays()
-    result = builder.build(
-        **arrays, dt_rating_kva=160.0, day_of_week=2, month_of_year=6
-    )
+    result = builder.build(**arrays, dt_rating_kva=160.0, day_of_week=2, month_of_year=6)
     assert result.features.shape == (96, 13)
     assert result.target_pu.shape == (96,)
 

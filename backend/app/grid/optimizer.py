@@ -234,9 +234,9 @@ def _solve_greedy(inputs: PlanInputs) -> PlanSolution:
                 remaining -= CAP_RELIEF_FRACTION[3] * gap
 
         dt_limit = inputs.dt_limit_kw.get(dt_id, _peak_gap(inputs, dt_id) + 1e9)
-        overload = max(0.0, _peak_gap(inputs, dt_id) - dt_limit - (
-            _peak_gap(inputs, dt_id) - remaining
-        ))
+        overload = max(
+            0.0, _peak_gap(inputs, dt_id) - dt_limit - (_peak_gap(inputs, dt_id) - remaining)
+        )
 
         cap_level_by_dt[dt_id] = cap_level
         hub_frac_by_dt[dt_id] = hub_frac
