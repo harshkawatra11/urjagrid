@@ -69,6 +69,9 @@ def create_app() -> FastAPI:
         return {"status": "ok", "env": settings.env}
 
     # ROUTERS
+    from app.api.v1.auth import router as auth_router
+
+    app.include_router(auth_router)
 
     return app
 

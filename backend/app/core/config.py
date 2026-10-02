@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     time_scale: int = 60
     admin_enabled: bool = True
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
-    jwt_secret: str = "change-me-in-production"
+    jwt_secret: str = "change-me-in-production-please-use-env-var"
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 480
 
