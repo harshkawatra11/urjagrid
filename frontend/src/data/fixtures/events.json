@@ -1,0 +1,9 @@
+{
+  "events": [
+    { "id": "e1", "timestampIso": "2026-10-02T20:15:00+05:30", "kind": "dispatch", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": "fp_a1b2c3d4", "message": "Flex Plan dispatched: lifeline cap on dt_kn_01" },
+    { "id": "e2", "timestampIso": "2026-10-02T20:00:00+05:30", "kind": "approval", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": "fp_a1b2c3d4", "message": "JE Singh approved plan fp_a1b2c3d4" },
+    { "id": "e3", "timestampIso": "2026-10-02T19:40:00+05:30", "kind": "alarm", "subdivisionId": "sd_krishnanagar", "dtId": "dt_kn_01", "planId": null, "message": "Hot-spot alarm: dt_kn_01 at 121.8°C" },
+    { "id": "e4", "timestampIso": "2026-10-02T19:10:00+05:30", "kind": "forecast", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_01", "planId": null, "message": "36h forecast refreshed for sd_subhashnagar" },
+    { "id": "e5", "timestampIso": "2026-10-02T18:30:00+05:30", "kind": "verify", "subdivisionId": "sd_subhashnagar", "dtId": "dt_sn_01", "planId": "fp_88cd99aa", "message": "M&V confirmed 38 kW relief on dt_sn_01" }
+  ]
+}

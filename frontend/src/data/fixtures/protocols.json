@@ -1,0 +1,13 @@
+{
+  "protocolNames": ["hes", "ocpp", "openadr", "beckn", "whatsapp", "ivr", "sms"],
+  "counts": { "hes": 142, "ocpp": 88, "openadr": 34, "beckn": 19, "whatsapp": 612, "ivr": 205, "sms": 97 },
+  "entries": [
+    { "id": "pm_1", "protocol": "hes", "direction": "outbound", "summary": "DLMS load limit 500W set on dt_kn_01 meters", "payload": { "obis": "1.0.94.91.0.255", "limitW": 500, "dtId": "dt_kn_01" }, "timestampIso": "2026-10-02T20:00:00+05:30", "status": "acked" },
+    { "id": "pm_2", "protocol": "ocpp", "direction": "outbound", "summary": "SetChargingProfile curtail 40% chg_sn_01", "payload": { "chargePointId": "chg_sn_01", "profile": { "chargingRateUnit": "W", "limit": 9600 } }, "timestampIso": "2026-10-02T19:55:00+05:30", "status": "acked" },
+    { "id": "pm_3", "protocol": "openadr", "direction": "outbound", "summary": "Event dispatched to water pump VEN sd_krishnanagar", "payload": { "eventID": "evt_42", "programID": "prg_shiftable" }, "timestampIso": "2026-10-02T19:50:00+05:30", "status": "sent" },
+    { "id": "pm_4", "protocol": "beckn", "direction": "inbound", "summary": "P2P trade confirm trd_1", "payload": { "transaction_id": "trd_1", "energy_kwh": 3.2 }, "timestampIso": "2026-10-02T19:45:00+05:30", "status": "acked" },
+    { "id": "pm_5", "protocol": "whatsapp", "direction": "outbound", "summary": "Hindi DR ask sent to 620 Subhash Nagar consumers", "payload": { "template": "dr_ask_hi", "count": 620 }, "timestampIso": "2026-10-02T18:00:00+05:30", "status": "sent" },
+    { "id": "pm_6", "protocol": "ivr", "direction": "outbound", "summary": "IVR notice call to life-support home registry", "payload": { "campaign": "lifeline_notice" }, "timestampIso": "2026-10-02T17:55:00+05:30", "status": "acked" },
+    { "id": "pm_7", "protocol": "sms", "direction": "outbound", "summary": "SMS fallback to 97 non-WhatsApp numbers", "payload": { "count": 97 }, "timestampIso": "2026-10-02T17:50:00+05:30", "status": "sent" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "consumerId": "c_sn_01_0007",
+  "name": "Priya Sharma",
+  "subdivisionId": "sd_subhashnagar",
+  "tier": "T1",
+  "meterState": "dr",
+  "lifelineGuaranteeW": 300,
+  "availabilityBlocks": [
+    "available", "available", "available", "available", "available", "available",
+    "available", "available", "available", "available", "available", "available",
+    "available", "available", "available", "available", "available", "lifeline",
+    "lifeline", "available", "available", "available", "available", "available"
+  ],
+  "drAsk": {
+    "headlineHi": "आज शाम 6 से 8 बजे के बीच थोड़ी बिजली बचाएं और ₹2/यूनिट कमाएं",
+    "windowStartIso": "2026-10-02T18:00:00+05:30",
+    "windowEndIso": "2026-10-02T20:00:00+05:30",
+    "rebateRsPerKwh": 2.0
+  }
+}

@@ -4,16 +4,33 @@ import useSWR, { type KeyedMutator } from "swr";
 import { ApiError, fetchJson, isNetworkError, scopeQuery } from "./base";
 import { filterBySubdivision, fixtureNameFor, loadFixture } from "./fixtures";
 import type {
+  AuditLogEntry,
+  ChargerStatus,
+  Complaint,
   Consumer,
+  ConsumerMessageRecord,
+  ConsumerStatus,
   CriticalFacility,
+  DrBelief,
+  EconomicsAssumptions,
+  EconomicsSummary,
   EventLogEntry,
   Feeder,
   FairnessMetrics,
+  FederationNode,
+  FieldRegistration,
   FlexPlan,
   ForecastBundle,
+  OutageReport,
+  P2pTrade,
+  ProtocolMessageRecord,
+  RebateLedgerEntry,
   ReliabilityMetrics,
+  RolePermissionRow,
+  StorageAsset,
   Subdivision,
   Transformer,
+  UsageStat,
 } from "./types";
 
 /** Refresh cadence in ms: fast for live ops, slow for mostly-static analytics. */
@@ -155,6 +172,135 @@ export function useFairness(scope: ScopeArg = "all") {
 export function useEvents(scope: ScopeArg = "all") {
   return useApi<{ events: EventLogEntry[] }>(`${P}/events${scopeQuery(scope)}`, { events: [] }, {
     refreshInterval: REFRESH.live,
+    scope,
+  });
+}
+
+/* ---------- consumers list / messages / complaints (D21) ---------- */
+
+export function useConsumersList(scope: ScopeArg = "all") {
+  return useApi<{ consumers: Consumer[] }>(`${P}/consumers${scopeQuery(scope)}`, { consumers: [] }, {
+    refreshInterval: REFRESH.lists,
+    scope,
+  });
+}
+
+export function useConsumerMessages(scope: ScopeArg = "all") {
+  return useApi<{ messages: ConsumerMessageRecord[] }>(
+    `${P}/consumers/messages${scopeQuery(scope)}`,
+    { messages: [] },
+    { refreshInterval: REFRESH.lists, scope },
+  );
+}
+
+export function useComplaints(scope: ScopeArg = "all") {
+  return useApi<{ complaints: Complaint[] }>(`${P}/consumers/complaints${scopeQuery(scope)}`, { complaints: [] }, {
+    refreshInterval: REFRESH.lists,
+    scope,
+  });
+}
+
+/** D27 consumer phone app: a single consumer's own status card. */
+export function useConsumerStatus(consumerId: string | null | undefined) {
+  return useApi<ConsumerStatus | null>(consumerId ? `${P}/consumers/${consumerId}/status` : null, null, {
+    refreshInterval: REFRESH.live,
+  });
+}
+
+/* ---------- flex levers detail (D12/D13/D14) ---------- */
+
+export function useChargers(scope: ScopeArg = "all") {
+  return useApi<{ chargers: ChargerStatus[] }>(`${P}/flex/chargers${scopeQuery(scope)}`, { chargers: [] }, {
+    refreshInterval: REFRESH.live,
+    scope,
+  });
+}
+
+export function useStorageAssets(scope: ScopeArg = "all") {
+  return useApi<{ storageAssets: StorageAsset[]; trades: P2pTrade[] }>(
+    `${P}/flex/storage${scopeQuery(scope)}`,
+    { storageAssets: [], trades: [] },
+    { refreshInterval: REFRESH.live, scope },
+  );
+}
+
+export function useDrBeliefs(scope: ScopeArg = "all") {
+  return useApi<{ beliefs: DrBelief[]; rebateLedger: RebateLedgerEntry[] }>(
+    `${P}/flex/dr${scopeQuery(scope)}`,
+    { beliefs: [], rebateLedger: [] },
+    { refreshInterval: REFRESH.lists, scope },
+  );
+}
+
+/* ---------- protocols / federation (D25/D26) ---------- */
+
+export function useProtocols(scope: ScopeArg = "all") {
+  return useApi<{ protocolNames: string[]; counts: Record<string, number>; entries: ProtocolMessageRecord[] }>(
+    `${P}/protocols${scopeQuery(scope)}`,
+    { protocolNames: [], counts: {}, entries: [] },
+    { refreshInterval: REFRESH.live, scope },
+  );
+}
+
+export function useFederation() {
+  return useApi<{ nodes: FederationNode[] }>(`${P}/federation`, { nodes: [] }, {
+    refreshInterval: REFRESH.analytics,
+  });
+}
+
+/* ---------- economics (D24) ---------- */
+
+export function useEconomics() {
+  return useApi<{ assumptions: EconomicsAssumptions; summary: EconomicsSummary }>(
+    `${P}/economics/unit`,
+    {
+      assumptions: {
+        rebateRsPerKwh: 2,
+        dtFailureCostRs: 0,
+        deferredUpgradeCostRs: 0,
+        energyValueRsPerKwh: 0,
+        monthlyFeeRsPerMeter: 0,
+      },
+      summary: { paybackMonths: 0, bcr: 0, monthlyFeeRs: 0, annualSavingsRs: 0, nMeters: 0, moneyFlow: [] },
+    },
+    { refreshInterval: REFRESH.analytics },
+  );
+}
+
+/* ---------- analytics / governance (D23) ---------- */
+
+export function useAuditLog(scope: ScopeArg = "all") {
+  return useApi<{ entries: AuditLogEntry[] }>(`${P}/analytics/audit${scopeQuery(scope)}`, { entries: [] }, {
+    refreshInterval: REFRESH.lists,
+    scope,
+  });
+}
+
+export function useRoleMatrix() {
+  return useApi<{ roles: RolePermissionRow[] }>(`${P}/analytics/roles`, { roles: [] }, {
+    refreshInterval: REFRESH.none,
+  });
+}
+
+export function useUsageStats() {
+  return useApi<{ stats: UsageStat[] }>(`${P}/analytics/usage`, { stats: [] }, {
+    refreshInterval: REFRESH.analytics,
+  });
+}
+
+/* ---------- field worker app (D28) ---------- */
+
+export function useFieldRegistry(scope: ScopeArg = "all") {
+  return useApi<{ registrations: FieldRegistration[] }>(
+    `${P}/field/registry${scopeQuery(scope)}`,
+    { registrations: [] },
+    { refreshInterval: REFRESH.lists, scope },
+  );
+}
+
+export function useOutageReports(scope: ScopeArg = "all") {
+  return useApi<{ reports: OutageReport[] }>(`${P}/field/outages${scopeQuery(scope)}`, { reports: [] }, {
+    refreshInterval: REFRESH.lists,
     scope,
   });
 }

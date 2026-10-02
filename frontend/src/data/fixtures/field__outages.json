@@ -1,0 +1,6 @@
+{
+  "reports": [
+    { "id": "out_1", "consumerId": "c_kk_01_0009", "dtId": "dt_kk_01", "subdivisionId": "sd_kosikalan", "description": "No power since 7 PM, meter shows offline.", "status": "confirmed", "createdIso": "2026-10-02T19:30:00+05:30" },
+    { "id": "out_2", "consumerId": null, "dtId": "dt_kn_01", "subdivisionId": "sd_krishnanagar", "description": "Blown fuse reported near Krishna Nagar market.", "status": "reported", "createdIso": "2026-10-02T20:05:00+05:30" }
+  ]
+}

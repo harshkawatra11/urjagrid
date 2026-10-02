@@ -1,0 +1,37 @@
+{
+  "messages": [
+    {
+      "id": "msg_1",
+      "consumerId": "c_sn_01_0007",
+      "subdivisionId": "sd_subhashnagar",
+      "channel": "whatsapp",
+      "direction": "outbound",
+      "bodyHi": "आज शाम 6 से 8 बजे के बीच बिजली कम रहेगी। अगर आप थोड़ी देर के लिए अपने उपकरण कम करते हैं तो आपको प्रति यूनिट ₹2 की छूट मिलेगी।",
+      "bodyEn": "Power will be limited between 6-8 PM today. Shift your load and get Rs 2/unit rebate.",
+      "timestampIso": "2026-10-02T16:00:00+05:30",
+      "audioUrl": "/api/v1/consumers/messages/msg_1/audio"
+    },
+    {
+      "id": "msg_2",
+      "consumerId": "c_sn_01_0007",
+      "subdivisionId": "sd_subhashnagar",
+      "channel": "ivr",
+      "direction": "inbound",
+      "bodyHi": "हां, मैं तैयार हूं।",
+      "bodyEn": "Yes, I accept.",
+      "timestampIso": "2026-10-02T16:05:00+05:30",
+      "audioUrl": "/api/v1/consumers/messages/msg_2/audio"
+    },
+    {
+      "id": "msg_3",
+      "consumerId": "c_kn_01_0005",
+      "subdivisionId": "sd_krishnanagar",
+      "channel": "sms",
+      "direction": "outbound",
+      "bodyHi": "सूचना: आज रात आपके ट्रांसफार्मर पर लोड सीमा लागू होगी। जीवन-रक्षक उपकरण प्रभावित नहीं होंगे।",
+      "bodyEn": "Notice: a load cap applies on your transformer tonight. Life-support devices are unaffected.",
+      "timestampIso": "2026-10-02T18:00:00+05:30",
+      "audioUrl": null
+    }
+  ]
+}

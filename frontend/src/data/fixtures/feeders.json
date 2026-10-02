@@ -1,0 +1,96 @@
+{
+  "feeders": [
+    {
+      "id": "fdr_sn_a",
+      "subdivisionId": "sd_subhashnagar",
+      "name": "Subhash Nagar Feeder A",
+      "voltageKv": 11,
+      "dtIds": ["dt_sn_01", "dt_sn_02"],
+      "loadingPu": 1.02,
+      "riskLevel": "high",
+      "path": [
+        { "lat": 28.3772, "lng": 79.452 },
+        { "lat": 28.3791, "lng": 79.4552 },
+        { "lat": 28.3802, "lng": 79.4561 }
+      ]
+    },
+    {
+      "id": "fdr_sn_b",
+      "subdivisionId": "sd_subhashnagar",
+      "name": "Subhash Nagar Feeder B",
+      "voltageKv": 11,
+      "dtIds": [],
+      "loadingPu": 0.68,
+      "riskLevel": "low",
+      "path": [
+        { "lat": 28.374, "lng": 79.449 },
+        { "lat": 28.376, "lng": 79.451 }
+      ]
+    },
+    {
+      "id": "fdr_iz_a",
+      "subdivisionId": "sd_izzatnagar",
+      "name": "Izzatnagar Feeder A",
+      "voltageKv": 11,
+      "dtIds": [],
+      "loadingPu": 0.79,
+      "riskLevel": "moderate",
+      "path": [
+        { "lat": 28.3265, "lng": 79.4172 },
+        { "lat": 28.3283, "lng": 79.4192 }
+      ]
+    },
+    {
+      "id": "fdr_fp_a",
+      "subdivisionId": "sd_faridpur",
+      "name": "Faridpur Feeder A",
+      "voltageKv": 11,
+      "dtIds": [],
+      "loadingPu": 0.52,
+      "riskLevel": "low",
+      "path": [
+        { "lat": 28.2018, "lng": 79.5456 },
+        { "lat": 28.2039, "lng": 79.5478 }
+      ]
+    },
+    {
+      "id": "fdr_kn_a",
+      "subdivisionId": "sd_krishnanagar",
+      "name": "Krishna Nagar Feeder A",
+      "voltageKv": 11,
+      "dtIds": ["dt_kn_01"],
+      "loadingPu": 1.28,
+      "riskLevel": "critical",
+      "path": [
+        { "lat": 27.4905, "lng": 77.6719 },
+        { "lat": 27.4927, "lng": 77.6741 }
+      ]
+    },
+    {
+      "id": "fdr_kn_b",
+      "subdivisionId": "sd_krishnanagar",
+      "name": "Krishna Nagar Feeder B",
+      "voltageKv": 11,
+      "dtIds": [],
+      "loadingPu": 0.91,
+      "riskLevel": "moderate",
+      "path": [
+        { "lat": 27.487, "lng": 77.669 },
+        { "lat": 27.489, "lng": 77.671 }
+      ]
+    },
+    {
+      "id": "fdr_kk_a",
+      "subdivisionId": "sd_kosikalan",
+      "name": "Kosi Kalan Feeder A",
+      "voltageKv": 11,
+      "dtIds": [],
+      "loadingPu": 0.74,
+      "riskLevel": "moderate",
+      "path": [
+        { "lat": 27.6189, "lng": 77.432 },
+        { "lat": 27.6208, "lng": 77.4342 }
+      ]
+    }
+  ]
+}

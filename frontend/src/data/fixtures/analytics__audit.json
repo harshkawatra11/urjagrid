@@ -1,0 +1,8 @@
+{
+  "entries": [
+    { "id": "aud_1", "timestampIso": "2026-10-02T20:00:00+05:30", "actorName": "JE Singh", "actorRole": "je", "action": "approve", "targetType": "FlexPlan", "targetId": "fp_a1b2c3d4" },
+    { "id": "aud_2", "timestampIso": "2026-10-02T19:40:00+05:30", "actorName": "AE Gupta", "actorRole": "ae", "action": "edit", "targetType": "FlexPlan", "targetId": "fp_88cd99aa" },
+    { "id": "aud_3", "timestampIso": "2026-10-02T14:30:00+05:30", "actorName": "field_lineman_01", "actorRole": "field", "action": "register", "targetType": "FieldRegistration", "targetId": "reg_1" },
+    { "id": "aud_4", "timestampIso": "2026-10-02T09:15:00+05:30", "actorName": "admin_demo", "actorRole": "admin", "action": "scenario_run", "targetType": "Scenario", "targetId": "heatwave_evening" }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "complaints": [
+    { "id": "cmp_1", "consumerId": "c_kk_01_0009", "subdivisionId": "sd_kosikalan", "kind": "outage", "status": "open", "createdIso": "2026-10-02T19:30:00+05:30", "message": "No power since 7 PM, meter shows offline." },
+    { "id": "cmp_2", "consumerId": "c_kn_01_0031", "subdivisionId": "sd_krishnanagar", "kind": "voltage", "status": "ack", "createdIso": "2026-10-02T18:50:00+05:30", "message": "Lights flickering since evening peak." },
+    { "id": "cmp_3", "consumerId": "c_sn_01_0022", "subdivisionId": "sd_subhashnagar", "kind": "billing", "status": "resolved", "createdIso": "2026-10-01T11:10:00+05:30", "message": "DR rebate not credited for last week." }
+  ]
+}

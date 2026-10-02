@@ -1,0 +1,10 @@
+{
+  "roles": [
+    { "role": "consumer", "canApprovePlans": false, "canEditScenario": false, "canViewConsumerData": true, "canDispatch": false, "canSeeRegulatorAggregates": false },
+    { "role": "field", "canApprovePlans": false, "canEditScenario": false, "canViewConsumerData": true, "canDispatch": false, "canSeeRegulatorAggregates": false },
+    { "role": "je", "canApprovePlans": true, "canEditScenario": false, "canViewConsumerData": true, "canDispatch": true, "canSeeRegulatorAggregates": false },
+    { "role": "ae", "canApprovePlans": true, "canEditScenario": true, "canViewConsumerData": true, "canDispatch": true, "canSeeRegulatorAggregates": false },
+    { "role": "regulator", "canApprovePlans": false, "canEditScenario": false, "canViewConsumerData": false, "canDispatch": false, "canSeeRegulatorAggregates": true },
+    { "role": "admin", "canApprovePlans": true, "canEditScenario": true, "canViewConsumerData": true, "canDispatch": true, "canSeeRegulatorAggregates": true }
+  ]
+}
