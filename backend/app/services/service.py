@@ -79,7 +79,9 @@ class ScenarioData:
 
 def build_scenario(seed: int = 0, scenario_name: str = "synthetic_default") -> ScenarioData:
     network = synthetic_network(seed=seed)
-    weather = synthetic_series(seed=seed)
+    from app.grid.weather import BUILTIN_SCENARIOS
+
+    weather = BUILTIN_SCENARIOS[scenario_name].to_series() if scenario_name in BUILTIN_SCENARIOS else synthetic_series(seed=seed)
     load_model = LoadModel(seed=seed)
     dt_gross_kw = load_model.generate_network_demand(network.consumers, weather)
 
