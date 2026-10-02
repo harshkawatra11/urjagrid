@@ -20,12 +20,11 @@ export function LeverWaterfall({
   height?: number;
   label?: string;
 }) {
-  let running = 0;
-  const data = bars.map((b) => {
-    const base = running;
-    running += b.reliefKw;
-    return { ...b, base, name: LEVER_SHORT_LABEL[b.lever] };
-  });
+  const data = bars.reduce<Array<LeverWaterfallBar & { base: number; name: string }>>((acc, b) => {
+    const base = acc.length > 0 ? acc[acc.length - 1].base + acc[acc.length - 1].reliefKw : 0;
+    acc.push({ ...b, base, name: LEVER_SHORT_LABEL[b.lever] });
+    return acc;
+  }, []);
 
   return (
     <ChartFrame label={label}>
