@@ -171,11 +171,11 @@ In a deficit, the active Flex Plan reduces kW draw at chargers, shiftable public
 
 ```mermaid
 flowchart LR
-    DISCOM["DISCOM"] -->|monthly software fee\nper meter| LIFELINEGRID["UrjaGrid"]
+    DISCOM["DISCOM"] -->|monthly software fee\nper meter| URJAGRID["UrjaGrid"]
     DISCOM -->|Rs 2/kWh DR rebate| CONSUMERS["Consumers who shift load"]
     DISCOM -->|per verified registration| FIELDWORKERS["Field workers"]
 
-    CONSUMERS -->|pays nothing for the service| LIFELINEGRID
+    CONSUMERS -->|pays nothing for the service| URJAGRID
 
     AVOIDED["Energy that would've\nbeen shed, now served"] -->|value recovered| DISCOM
     FEWERFAIL["Fewer DT failures"] -->|avoided replacement cost| DISCOM
