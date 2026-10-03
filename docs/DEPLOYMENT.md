@@ -12,36 +12,48 @@ UrjaGrid is built under a **software-only deployment constraint** (`docs/SPEC.md
 - **Frontend → Vercel.** Next.js 16 App Router, deployed the standard Vercel way. Every page is required to render from committed offline-fixture JSON when the backend is unreachable, with a visible offline banner — so a flaky demo network never produces a blank screen.
 - **Secrets.** `backend/.env.example` documents the required environment variables (Gemini/Sarvam API keys, JWT signing secret, `LIFELINE_ADMIN_ENABLED` gate for sim-control endpoints); `backend/scripts/deploy_secrets_helper.py` exists to push these into the target platform's secret manager rather than committing them.
 
+### Current deployment status
+
+- **GitHub.** [github.com/harshkawatra11/urjagrid](https://github.com/harshkawatra11/urjagrid), public.
+- **Frontend.** Live on Vercel at **https://urjagrid-virid.vercel.app**, git-connected to the `master` branch of the repo above — every push builds and promotes to production automatically. Runs entirely against committed offline fixtures until the backend below is deployed and `NEXT_PUBLIC_API_BASE_URL` is set.
+- **Backend.** A dedicated GCP project, `urjagrid-hackathon`, has been created and is ready to receive the Cloud Run deploy below. It has **no billing account linked yet** — this is a deliberate pause point, not an oversight: Cloud Run requires billing enabled even for Always-Free-tier usage, and that step was intentionally left for the project owner to action rather than linking a billing account on their behalf without a separate, explicit go-ahead. Once billing is linked, the steps below bring the backend live.
+
 ### Cloud Run deployment steps (from `backend/`)
 
 ```powershell
+# 0. One-time, after linking a billing account to urjagrid-hackathon in the GCP Console:
+gcloud config set project urjagrid-hackathon
+gcloud services enable run.googleapis.com artifactregistry.googleapis.com
+
 # 1. Build the image
 docker build -t urjagrid-backend .
 
-# 2. Push to Artifact Registry (or your registry of choice)
-docker tag urjagrid-backend <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/urjagrid-backend
-docker push <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/urjagrid-backend
+# 2. Push to Artifact Registry
+gcloud artifacts repositories create urjagrid --repository-format=docker --location=us-central1
+docker tag urjagrid-backend us-central1-docker.pkg.dev/urjagrid-hackathon/urjagrid/urjagrid-backend
+docker push us-central1-docker.pkg.dev/urjagrid-hackathon/urjagrid/urjagrid-backend
 
-# 3. Deploy
+# 3. Deploy, pinned to stay inside the Always Free tier (scale to zero, single instance)
 gcloud run deploy urjagrid-backend `
-  --image <REGION>-docker.pkg.dev/<PROJECT>/<REPO>/urjagrid-backend `
+  --image us-central1-docker.pkg.dev/urjagrid-hackathon/urjagrid/urjagrid-backend `
   --platform managed `
-  --region <REGION> `
+  --region us-central1 `
   --port 8080 `
   --memory 1Gi `
+  --min-instances 0 --max-instances 1 `
   --allow-unauthenticated   # or set up IAM/JWT in front, per your DISCOM's security posture
 ```
 
-### Vercel deployment steps (from `frontend/`)
+### Vercel deployment steps (already done, for reference)
 
 ```powershell
 npm install
-vercel link        # once
-vercel env pull     # pull NEXT_PUBLIC_API_BASE_URL etc.
+vercel link --project urjagrid     # already linked to harsh-s-vercel-team/urjagrid
+vercel git connect <repo-url>       # already connected for auto-deploy on push
 vercel --prod
 ```
 
-Point `NEXT_PUBLIC_API_BASE_URL` at the deployed Cloud Run service URL.
+Once the backend is deployed, point `NEXT_PUBLIC_API_BASE_URL` (Vercel project environment variable) at the Cloud Run service URL from step 3 above, then redeploy.
 
 ## 3. What is WIRED today, and what a real pilot needs to turn LIVE
 
