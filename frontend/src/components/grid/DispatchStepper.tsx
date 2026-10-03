@@ -19,7 +19,7 @@ export function DispatchStepper({ steps }: { steps: DispatchStep[] }) {
               <span
                 className={cn(
                   "inline-flex h-7 w-7 items-center justify-center rounded-full border text-[11px]",
-                  done && "border-brand bg-brand-soft text-brand",
+                  done && "border-google-green bg-google-green/10 text-google-green",
                   active && "border-info text-info",
                   s.status === "failed" && "border-red text-red",
                   s.status === "pending" && "border-border text-faint",

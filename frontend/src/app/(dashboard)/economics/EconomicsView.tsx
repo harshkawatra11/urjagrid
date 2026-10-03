@@ -112,7 +112,7 @@ export function EconomicsView() {
                 <text x={4} y={y - 6} fontSize={10} fill="var(--text-muted)">
                   {edge.from}
                 </text>
-                <rect x={4} y={y} width={width} height={14} rx={4} fill="var(--brand)" opacity={0.75} />
+                <rect x={4} y={y} width={width} height={14} rx={4} fill="var(--google-blue)" opacity={0.75} />
                 <text x={width + 10} y={y + 11} fontSize={10} fill="var(--text)">
                   {edge.to} · {formatRupees(edge.amountRs)}
                 </text>

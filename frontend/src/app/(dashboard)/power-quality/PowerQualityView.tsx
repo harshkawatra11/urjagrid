@@ -53,6 +53,7 @@ export function PowerQualityView() {
         <GaugeArc
           value={transformers.length ? transformers.reduce((s, t) => s + t.voltagePu, 0) / transformers.length : 1}
           max={1.1}
+          color={voltageHeat(transformers.length ? transformers.reduce((s, t) => s + t.voltagePu, 0) / transformers.length : 1)}
           valueLabel={transformers.length ? (transformers.reduce((s, t) => s + t.voltagePu, 0) / transformers.length).toFixed(2) : "—"}
           label="Average voltage pu"
         />

@@ -83,7 +83,7 @@ export function AnalyticsView() {
             <li key={role} className="flex items-center gap-2 text-[12px]">
               <span className="w-20 shrink-0 capitalize text-text">{role}</span>
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-3">
-                <div className="h-2 rounded-full bg-brand" style={{ width: `${(count / Math.max(1, entries.length)) * 100}%` }} />
+                <div className="h-2 rounded-full bg-google-blue" style={{ width: `${(count / Math.max(1, entries.length)) * 100}%` }} />
               </div>
               <span className="num w-8 text-right text-faint">{count}</span>
             </li>
