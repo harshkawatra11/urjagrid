@@ -131,7 +131,7 @@ export function TransformerDetailView() {
         <div className="col-span-12 flex flex-col gap-3 lg:col-span-4">
           <Card title={loadingGaugeTitle(dt.loadingPu)}>
             <div className="flex justify-center">
-              <GaugeArc value={dt.loadingPu} max={TRIP_LOADING_PU} valueLabel={`${(dt.loadingPu * 100).toFixed(0)}%`} label="DT loading" />
+              <GaugeArc value={dt.loadingPu} max={TRIP_LOADING_PU} severity="badHigh" valueLabel={`${(dt.loadingPu * 100).toFixed(0)}%`} label="DT loading" />
             </div>
           </Card>
           <Card title={hotspotGaugeTitle(dt.hotspotC)}>

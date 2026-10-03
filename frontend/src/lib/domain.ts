@@ -18,6 +18,7 @@ export const CAPABILITY_STATUS_DESCRIPTION: Record<CapabilityStatus, string> = {
   PILOT: "Not built in this prototype.",
 };
 
+/** LIVE = Google-green (real), WIRED = Google-yellow (simulated), PILOT = gray (not built). */
 export const CAPABILITY_STATUS_COLOR_VAR: Record<CapabilityStatus, string> = {
   LIVE: "--status-live",
   WIRED: "--status-wired",
@@ -36,6 +37,7 @@ export const RISK_LEVEL_LABEL: Record<RiskLevel, string> = {
   critical: "Critical",
 };
 
+/** Sequential severity: green -> yellow -> red; critical is a deeper red, not a 5th hue. */
 export const RISK_LEVEL_COLOR_VAR: Record<RiskLevel, string> = {
   low: "--risk-low",
   moderate: "--risk-moderate",
@@ -79,6 +81,8 @@ export const PLAN_STATUS_LABEL: Record<PlanStatus, string> = {
   expired: "Expired",
 };
 
+/** Gray = undecided/terminal-neutral, yellow = awaiting a decision, blue = decided/in-flight
+ * (approved/dispatched/active each get a distinguishable shade), green = success, red = failure. */
 export const PLAN_STATUS_COLOR_VAR: Record<PlanStatus, string> = {
   draft: "--plan-draft",
   proposed: "--plan-proposed",
@@ -104,6 +108,7 @@ export const METER_STATE_LABEL: Record<MeterState, string> = {
   offline: "Offline",
 };
 
+/** Green = normal, blue = DR actively shaping load, yellow = capped, red = shed, gray = offline. */
 export const METER_STATE_COLOR_VAR: Record<MeterState, string> = {
   normal: "--meter-normal",
   dr: "--meter-dr",
@@ -148,6 +153,9 @@ export const LEVER_SHORT_LABEL: Record<LeverKey, string> = {
   rotational_shedding: "L6 Shedding",
 };
 
+/** Categorical, not severity: one distinct hue per lever (blue, cyan, violet, brand-green —
+ * storage discharge keeps the brand hue on purpose, it's the "home team" lever — yellow, red)
+ * rather than shades of a single color. */
 export const LEVER_COLOR_VAR: Record<LeverKey, string> = {
   behavioral_dr: "--lever-behavioral-dr",
   managed_charging: "--lever-managed-charging",
@@ -177,6 +185,7 @@ export const CAP_LEVEL_WATTS: Record<CapLevel, { t1: number | null; t2: number |
   lifeline: { t1: 300, t2: 500 },
 };
 
+/** Gray = no cap, blue = mild (comfort), yellow = moderate (essential), red = severe (lifeline). */
 export const CAP_LEVEL_COLOR_VAR: Record<CapLevel, string> = {
   none: "--cap-none",
   comfort: "--cap-comfort",

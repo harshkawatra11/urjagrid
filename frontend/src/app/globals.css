@@ -26,47 +26,69 @@
   --red: #f05260;
   --green: #34d399;
 
-  --risk-low: #34d399;
-  --risk-moderate: #f2b84b;
-  --risk-high: #ff8a4c;
-  --risk-critical: #f05260;
+  /* Google-brand four-color categorical/severity palette (data viz, status, severity — NOT
+     brand chrome). Lightened slightly from the literal Google brand hexes so they hold contrast
+     on the dark surfaces above; --google-*-strong keeps the truer brand hue for accents that sit
+     on light chips/tints (dots, icon fills) rather than directly on --bg. */
+  --google-blue: #6c9bf5;
+  --google-blue-strong: #4285f4;
+  --google-red: #f06a5d;
+  --google-red-strong: #ea4335;
+  --google-yellow: #fbca3e;
+  --google-yellow-strong: #fbbc04;
+  --google-green: #5bc47d;
+  --google-green-strong: #34a853;
 
-  /* Honest-status matrix (SPEC section 1): LIVE/WIRED/PILOT */
-  --status-live: #b7e34a;
-  --status-wired: #f2b84b;
+  /* Risk level: green/yellow/red sequential severity, with critical a deeper, more alarming
+     red than high rather than a fourth distinct hue. */
+  --risk-low: var(--google-green);
+  --risk-moderate: var(--google-yellow);
+  --risk-high: var(--google-red);
+  --risk-critical: #b81f1f;
+
+  /* Honest-status matrix (SPEC section 1): LIVE/WIRED/PILOT. This is a status indicator, not
+     brand chrome, so it draws from the Google-green token rather than the literal brand hex. */
+  --status-live: var(--google-green);
+  --status-wired: var(--google-yellow);
   --status-pilot: #6a7482;
 
-  /* FlexPlan state machine */
+  /* FlexPlan state machine: gray = undecided/terminal-neutral, yellow = awaiting a decision,
+     blue = decided/in-flight (three shades to keep approved/dispatched/active distinguishable),
+     green = success, red = failure. */
   --plan-draft: #6a7482;
-  --plan-proposed: #5b8def;
-  --plan-approved: #b7e34a;
+  --plan-proposed: var(--google-yellow);
+  --plan-approved: #4a6fa8;
   --plan-dispatched: #4cc9e8;
-  --plan-active: #9ccb2f;
-  --plan-verified: #34d399;
-  --plan-rejected: #f05260;
-  --plan-cancelled: #6a7482;
+  --plan-active: var(--google-blue);
+  --plan-verified: var(--google-green);
+  --plan-rejected: var(--google-red);
+  --plan-cancelled: #5f6b76;
   --plan-expired: #8391a5;
 
-  /* Meter state */
-  --meter-normal: #34d399;
-  --meter-dr: #5b8def;
-  --meter-capped: #f2b84b;
-  --meter-shed: #f05260;
+  /* Meter state: green = normal, blue = DR actively shaping load, yellow = capped, red = shed,
+     gray = offline. */
+  --meter-normal: var(--google-green);
+  --meter-dr: var(--google-blue);
+  --meter-capped: var(--google-yellow);
+  --meter-shed: var(--google-red);
   --meter-offline: #6a7482;
 
-  /* Lever colors, L1..L6 */
-  --lever-behavioral-dr: #5b8def;
+  /* Lever colors, L1..L6: a categorical (not severity) distinction, so each lever gets its own
+     hue — blue, cyan, violet, brand-green (storage discharge keeps the brand hue deliberately,
+     it reads as the "home team" lever), yellow, red — rather than shades of one color. */
+  --lever-behavioral-dr: var(--google-blue);
   --lever-managed-charging: #4cc9e8;
   --lever-shiftable-loads: #9b87f5;
   --lever-storage-discharge: #b7e34a;
-  --lever-lifeline-cap: #f2b84b;
-  --lever-rotational-shedding: #f05260;
+  --lever-lifeline-cap: var(--google-yellow);
+  --lever-rotational-shedding: var(--google-red);
 
-  /* Cap levels 0..3 */
+  /* Cap levels 0..3: gray = no cap, blue = mild (comfort), yellow = moderate (essential),
+     red = severe (lifeline floor). */
   --cap-none: #6a7482;
-  --cap-comfort: #4cc9e8;
-  --cap-essential: #f2b84b;
-  --cap-lifeline: #f05260;
+  --cap-comfort: var(--google-blue);
+  --cap-essential: var(--google-yellow);
+  --cap-lifeline: var(--google-red);
 
   --series-1: #5b8def;
   --series-2: #b7e34a;
@@ -75,13 +97,21 @@
   --series-5: #ff8a4c;
   --series-6: #4cc9e8;
 
-  /* sequential heat, index 0 = best, 4 = worst */
-  --heat-0: #1c3a1a;
-  --heat-1: #3f6f2a;
-  --heat-2: #b98a2e;
-  --heat-3: #d8663a;
-  --heat-4: #e0424f;
+  /* Sequential severity heat, index 0 = best, 4 = worst: a genuine green -> yellow -> red
+     journey across the Google palette (not shades of one hue), darkened to hold contrast
+     against light cell text on dark surfaces. */
+  --heat-0: #1f5c38;
+  --heat-1: #6b8a2a;
+  --heat-2: #c9a22e;
+  --heat-3: #cf6a2e;
+  --heat-4: #c93f3f;
   --heat-empty: #161b22;
+
+  /* Diverging voltage heat: under-voltage runs toward blue, nominal is green, over-voltage
+     runs toward red. Used by voltageHeat() via color-mix against --google-blue/green/red. */
+  --heat-volt-under: var(--google-blue);
+  --heat-volt-nominal: var(--google-green);
+  --heat-volt-over: var(--google-red);
 
   --shadow-overlay: 0 16px 48px rgb(0 0 0 / 0.5);
   --inset-highlight: inset 0 1px 0 rgb(255 255 255 / 0.03);
@@ -115,42 +145,63 @@
   --red: #d63447;
   --green: #16a34a;
 
-  --risk-low: #16a34a;
-  --risk-moderate: #c98a12;
-  --risk-high: #e0631f;
-  --risk-critical: #d63447;
+  /* Google-brand four-color categorical/severity palette, light-mode: the literal brand hexes
+     read fine at normal weight on white/near-white surfaces, so no lightening is needed;
+     *-strong is a deeper tone for the rare filled-icon/high-contrast-text case. */
+  --google-blue: #4285f4;
+  --google-blue-strong: #1a56c4;
+  --google-red: #ea4335;
+  --google-red-strong: #c3271a;
+  --google-yellow: #d99400;
+  --google-yellow-strong: #a86e00;
+  --google-green: #34a853;
+  --google-green-strong: #1e7e3a;
 
-  --status-live: #587c18;
-  --status-wired: #c98a12;
+  /* Risk level: green/yellow/red sequential severity; critical is a deeper red than high. */
+  --risk-low: var(--google-green);
+  --risk-moderate: var(--google-yellow);
+  --risk-high: var(--google-red);
+  --risk-critical: #9c1c1c;
+
+  /* Honest-status matrix: status indicator, not brand chrome, so Google-green not brand green. */
+  --status-live: var(--google-green);
+  --status-wired: var(--google-yellow);
   --status-pilot: #8391a5;
 
+  /* FlexPlan state machine: gray = undecided/terminal-neutral, yellow = awaiting a decision,
+     blue = decided/in-flight (approved/dispatched/active get distinct shades), green = success,
+     red = failure. */
   --plan-draft: #8391a5;
-  --plan-proposed: #2f6fdb;
-  --plan-approved: #587c18;
+  --plan-proposed: var(--google-yellow);
+  --plan-approved: #3a5a8a;
   --plan-dispatched: #0e9cc0;
-  --plan-active: #6f9a1f;
-  --plan-verified: #16a34a;
-  --plan-rejected: #d63447;
-  --plan-cancelled: #8391a5;
-  --plan-expired: #8391a5;
+  --plan-active: var(--google-blue);
+  --plan-verified: var(--google-green);
+  --plan-rejected: var(--google-red);
+  --plan-cancelled: #6b7684;
+  --plan-expired: #9aa3b0;
 
-  --meter-normal: #16a34a;
-  --meter-dr: #2f6fdb;
-  --meter-capped: #c98a12;
-  --meter-shed: #d63447;
+  /* Meter state: green = normal, blue = DR active, yellow = capped, red = shed, gray = offline. */
+  --meter-normal: var(--google-green);
+  --meter-dr: var(--google-blue);
+  --meter-capped: var(--google-yellow);
+  --meter-shed: var(--google-red);
   --meter-offline: #8391a5;
 
-  --lever-behavioral-dr: #2f6fdb;
+  /* Lever colors, L1..L6: categorical, one hue per lever — blue, cyan, violet, brand-green
+     (storage discharge keeps the brand hue on purpose), yellow, red. */
+  --lever-behavioral-dr: var(--google-blue);
   --lever-managed-charging: #0e9cc0;
   --lever-shiftable-loads: #6d5bd0;
   --lever-storage-discharge: #587c18;
-  --lever-lifeline-cap: #c98a12;
-  --lever-rotational-shedding: #d63447;
+  --lever-lifeline-cap: var(--google-yellow);
+  --lever-rotational-shedding: var(--google-red);
 
+  /* Cap levels 0..3: gray = none, blue = mild, yellow = moderate, red = severe (lifeline floor). */
   --cap-none: #8391a5;
-  --cap-comfort: #0e9cc0;
-  --cap-essential: #c98a12;
-  --cap-lifeline: #d63447;
+  --cap-comfort: var(--google-blue);
+  --cap-essential: var(--google-yellow);
+  --cap-lifeline: var(--google-red);
 
   --series-1: #2f6fdb;
   --series-2: #587c18;
@@ -159,12 +210,18 @@
   --series-5: #e0631f;
   --series-6: #0e9cc0;
 
-  --heat-0: #d7f0c6;
-  --heat-1: #9ad86f;
-  --heat-2: #f3d58c;
-  --heat-3: #f2a27a;
-  --heat-4: #e2626f;
+  /* Sequential severity heat, index 0 = best, 4 = worst: green -> yellow -> red across the
+     Google palette, lightened to pastel so dark cell text stays legible. */
+  --heat-0: #bfe8c9;
+  --heat-1: #d9e8a0;
+  --heat-2: #fbe39b;
+  --heat-3: #f7c194;
+  --heat-4: #f0a3a3;
   --heat-empty: #eef1f5;
+
+  --heat-volt-under: var(--google-blue);
+  --heat-volt-nominal: var(--google-green);
+  --heat-volt-over: var(--google-red);
 
   --shadow-overlay: 0 16px 40px rgb(15 23 42 / 0.14);
   --inset-highlight: none;
@@ -193,6 +250,14 @@
   --color-orange: var(--orange);
   --color-red: var(--red);
   --color-green: var(--green);
+  --color-google-blue: var(--google-blue);
+  --color-google-blue-strong: var(--google-blue-strong);
+  --color-google-red: var(--google-red);
+  --color-google-red-strong: var(--google-red-strong);
+  --color-google-yellow: var(--google-yellow);
+  --color-google-yellow-strong: var(--google-yellow-strong);
+  --color-google-green: var(--google-green);
+  --color-google-green-strong: var(--google-green-strong);
   --color-risk-low: var(--risk-low);
   --color-risk-moderate: var(--risk-moderate);
   --color-risk-high: var(--risk-high);

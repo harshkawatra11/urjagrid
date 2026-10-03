@@ -20,7 +20,7 @@ export function SupplyDemandChart({
     <ChartFrame label={label}>
       <ChartLegend
         items={[
-          { label: "Available supply", color: "var(--brand)" },
+          { label: "Available supply", color: "var(--google-green)" },
           { label: "Demand", color: "var(--orange)" },
         ]}
       />
@@ -35,8 +35,8 @@ export function SupplyDemandChart({
               type="monotone"
               dataKey="availableKw"
               name="Available supply"
-              stroke="var(--brand)"
-              fill="var(--brand)"
+              stroke="var(--google-green)"
+              fill="var(--google-green)"
               fillOpacity={0.12}
               strokeWidth={2}
               isAnimationActive={false}

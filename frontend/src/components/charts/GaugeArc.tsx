@@ -1,12 +1,24 @@
 import { ChartFrame } from "./common";
 import { clamp } from "@/lib/format";
+import { heatVar } from "@/lib/heat";
 
-/** A single-value arc gauge (0..max), e.g. DT loading pu or served fraction. Pure inline SVG, no recharts dependency. */
+/**
+ * A single-value arc gauge (0..max), e.g. DT loading pu, served fraction, approval rate, or BCR.
+ * Pure inline SVG, no recharts dependency.
+ *
+ * When `color` is omitted, the arc colors itself along the green->yellow->red severity gradient
+ * based on where `value` falls in [0, max], per `severity`: "goodHigh" (default — rates like
+ * approval/success/BCR where a high value is the good outcome) reads green at the top of the
+ * range and red near zero; "badHigh" (e.g. DT loading, a normalized risk/lens average) reads the
+ * gradient the other way, green near zero and red near max. Pass an explicit `color` to opt out
+ * (e.g. a fixed risk-level or categorical color).
+ */
 export function GaugeArc({
   value,
   max = 1,
   size = 140,
-  color = "var(--brand)",
+  color,
+  severity = "goodHigh",
   trackColor = "var(--surface-3)",
   valueLabel,
   label = "Gauge",
@@ -15,11 +27,13 @@ export function GaugeArc({
   max?: number;
   size?: number;
   color?: string;
+  severity?: "goodHigh" | "badHigh";
   trackColor?: string;
   valueLabel?: string;
   label?: string;
 }) {
   const fraction = clamp(value / max, 0, 1);
+  const resolvedColor = color ?? heatVar(severity === "badHigh" ? fraction : 1 - fraction);
   const r = size / 2 - 10;
   const cx = size / 2;
   const cy = size / 2;
@@ -45,7 +59,7 @@ export function GaugeArc({
           <path
             d={`M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${valuePoint.x} ${valuePoint.y}`}
             fill="none"
-            stroke={color}
+            stroke={resolvedColor}
             strokeWidth={10}
             strokeLinecap="round"
           />

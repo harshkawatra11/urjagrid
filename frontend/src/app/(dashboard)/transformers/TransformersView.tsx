@@ -110,6 +110,7 @@ export function TransformersView() {
       <Card title="Fleet average" eyebrow="Moneyshot" className="col-span-6 lg:col-span-3">
         <GaugeArc
           value={transformers.length ? transformers.reduce((s, t) => s + normalize(lens, lensValue(t, lens)), 0) / transformers.length : 0}
+          severity="badHigh"
           valueLabel={`${LENS_LABEL[lens]}`}
           label="Fleet average lens value"
         />
@@ -129,7 +130,7 @@ export function TransformersView() {
                 <XAxis dataKey="bucket" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "var(--border)" }} />
                 <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={28} />
                 <Tooltip cursor={CURSOR_BAND} content={<ChartTooltip unit="DTs" />} />
-                <Bar dataKey="count" name="DTs" fill="var(--brand)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="count" name="DTs" fill="var(--google-blue)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>
