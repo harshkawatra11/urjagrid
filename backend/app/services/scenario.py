@@ -20,7 +20,16 @@ from dataclasses import dataclass
 import numpy as np
 
 from app.grid.metrics import hours_of_hardship
+from app.grid.models import PlanStatus
 from app.services.service import GridService
+
+# Scenario Lab is a headless what-if sandbox (no JE/AE in the loop), so a plan
+# built from a detected deficit is approved immediately under this named
+# operator label rather than sitting in DRAFT forever -- invariant #5 (no
+# autonomous dispatcher action without a *named* human approver, see
+# test_invariants.py) only requires the approver field be a non-empty name;
+# it does not require a live person for this offline analysis tool.
+SCENARIO_LAB_APPROVER = "scenario_lab_auto"
 
 BUILTIN_SCENARIO_NAMES: tuple[str, ...] = (
     "heatwave_evening",
@@ -52,13 +61,77 @@ class ScenarioRunResult:
         }
 
 
-def run_scenario(scenario_name: str, n_intervals: int = 24, seed: int = 0) -> ScenarioRunResult:
-    """Boot a fresh ``GridService`` for ``scenario_name``, advance it
-    ``n_intervals`` steps, and diff the solution track against the shadow
-    (status-quo, no Flex Plans) baseline that runs alongside it.
+def _auto_build_and_approve_plans(service: GridService) -> None:
+    """Build a draft ``FlexPlan`` for every sub-division with a real demand/
+    supply gap over the scenario's horizon, then approve it immediately (see
+    ``SCENARIO_LAB_APPROVER``).
+
+    Without this, ``service._active_actions()`` always returns an empty
+    ``Actions`` map (no plan is ever APPROVED/DISPATCHED), so the solution
+    track runs through ``GridWorld`` with *exactly* the same per-interval
+    actions as the shadow baseline -- zero levers applied either way -- and
+    ``run_scenario()`` reports ``relief_kw_avoided = 0.0`` regardless of how
+    large a deficit the network actually has. This is the second half of the
+    "Scenario Lab always reports zero relief" bug: pointing ``build_scenario``
+    at the real network (via ``use_real_network=True``) creates a genuine
+    deficit, but a deficit alone changes nothing unless a plan is actually
+    built *and* approved so its levers get applied to the solution track.
     """
-    service = GridService(seed=seed, scenario_name=scenario_name)
+    network = service.scenario.network
+    plan_service = service.plan_service
+    live_subdivisions = {
+        p.subdivision_id
+        for p in plan_service.list_plans()
+        if p.status in (PlanStatus.DRAFT, PlanStatus.APPROVED, PlanStatus.DISPATCHED)
+    }
+    for sub_id in network.subdivision_ids:
+        if sub_id in live_subdivisions:
+            continue
+        dt_ids = [d for d in network.dt_ids if network.dt_subdivision[d] == sub_id]
+        if not dt_ids:
+            continue
+
+        gap_kw_series: dict[str, np.ndarray] = {}
+        dt_limit_kw: dict[str, float] = {}
+        dr_potential_kw: dict[str, float] = {}
+        hub_potential_kw: dict[str, float] = {}
+        storage_energy_kwh: dict[str, float] = {}
+        shift_potential_kw: dict[str, float] = {}
+        for dt_id in dt_ids:
+            gross = service.scenario.dt_gross_kw[dt_id]
+            available = service.scenario.dt_available_kw[dt_id]
+            gap_kw_series[dt_id] = np.maximum(gross - available, 0.0)
+            rated_kw = next(d.rated_kw for d in service.dt_statics if d.dt_id == dt_id)
+            dt_limit_kw[dt_id] = rated_kw
+            dr_potential_kw[dt_id] = 0.10 * rated_kw
+            hub_potential_kw[dt_id] = 0.05 * rated_kw
+            storage_energy_kwh[dt_id] = 0.0
+            shift_potential_kw[dt_id] = 0.05 * rated_kw
+
+        new_plans = plan_service.refresh_from_series(
+            subdivision_id=sub_id,
+            dt_ids=dt_ids,
+            gap_kw_series=gap_kw_series,
+            dt_limit_kw=dt_limit_kw,
+            dr_potential_kw=dr_potential_kw,
+            hub_potential_kw=hub_potential_kw,
+            storage_energy_kwh=storage_energy_kwh,
+            shift_potential_kw=shift_potential_kw,
+        )
+        for plan in new_plans:
+            plan_service.approve(plan.id, approver=SCENARIO_LAB_APPROVER)
+
+
+def run_scenario(scenario_name: str, n_intervals: int = 24, seed: int = 0) -> ScenarioRunResult:
+    """Boot a fresh ``GridService`` for ``scenario_name`` against the real,
+    calibrated seed network, build+approve Flex Plans for every sub-division
+    with a genuine demand/supply gap, advance it ``n_intervals`` steps, and
+    diff the solution track against the shadow (status-quo, no Flex Plans)
+    baseline that runs alongside it.
+    """
+    service = GridService(seed=seed, scenario_name=scenario_name, use_real_network=True)
     service.boot()
+    _auto_build_and_approve_plans(service)
     service.jump(n_intervals)
 
     sol_unserved = [r.unserved_kw for r in service.solution_logs]

@@ -365,3 +365,47 @@ def get_network_data(path: Path | None = None) -> NetworkData:
     """lru-cached accessor for the real seed network (see ``NetworkRepository``)."""
     p = path or DEFAULT_SEED_NETWORK_PATH
     return _load_cached(str(p))
+
+
+def real_network(path: Path | None = None) -> SyntheticNetwork:
+    """Load the real, calibrated 48-DT/7,000-consumer seed network and shape
+    it into the same ``SyntheticNetwork`` container ``synthetic_network()``
+    returns, so anything that builds a scenario (``services/service.py``'s
+    ``build_scenario``) can take either one interchangeably.
+
+    (The dataclass name predates this function; it is just a plain network
+    topology container, not inherently synthetic -- see ``build_scenario``'s
+    ``use_real_network`` flag for which callers want this real network vs.
+    the small in-memory one meant for fast unit tests.)
+    """
+    data = get_network_data(path)
+    consumer_ids = list(data.consumer_ids)
+    consumer_dt = [data.consumer_dt[cid] for cid in consumer_ids]
+    consumer_sub = [data.dt_subdivision[dt_id] for dt_id in consumer_dt]
+    consumer_tier = [data.consumer_tier[cid] for cid in consumer_ids]
+    consumer_archetype = [data.consumer_archetype[cid] for cid in consumer_ids]
+    consumer_lat = [data.consumer_lat[cid] for cid in consumer_ids]
+    consumer_lon = [data.consumer_lon[cid] for cid in consumer_ids]
+
+    consumers = ConsumerArrays(
+        consumer_ids=np.array(consumer_ids, dtype=object),
+        dt_ids=np.array(consumer_dt, dtype=object),
+        subdivision_ids=np.array(consumer_sub, dtype=object),
+        tier=np.array(consumer_tier, dtype=object),
+        archetype=np.array(consumer_archetype, dtype=object),
+        lat=np.array(consumer_lat, dtype=float),
+        lon=np.array(consumer_lon, dtype=float),
+    )
+
+    return SyntheticNetwork(
+        subdivision_ids=list(data.subdivision_ids),
+        feeder_ids=list(data.feeder_ids),
+        feeder_subdivision=dict(data.feeder_subdivision),
+        dt_ids=list(data.dt_ids),
+        dt_feeder=dict(data.dt_feeder),
+        dt_subdivision=dict(data.dt_subdivision),
+        dt_rating_kva=dict(data.dt_rating_kva),
+        dt_lat=dict(data.dt_lat),
+        dt_lon=dict(data.dt_lon),
+        consumers=consumers,
+    )
