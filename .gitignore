@@ -9,3 +9,4 @@ node_modules/
 .env
 .claude/worktrees/
 frontend/.next/
+.vercel
