@@ -1,4 +1,4 @@
-"""Build backend/data/network/seed_network.json -- the real LifelineGrid network.
+"""Build backend/data/network/seed_network.json -- the real UrjaGrid network.
 
 Uttar Pradesh, 2 DISCOMs (MVVNL Bareilly, DVVNL Mathura), 5 sub-divisions,
 12 feeders, 48 DTs, ~7000 consumers.
@@ -34,7 +34,7 @@ from app.grid.network import (  # noqa: E402
 )
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
-USER_AGENT = "LifelineGrid-Hackathon-SeedBuilder/1.0 (contact: hackathon-demo@example.com)"
+USER_AGENT = "UrjaGrid-Hackathon-SeedBuilder/1.0 (contact: hackathon-demo@example.com)"
 
 LOCALITY_QUERY = {
     "sd_subhashnagar": "Subhash Nagar, Bareilly, Uttar Pradesh, India",

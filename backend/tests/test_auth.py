@@ -82,7 +82,7 @@ def test_demo_login_endpoint(client: TestClient) -> None:
     assert resp.status_code == 200
     body = resp.json()
     assert body["role"] == "je"
-    assert body["access_token"]
+    assert body["token"]
 
 
 def test_login_endpoint_wrong_password(client: TestClient) -> None:
@@ -105,7 +105,7 @@ def test_me_requires_bearer_token(client: TestClient) -> None:
 
 def test_me_with_valid_token(client: TestClient) -> None:
     login = client.post("/api/v1/auth/demo-login", json={"username": "admin_demo"})
-    token = login.json()["access_token"]
+    token = login.json()["token"]
     resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 200
     assert resp.json()["role"] == "admin"

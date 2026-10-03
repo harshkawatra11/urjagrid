@@ -6,7 +6,7 @@ seeded weather days (across the four builtin scenario "kinds" plus random
 variation) crossed with a sample of real DTs from the seed network, each
 DT-day's demand curve is built from ``LoadModel`` + the DT's consumer mix,
 then turned into (features, target_pu) rows by ``DayBuilder``. This stands
-in for the real smart-meter history LifelineGrid would train on in
+in for the real smart-meter history UrjaGrid would train on in
 production.
 
 Run with: py -3.12 backend/scripts/train_forecaster.py

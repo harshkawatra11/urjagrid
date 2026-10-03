@@ -16,5 +16,5 @@ export function feederBreakdownTitle(count: number): string {
 }
 
 export function printFooterNote(s: Subdivision | undefined, generatedIso: string): string {
-  return `${s?.id ?? "unknown"} · generated ${generatedIso} · LifelineGrid A4 scorecard`;
+  return `${s?.id ?? "unknown"} · generated ${generatedIso} · UrjaGrid A4 scorecard`;
 }

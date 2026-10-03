@@ -1,10 +1,10 @@
-# LifelineGrid — Condensed Technical Specification
+# UrjaGrid — Condensed Technical Specification
 
 (Source: brainstorm.txt, lines 1237-21956, "Part 1: Product Definition" through "Appendix B: Sources", plus Part 0 "Global Constraints" at lines 1060-1236.)
 
 ## 1. Product Definition
 
-**LifelineGrid** is a software-only decision layer sitting between a DISCOM's existing smart-metering/head-end system (HES/MDM) and its sub-division engineers. Tagline: "Brownout, never blackout." Voice persona: **Urja**. Product name is one word ("LifelineGrid"); "Lifeline Grid" never appears in code/UI.
+**UrjaGrid** is a software-only decision layer sitting between a DISCOM's existing smart-metering/head-end system (HES/MDM) and its sub-division engineers. Tagline: "Brownout, never blackout." Voice persona: **Urja**. Product name is one word ("UrjaGrid"); "Urja Grid" never appears in code/UI.
 
 Every hour it forecasts, per distribution transformer (DT), demand and available supply for the next 36 hours. When it detects a shortfall or thermal overload, it builds a **Flex Plan**: ask willing households to shift load (bill rebate), slow public EV/e-rickshaw charging, discharge existing storage, and only as a last resort limit each home to a guaranteed **lifeline wattage** -- never a full blackout -- before falling back to rotational feeder shedding. A named **Junior Engineer (JE)** must approve, edit, or reject each plan. Approved plans dispatch as Hindi notices (2 hrs ahead) and time-boxed commands to meters/chargers. After the window, meter readings verify realised relief, rebates settle, and a fairness ledger rotates the burden.
 
@@ -57,7 +57,7 @@ Every hour it forecasts, per distribution transformer (DT), demand and available
 ## 4. Lane Tasks
 
 ### Lane A -- Data & Engines (pure, synchronous, no FastAPI imports; every engine has a test module)
-- **A1** Repo/backend bootstrap: directory skeleton, `requirements.txt`/`pyproject.toml`, Dockerfile (multi-stage, libgomp1), `.env.example`, `core/config.py` (Settings via pydantic-settings), `core/exceptions.py` (`LifelineGridError`/`NotFoundError`/`InvalidTransitionError`/`ApiError`), `main.py` (FastAPI app factory, CORS, security headers middleware, exception handlers, `# ROUTERS` marker), health endpoint.
+- **A1** Repo/backend bootstrap: directory skeleton, `requirements.txt`/`pyproject.toml`, Dockerfile (multi-stage, libgomp1), `.env.example`, `core/config.py` (Settings via pydantic-settings), `core/exceptions.py` (`UrjaGridError`/`NotFoundError`/`InvalidTransitionError`/`ApiError`), `main.py` (FastAPI app factory, CORS, security headers middleware, exception handlers, `# ROUTERS` marker), health endpoint.
 - **A2** `constants.py` + `models.py`: every simulation/policy constant (see S6) and Pydantic domain models. Imported by nearly every later task; names must be spelled identically everywhere.
 - **A3** `network.py` + seed generator: Voronoi DT service areas (`bounded_voronoi`), `ConsumerArrays`, `NetworkRepository` (lru-cached loader of `seed_network.json`), `synthetic_network()` for tests. Geocodes real localities (Nominatim) with coordinate fallback.
 - **A4** `weather.py`: `WeatherSeries`, `synthetic_series`, `Scenario` model, `WeatherProvider` (actual vs. forecast-with-error), `BUILTIN_SCENARIOS`. Fetches real Open-Meteo archive data for 3 scenario files + 4 named scenarios (heatwave_evening, monsoon_cloud, solar_noon, re_2047).

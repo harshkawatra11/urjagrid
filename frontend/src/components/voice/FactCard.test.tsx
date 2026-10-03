@@ -18,7 +18,7 @@ const cards: FactCardData[] = [
   { type: "fairness", jainIndex: 0.92, giniCoefficient: 0.18 },
 ];
 
-describe("FactCard renders all 12 LifelineGrid card types", () => {
+describe("FactCard renders all 12 UrjaGrid card types", () => {
   for (const card of cards) {
     it(card.type, () => {
       render(<FactCard card={card} />);

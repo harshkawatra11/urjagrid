@@ -10,7 +10,7 @@ export function moneyshotTitle(hoursOffSaved: number): string {
   return `${hoursOffSaved.toFixed(1)} hours of rotational shedding avoided per feeder per day`;
 }
 
-/** LifelineGrid only sheds a feeder when loading exceeds the 1.3pu trip threshold, briefly.
+/** UrjaGrid only sheds a feeder when loading exceeds the 1.3pu trip threshold, briefly.
  * The shadow baseline instead runs the historical rotational-shedding roster whenever loading
  * crosses 0.9pu, for 2-6 hours depending on risk. Both are deterministic functions of the
  * feeder's real loadingPu/riskLevel, not randomized placeholder data. */

@@ -5,19 +5,19 @@ Each call to :meth:`GridWorld.advance_interval` steps BOTH tracks forward by
 one 15-minute interval and returns one :class:`~app.grid.models.IntervalResult`
 per track:
 
-- **solution** track: the real LifelineGrid world. Whatever :class:`Actions`
+- **solution** track: the real UrjaGrid world. Whatever :class:`Actions`
   the caller (``FlexPlanService``/``GridService``) supplies for this interval
   are applied in lever order (behavioural DR -> managed charging -> shiftable
   loads -> storage discharge -> lifeline caps) *before* the thermal/limit
   check; rotational shedding only fires here as the lever-6 last resort, and
   only for whatever gap survives every earlier lever.
 - **shadow** track: the status-quo world with no Flex Plans at all -- the
-  only mechanism it has is rotational shedding, so it is what LifelineGrid's
+  only mechanism it has is rotational shedding, so it is what UrjaGrid's
   levers are compared against to show "brownout, never blackout" in action.
 
 Both tracks share the same exogenous inputs (gross demand, ambient
 temperature, available supply) so the only difference between their outputs
-is LifelineGrid's intervention -- which is exactly what Lane B's KPIs (B5)
+is UrjaGrid's intervention -- which is exactly what Lane B's KPIs (B5)
 and Scenario Lab diff (B10) need.
 
 Simplifications documented up front (this is a software prototype, not a

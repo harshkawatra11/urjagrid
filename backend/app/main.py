@@ -1,4 +1,4 @@
-"""FastAPI app factory for the LifelineGrid backend.
+"""FastAPI app factory for the UrjaGrid backend.
 
 Lane A owns this file only to the extent of bootstrapping (A1); the actual
 `/api/v1` route surface belongs to Lane B (B9), which mounts its routers at
@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import get_settings
-from app.core.exceptions import ApiError, InvalidTransitionError, LifelineGridError, NotFoundError
+from app.core.exceptions import ApiError, InvalidTransitionError, NotFoundError, UrjaGridError
 
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -25,7 +25,7 @@ SECURITY_HEADERS = {
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title="LifelineGrid API", version="0.1.0")
+    app = FastAPI(title="UrjaGrid API", version="0.1.0")
 
     app.add_middleware(
         CORSMiddleware,
@@ -58,8 +58,8 @@ def create_app() -> FastAPI:
     async def api_error_handler(_request: Request, exc: ApiError) -> JSONResponse:
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
-    @app.exception_handler(LifelineGridError)
-    async def lifelinegrid_error_handler(_request: Request, exc: LifelineGridError) -> JSONResponse:
+    @app.exception_handler(UrjaGridError)
+    async def urjagrid_error_handler(_request: Request, exc: UrjaGridError) -> JSONResponse:
         return JSONResponse(status_code=500, content={"detail": str(exc)})
 
     @app.get("/health")
@@ -68,9 +68,12 @@ def create_app() -> FastAPI:
 
     # ROUTERS
     from app.api.v1.admin import router as admin_router
+    from app.api.v1.analytics import router as analytics_router
     from app.api.v1.auth import router as auth_router
     from app.api.v1.consumers import router as consumers_router
     from app.api.v1.economics import router as economics_router
+    from app.api.v1.events import router as events_router
+    from app.api.v1.fairness import router as fairness_router
     from app.api.v1.field import router as field_router
     from app.api.v1.flex import router as flex_router
     from app.api.v1.forecast import router as forecast_router
@@ -79,6 +82,7 @@ def create_app() -> FastAPI:
     from app.api.v1.openadr import router as openadr_router
     from app.api.v1.plans import router as plans_router
     from app.api.v1.protocols import router as protocols_router
+    from app.api.v1.reliability import router as reliability_router
     from app.api.v1.scenario import router as scenario_router
     from app.api.v1.stream import router as stream_router
     from app.voice.router import router as voice_router
@@ -97,6 +101,10 @@ def create_app() -> FastAPI:
         openadr_router,
         admin_router,
         insights_router,
+        reliability_router,
+        fairness_router,
+        events_router,
+        analytics_router,
         stream_router,
         voice_router,
     ):

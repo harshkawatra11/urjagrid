@@ -20,31 +20,31 @@ CHANNEL_NAMES: tuple[str, ...] = ("whatsapp", "ivr", "sms")
 TEMPLATES: dict[str, dict[str, str]] = {
     "dr_ask": {
         "hi": (
-            "LifelineGrid: Aaj shaam {start_time} se {end_time} tak bijli kam ho sakti hai. "
+            "UrjaGrid: Aaj shaam {start_time} se {end_time} tak bijli kam ho sakti hai. "
             "Apna AC/geyser thoda kam istemal karein aur Rs {rebate}/unit bachat kamayein."
         ),
         "en": (
-            "LifelineGrid: Power may be tight from {start_time} to {end_time} this evening. "
+            "UrjaGrid: Power may be tight from {start_time} to {end_time} this evening. "
             "Reduce AC/geyser use and earn a Rs {rebate}/unit bill rebate."
         ),
     },
     "cap_notice": {
         "hi": (
-            "LifelineGrid: {start_time} baje se aapke connection par {limit_w}W ki simit lagai "
+            "UrjaGrid: {start_time} baje se aapke connection par {limit_w}W ki simit lagai "
             "jayegi jo {end_time} baje tak rahegi. Zaroori upkaran chalte rahenge."
         ),
         "en": (
-            "LifelineGrid: From {start_time}, your connection will be limited to {limit_w}W "
+            "UrjaGrid: From {start_time}, your connection will be limited to {limit_w}W "
             "until {end_time}. Essential appliances will keep working."
         ),
     },
     "outage_notice": {
-        "hi": "LifelineGrid: Maintenance ke karan {start_time} se {end_time} tak bijli band rahegi.",  # noqa: E501
-        "en": "LifelineGrid: Power will be off for maintenance from {start_time} to {end_time}.",
+        "hi": "UrjaGrid: Maintenance ke karan {start_time} se {end_time} tak bijli band rahegi.",  # noqa: E501
+        "en": "UrjaGrid: Power will be off for maintenance from {start_time} to {end_time}.",
     },
     "relief_confirmed": {
-        "hi": "LifelineGrid: Dhanyavaad! Aapke sahyog se {relief_kwh} kWh ki bachat hui. Rebate credited.",  # noqa: E501
-        "en": "LifelineGrid: Thank you! Your cooperation saved {relief_kwh} kWh. Rebate credited.",
+        "hi": "UrjaGrid: Dhanyavaad! Aapke sahyog se {relief_kwh} kWh ki bachat hui. Rebate credited.",  # noqa: E501
+        "en": "UrjaGrid: Thank you! Your cooperation saved {relief_kwh} kWh. Rebate credited.",
     },
 }
 

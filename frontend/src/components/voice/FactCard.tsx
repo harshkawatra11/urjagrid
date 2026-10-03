@@ -20,7 +20,7 @@ function Shell({ label, children }: { label: string; children: ReactNode }) {
 
 const linkCls = "text-text underline-offset-2 hover:text-brand hover:underline";
 
-/** Rewrites the reference project's healthcare fact cards as LifelineGrid's 12 grid-domain cards. */
+/** Rewrites the reference project's healthcare fact cards as UrjaGrid's 12 grid-domain cards. */
 export function FactCard({ card }: { card: FactCardData }) {
   switch (card.type) {
     case "circle_summary":

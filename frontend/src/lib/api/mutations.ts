@@ -38,6 +38,15 @@ export interface PlanMutationResult {
   error?: string;
 }
 
+/**
+ * Real backend contract (`backend/app/api/v1/plans.py`): `approve`/`cancel`
+ * take no body at all -- the approver is always the authenticated JE/AE from
+ * the bearer token, never a client-supplied name (B7 safety invariant: no
+ * autonomous action without a named human approver) -- and `reject` takes
+ * `{reason: string}`, not `{approverName, notes}`. `approverName` here is
+ * only used for the offline-optimistic echo below; `notes` is sent as the
+ * reject reason.
+ */
 async function planTransition(
   planId: string,
   action: "approve" | "reject" | "cancel",
@@ -45,7 +54,8 @@ async function planTransition(
   approverName?: string,
   notes?: string,
 ): Promise<PlanMutationResult> {
-  const result = await post<FlexPlan>(`${P}/plans/${planId}/${action}`, { approverName, notes });
+  const body = action === "reject" ? { reason: notes && notes.trim() ? notes : "Rejected via dashboard" } : {};
+  const result = await post<FlexPlan>(`${P}/plans/${planId}/${action}`, body);
   if (result.ok) return { ok: true, offline: false, plan: result.data };
   if (isNetworkError(result.error) && currentPlan) {
     const statusByAction = { approve: "approved", reject: "rejected", cancel: "cancelled" } as const;
@@ -73,6 +83,18 @@ export function cancelPlan(planId: string, approverName: string, currentPlan: Fl
   return planTransition(planId, "cancel", currentPlan, approverName, notes);
 }
 
+/**
+ * NOT currently contract-matched to the real backend: the backend's
+ * `/plans/{id}/simulate` (`OverridesRequest`) expects per-DT cap-level
+ * overrides + a disabled-lever list + window slot indices
+ * (`cap_level_overrides`/`disabled_levers`/`window_start_slot`/
+ * `window_end_slot`), not this `PlanOverrides` shape (`leverEnabled`/
+ * `capLevelOverride`/`drParticipationMultiplier`) -- two independently
+ * designed what-if models. Reconciling them is real but out-of-scope
+ * follow-up work for the What-If panel (D4); until then this call will
+ * 422 against the live backend and the panel should treat that as a
+ * known-unwired feature rather than a crash.
+ */
 export async function simulatePlan(planId: string, overrides: PlanOverrides): Promise<MutationResult<FlexPlan>> {
   return post<FlexPlan>(`${P}/plans/${planId}/simulate`, overrides);
 }

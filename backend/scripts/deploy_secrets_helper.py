@@ -31,7 +31,7 @@ def check_env() -> dict[str, bool]:
 
 
 def build_gcloud_command(
-    present: dict[str, bool], service_name: str = "lifelinegrid-backend"
+    present: dict[str, bool], service_name: str = "urjagrid-backend"
 ) -> str:
     set_vars = ",".join(f"{name}=${name}" for name, is_set in present.items() if is_set)
     base = (

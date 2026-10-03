@@ -1,4 +1,4 @@
-# LifelineGrid
+# UrjaGrid
 
 **Brownout, never blackout.**
 
@@ -17,7 +17,7 @@ India's distribution network loses reliability in a very specific, very fixable 
 - About **13 lakh distribution transformers fail every year (~10% of the installed base)** — mostly from sustained thermal overload that a smarter dispatch could have avoided. ([Mercom India](https://www.mercomindia.com/cea-steps-in-as-distribution-transformer-failures-hit-1-3-million-a-year))
 - When a shortfall does hit, the default DISCOM response is **rotational feeder shedding**: every household on a feeder loses power for the same block, regardless of whether they have a working fridge of insulin, a shop that just opened, or nothing to lose at all. It is blunt and it is the opposite of fair.
 
-LifelineGrid's bet: the hardware for something better is already installed. What's missing is the software that forecasts the gap, tries every softer lever first, and puts a named engineer in the approval seat before anything touches a household's supply.
+UrjaGrid's bet: the hardware for something better is already installed. What's missing is the software that forecasts the gap, tries every softer lever first, and puts a named engineer in the approval seat before anything touches a household's supply.
 
 ## 2. How it works — the seven-step loop
 
@@ -25,7 +25,7 @@ LifelineGrid's bet: the hardware for something better is already installed. What
 Sense → Forecast → Propose → Approve (human) → Dispatch → Confirm → Learn
 ```
 
-Every hour, LifelineGrid forecasts demand and available supply for the next 36 hours, per distribution transformer (DT). When a shortfall or thermal overload is detected, it builds a **Flex Plan** that tries levers in a strict, always-the-same order — softest first:
+Every hour, UrjaGrid forecasts demand and available supply for the next 36 hours, per distribution transformer (DT). When a shortfall or thermal overload is detected, it builds a **Flex Plan** that tries levers in a strict, always-the-same order — softest first:
 
 | Lever | What it does |
 |---|---|
@@ -42,7 +42,7 @@ Three tiers protect the vulnerable automatically: **T0** (hospitals, life-suppor
 
 ## 3. What's actually real — honest status matrix
 
-LifelineGrid tags every capability on screen, using these exact labels:
+UrjaGrid tags every capability on screen, using these exact labels:
 
 | Tag | Meaning | Examples in this build |
 |---|---|---|

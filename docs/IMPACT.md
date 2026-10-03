@@ -1,4 +1,4 @@
-# LifelineGrid — Quantified Benefit vs. Baseline
+# UrjaGrid — Quantified Benefit vs. Baseline
 
 Every number in this document was either (a) produced by actually running the backend's own code in this environment, with the exact command shown, or (b) pulled from the backend's own test assertions. Nothing here was invented. Where a run produced a result we did not expect, that result is reported as-is, with the explanation for why.
 

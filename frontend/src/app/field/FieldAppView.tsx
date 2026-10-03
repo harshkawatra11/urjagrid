@@ -81,7 +81,7 @@ export function FieldAppView() {
     <div className="flex flex-col gap-3">
       {offline && <OfflineBanner />}
       <header>
-        <p className="text-[11px] uppercase tracking-[0.1em] text-faint">LifelineGrid</p>
+        <p className="text-[11px] uppercase tracking-[0.1em] text-faint">UrjaGrid</p>
         <h1 className="text-[18px] font-semibold text-text">Field Worker App</h1>
         <label className="mt-2 flex flex-col gap-1 text-[12px]">
           <span className="text-muted">Sub-division</span>

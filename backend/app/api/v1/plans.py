@@ -33,12 +33,12 @@ class OverridesRequest(BaseModel):
 async def list_plans(
     subdivision_id: str | None = None, service: GridService = Depends(get_grid_service)
 ) -> list[dict]:
-    return plans_view(service.plan_service.list_plans(subdivision_id))
+    return plans_view(service.plan_service.list_plans(subdivision_id), service.scenario.network)
 
 
 @router.get("/{plan_id}")
 async def get_plan(plan_id: str, service: GridService = Depends(get_grid_service)) -> dict:
-    return plan_view(service.plan_service.get(plan_id))
+    return plan_view(service.plan_service.get(plan_id), service.scenario.network)
 
 
 @router.post("/{plan_id}/approve")
@@ -47,9 +47,12 @@ async def approve_plan(
     service: GridService = Depends(get_grid_service),
     user: AuthenticatedUser = Depends(require_roles(Role.JE, Role.AE)),
 ) -> dict:
+    # The approver is always the authenticated JE/AE from the bearer token --
+    # never a client-supplied name -- per the B7 safety invariant "no
+    # autonomous action without a named human approver".
     plan = service.plan_service.approve(plan_id, user.display_name)
     AUDIT_LOG.record(user.username, "approve", "FlexPlan", plan_id)
-    return plan_view(plan)
+    return plan_view(plan, service.scenario.network)
 
 
 @router.post("/{plan_id}/reject")
@@ -61,7 +64,7 @@ async def reject_plan(
 ) -> dict:
     plan = service.plan_service.reject(plan_id, body.reason)
     AUDIT_LOG.record(user.username, "reject", "FlexPlan", plan_id, reason=body.reason)
-    return plan_view(plan)
+    return plan_view(plan, service.scenario.network)
 
 
 @router.post("/{plan_id}/cancel")
@@ -72,7 +75,22 @@ async def cancel_plan(
 ) -> dict:
     plan = service.plan_service.cancel(plan_id)
     AUDIT_LOG.record(user.username, "cancel", "FlexPlan", plan_id)
-    return plan_view(plan)
+    return plan_view(plan, service.scenario.network)
+
+
+@router.post("/{plan_id}/refresh")
+async def refresh_plan(
+    plan_id: str,
+    service: GridService = Depends(get_grid_service),
+    user: AuthenticatedUser = Depends(require_roles(Role.JE, Role.AE)),
+) -> dict:
+    """Re-solve a DRAFT plan's optimiser input in place (same id, same window)
+    -- used by the decision desk's "refresh" action when the JE wants an
+    up-to-date solve without discarding the plan.
+    """
+    plan = service.plan_service.refresh_plan(plan_id)
+    AUDIT_LOG.record(user.username, "refresh", "FlexPlan", plan_id)
+    return plan_view(plan, service.scenario.network)
 
 
 @router.post("/{plan_id}/simulate")
