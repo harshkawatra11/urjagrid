@@ -16,7 +16,7 @@ const ASSET_COLOR: Record<MapAsset["kind"], string> = {
   telecom: "var(--violet)",
   life_support: "var(--red)",
   charger: "var(--info)",
-  storage: "var(--brand)",
+  storage: "var(--google-green)",
 };
 
 /** Fixed-point markers for critical facilities and flexible assets (chargers, storage) on the map. */

@@ -22,7 +22,7 @@ function OnOffStrip({ track, label }: { track: Array<"on" | "shed">; label: stri
           <div
             key={h}
             title={`${h}:00 ${state}`}
-            className={cn("h-3 flex-1 rounded-[1px]", state === "on" ? "bg-brand" : "bg-red")}
+            className={cn("h-3 flex-1 rounded-[1px]", state === "on" ? "bg-google-green" : "bg-google-red")}
           />
         ))}
       </div>

@@ -22,7 +22,7 @@ export function CompareBars({
     <ChartFrame label={label}>
       <ChartLegend
         items={[
-          { label: "UrjaGrid", color: "var(--brand)" },
+          { label: "UrjaGrid", color: "var(--google-green)" },
           { label: "Baseline (shedding)", color: "var(--text-faint)" },
         ]}
       />
@@ -33,7 +33,7 @@ export function CompareBars({
             <XAxis dataKey="label" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "var(--border)" }} />
             <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={40} />
             <Tooltip cursor={CURSOR_BAND} content={<ChartTooltip unit={unit} />} />
-            <Bar dataKey="solution" name="UrjaGrid" fill="var(--brand)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
+            <Bar dataKey="solution" name="UrjaGrid" fill="var(--google-green)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
             <Bar dataKey="baseline" name="Baseline (shedding)" fill="var(--text-faint)" radius={[3, 3, 0, 0]} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
