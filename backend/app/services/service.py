@@ -32,7 +32,7 @@ from app.grid.fairness import jain_index
 from app.grid.loadgen import LoadModel
 from app.grid.metrics import hours_of_hardship, lifeline_availability
 from app.grid.models import Actions, LogRow, PlanStatus
-from app.grid.network import SyntheticNetwork, synthetic_network
+from app.grid.network import SyntheticNetwork, real_network, synthetic_network
 from app.grid.planner import FlexPlanService
 from app.grid.risk import compute_dt_risk, rank_by_risk
 from app.grid.supply import supply_fraction_for_subdivision
@@ -77,8 +77,22 @@ class ScenarioData:
     dt_available_kw: dict[str, np.ndarray]
 
 
-def build_scenario(seed: int = 0, scenario_name: str = "synthetic_default") -> ScenarioData:
-    network = synthetic_network(seed=seed)
+def build_scenario(
+    seed: int = 0, scenario_name: str = "synthetic_default", use_real_network: bool = False
+) -> ScenarioData:
+    """Build one scenario's exogenous demand/weather/supply arrays.
+
+    ``use_real_network`` switches between the small, fast, in-memory network
+    (``synthetic_network()``, the default -- used by plain unit tests of
+    ``GridWorld``/``GridService``) and the real, calibrated 48-DT/7,000-
+    consumer seed network (``real_network()``) that the rest of the product
+    (map, transformer directory, Scenario Lab) is sized against. At the
+    synthetic network's default small/random sizing, demand never actually
+    exceeds available supply, so anything that diffs a solution track against
+    a shadow baseline (``services/scenario.py``'s ``run_scenario``) needs the
+    real network to see a genuine deficit.
+    """
+    network = real_network() if use_real_network else synthetic_network(seed=seed)
     from app.grid.weather import BUILTIN_SCENARIOS
 
     weather = (
@@ -128,12 +142,19 @@ class GridService:
     """
 
     def __init__(
-        self, seed: int = 0, time_scale: int = 60, scenario_name: str = "synthetic_default"
+        self,
+        seed: int = 0,
+        time_scale: int = 60,
+        scenario_name: str = "synthetic_default",
+        use_real_network: bool = False,
     ) -> None:
         self.seed = seed
         self.time_scale = time_scale
+        self.use_real_network = use_real_network
         self.state = GridServiceState(scenario_name=scenario_name)
-        self.scenario = build_scenario(seed=seed, scenario_name=scenario_name)
+        self.scenario = build_scenario(
+            seed=seed, scenario_name=scenario_name, use_real_network=use_real_network
+        )
         self.ledger = ProtocolLedger()
         self.plan_service = FlexPlanService()
         self.dispatcher = Dispatcher(
@@ -160,6 +181,14 @@ class GridService:
         self.solution_logs: list[LogRow] = []
         self.shadow_logs: list[LogRow] = []
         self.events: list[str] = []
+        # Raw per-DT IntervalResult pairs from every `advance_one_interval()`
+        # call not yet drained by the SSE stream (`services/stream.py`); the
+        # aggregated LogRow pair returned by `advance_one_interval`/`tick`
+        # loses the per-DT breakdown the `tick` SSE event needs.
+        self._pending_interval_results: list[tuple] = []
+        # DT id -> last-emitted risk level, so the SSE `risk` event can report
+        # only level *transitions* (see `drain_risk_transitions`).
+        self._prev_risk_levels: dict[str, str] = {}
 
     # -- lifecycle --------------------------------------------------------
 
@@ -168,16 +197,34 @@ class GridService:
         self.state.sim_seconds_accumulated = 0.0
         self.solution_logs.clear()
         self.shadow_logs.clear()
+        self._pending_interval_results.clear()
 
     def reset(self) -> None:
         self.__init__(
-            seed=self.seed, time_scale=self.time_scale, scenario_name=self.state.scenario_name
+            seed=self.seed,
+            time_scale=self.time_scale,
+            scenario_name=self.state.scenario_name,
+            use_real_network=self.use_real_network,
         )  # type: ignore[misc]
 
-    def _active_actions(self) -> dict[str, Actions]:
+    def _active_actions(self, slot: int) -> dict[str, Actions]:
+        """Levers from every live plan, restricted to the slots its own
+        deficit window actually covers (``plan.inputs.slots``).
+
+        Without this restriction a plan approved once keeps capping/DR-ing
+        its DTs for every interval for as long as it stays APPROVED/
+        DISPATCHED -- including the many hours of the day its window never
+        covered, where there is no real deficit to relieve. That silently
+        makes the solution track *worse* than the shadow baseline outside
+        the window (a cap or DR ask that reduces served kW for no reason),
+        which is exactly what produced a negative ``relief_kw_avoided`` for
+        some scenarios once Scenario Lab plans were actually approved.
+        """
         actions: dict[str, Actions] = {}
         for plan in self.plan_service.list_plans():
             if plan.status not in (PlanStatus.APPROVED, PlanStatus.DISPATCHED):
+                continue
+            if plan.inputs.slots and slot not in plan.inputs.slots:
                 continue
             for dt_id in plan.inputs.dt_ids:
                 static = next((d for d in self.dt_statics if d.dt_id == dt_id), None)
@@ -188,10 +235,11 @@ class GridService:
 
     def advance_one_interval(self) -> tuple[LogRow, LogRow]:
         slot = self.state.slot
-        actions = self._active_actions()
+        actions = self._active_actions(slot)
         sol_result, shadow_result = self.world.advance_interval(slot, actions)
         self.events.extend(sol_result.events)
         self.events.extend(shadow_result.events)
+        self._pending_interval_results.append((sol_result, shadow_result))
 
         sol_row = self._to_log_row(slot, sol_result, is_shadow=False)
         shadow_row = self._to_log_row(slot, shadow_result, is_shadow=True)
@@ -199,6 +247,49 @@ class GridService:
         self.shadow_logs.append(shadow_row)
         self.state.slot += 1
         return sol_row, shadow_row
+
+    def drain_interval_results(self) -> list[tuple]:
+        """Pop and return every raw (solution, shadow) ``IntervalResult`` pair
+        produced since the last drain (used by the SSE ``tick`` event to build
+        per-DT telemetry; see ``services/stream.py``).
+        """
+        out = self._pending_interval_results
+        self._pending_interval_results = []
+        return out
+
+    def drain_risk_transitions(self) -> list[dict[str, str]]:
+        """Return every DT whose risk bucket (``RiskLevel``) changed since the
+        last call, for the SSE ``risk`` event's ``{dtId, subdivisionId, from,
+        to, reason}`` contract (``frontend/src/lib/live/types.ts``'s
+        ``RiskStreamPayload``) -- a level *transition*, not the full ranking
+        ``risk_summary()`` reports for the REST API.
+        """
+        if not self.solution_logs:
+            return []
+        transitions: list[dict[str, str]] = []
+        for static in self.dt_statics:
+            hotspot = self.world.solution.cumulative_loss_of_life_hours.get(static.dt_id, 0.0)
+            risk = compute_dt_risk(
+                dt_id=static.dt_id,
+                hot_spot_c=30.0 + hotspot,
+                forecast_gap_kw=0.0,
+                dt_limit_kw=static.rated_kw,
+                ageing_factor=1.0,
+            )
+            level = risk.level.value
+            prev = self._prev_risk_levels.get(static.dt_id)
+            if prev is not None and prev != level:
+                transitions.append(
+                    {
+                        "dtId": static.dt_id,
+                        "subdivisionId": static.subdivision_id,
+                        "from": prev,
+                        "to": level,
+                        "reason": f"risk score {risk.score:.2f}",
+                    }
+                )
+            self._prev_risk_levels[static.dt_id] = level
+        return transitions
 
     def _to_log_row(self, slot: int, result, is_shadow: bool) -> LogRow:  # type: ignore[no-untyped-def]
         gross = sum(result.dt_demand_kw.values())
@@ -290,6 +381,33 @@ class GridService:
             risks.append(risk)
         ranked = rank_by_risk(risks)
         return [{"dt_id": r.dt_id, "score": r.score, "level": r.level.value} for r in ranked]
+
+    def live_kpis(self) -> dict[str, float | int | str]:
+        """Aggregate KPIs for the SSE ``kpis`` event's ``KpisStreamPayload``
+        contract (``frontend/src/lib/live/types.ts``) -- deliberately a much
+        smaller shape than ``kpis()`` (which backs the REST aggregates view).
+        """
+        if self.solution_logs:
+            last = self.solution_logs[-1]
+            served_fraction = last.served_kw / last.gross_kw if last.gross_kw > 0 else 1.0
+        else:
+            served_fraction = 1.0
+        active_plan_count = len(
+            [
+                p
+                for p in self.plan_service.list_plans()
+                if p.status in (PlanStatus.DRAFT, PlanStatus.APPROVED, PlanStatus.DISPATCHED)
+            ]
+        )
+        dt_at_risk_count = sum(
+            1 for r in self.risk_summary() if r["level"] in ("high", "critical")
+        )
+        return {
+            "subdivisionId": "all",
+            "servedFraction": served_fraction,
+            "activePlanCount": active_plan_count,
+            "dtAtRiskCount": dt_at_risk_count,
+        }
 
 
 __all__ = [
