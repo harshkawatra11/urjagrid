@@ -1,4 +1,4 @@
-# LifelineGrid backend -- multi-stage build for Google Cloud Run (port 8080).
+# UrjaGrid backend -- multi-stage build for Google Cloud Run (port 8080).
 # libgomp1 is required at runtime for lightgbm's OpenMP-linked native extension.
 
 FROM python:3.12-slim AS builder
